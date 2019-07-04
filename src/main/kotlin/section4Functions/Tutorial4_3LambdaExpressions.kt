@@ -8,6 +8,7 @@ fun main(args: Array<String>) {
     // INFO 🔥 Lambda Expression
 //    val sum = { x: Int, y: Int -> x + y }
     val sum: (Int, Int) -> Int = { x, y -> x + y }
+    println("Sum ${sum(2, 3)}")
 
     // INFO Passing Lambda as last parameter
     val items = listOf<Int>(1, 2, 3)
@@ -22,7 +23,6 @@ fun main(args: Array<String>) {
     // Info Single parameter it
     val ints = listOf<Int>(1, 2, 3)
     ints.filter { it > 0 } // this literal is of type '(it: Int) -> Boolean'
-
 
 
     // INFO 🔥🔥 Lambda Expression with Receiver
@@ -81,10 +81,21 @@ fun main(args: Array<String>) {
         val num = it * 2
         num
     }
+
+// INFO 🔥🔥 Function Literal that returns String
+    val upperCase = createStringBlock(4) {
+
+        // Thi predicate function returns String
+        "createStringBlock $it"
+    }
+
+    println("Uppercase String: $upperCase")
+
 }
 
-inline fun createStringBlock(block: () -> String): String {
-    return block()
+// INFO 🔥🔥 Function Literal  that returns String
+inline fun createStringBlock(num: Int, block: (Int) -> String): String {
+    return block(num).toUpperCase()
 }
 
 
@@ -105,6 +116,8 @@ inline fun StringBuilder.extra(block: StringBuilder.() -> Unit): StringBuilder {
 }
 
 inline fun StringBuilder.extra2(value: Int, block: (Int) -> Int): StringBuilder {
-    block(value)
+    this.append(block(value).toString())
     return this
 }
+
+

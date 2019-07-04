@@ -2,24 +2,31 @@ package section4Functions
 
 fun main(args: Array<String>) {
 
-    val result = highOrder(2, 3) { x, y ->
-        x + y
+    // INFO 🔥 Inline Function
+
+    // Creates instance of lambda function instance every time invoked
+    nonInlined {
+        println("Hello from NON-inlined")
     }
 
-
-    println("Result $result")
-}
-
-
-fun doSomething(elements: List<String>): List<Pair<String, Int>> {
-
-    return elements.groupBy {
-        it
-    }.map {
-        Pair(it.key, it.value.count())
+    // only gets block inside lambda, does not create instance
+    inlined {
+        println("Hello from inlined")
     }
+
 }
 
-fun highOrder(x: Int, y: Int, action: (Int, Int) -> Int): Int {
-   return action(x, y)
+
+fun nonInlined(block: () -> Unit) {
+    println("before")
+    block()
+    println("after")
 }
+
+
+inline fun inlined(block: () -> Unit) {
+    println("before")
+    block()
+    println("after")
+}
+

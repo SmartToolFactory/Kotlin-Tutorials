@@ -3,7 +3,6 @@ package section2OOP
 import java.awt.event.MouseAdapter
 import java.awt.event.MouseEvent
 import javax.swing.JComponent
-import kotlin.system.measureTimeMillis
 
 fun main(args: Array<String>) {
 
@@ -36,21 +35,38 @@ fun main(args: Array<String>) {
     })
 
 
-    val thread = Thread(object : Runnable {
+    val myRunnable = object : Runnable {
         override fun run() {
-            println("Hello thread ${Thread.currentThread().name}")
+            println("Runnable run() thread: ${Thread.currentThread().name}")
+        }
+    }
+
+    val thread0 = Thread(myRunnable)
+
+
+    val thread1 = Thread(object : Runnable {
+        override fun run() {
+            println("Hello thread1 ${Thread.currentThread().name}")
 
         }
     })
 
     // INFO SAM conversion of interface
     val thread2 = Thread(Runnable {
-        println("Hello thread ${Thread.currentThread().name}")
+        println("Hello thread2 ${Thread.currentThread().name}")
     })
 
+    // INFO SAM conversion of Thread without Runnable
+    val thread3 = Thread {
+        println("Hello thread3 ${Thread.currentThread().name}")
 
-    thread.start()
+    }
+
+
+    thread0.start()
+    thread1.start()
     thread2.start()
+    thread3.start()
 
     foo()
 

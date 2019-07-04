@@ -16,8 +16,10 @@ fun main(args: Array<String>) {
     val repeatFun: String.(Int) -> String = { times -> this.repeat(times) }
     val twoParameters: (String, Int) -> String = repeatFun // OK
 
+
     val result = runTransformation(repeatFun) // OK
     val result2 = runTransformation(twoParameters)
+
     twoParameters("hi", 4)
 
     println("result: $result") // prints hello-hello-hello-
@@ -53,3 +55,5 @@ class IntTransformer : (Int) -> Int {
 fun runTransformation(action: (String, Int) -> String): String {
     return action("hello-", 3)
 }
+
+
