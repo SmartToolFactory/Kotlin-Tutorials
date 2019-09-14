@@ -2,6 +2,21 @@ package chapter3Other
 
 fun main() {
 
+
+    // INFO 🔥 High Order Function
+
+    val test = createString(5) {
+        println("createTest() $it")
+        it
+    }
+
+    val test2 = createString(4, {
+        it / 2
+    })
+
+    print("Test2 $test2")
+
+
     // INFO 🔥 Function Literal with Receiver
 
     // Function Literal with Receiver
@@ -20,19 +35,12 @@ fun main() {
     println(s)
 
 
-
-    val test = createStringWithLiteral(5) {
-        println("createTest() $it")
-        it
+    html {
+        this.body()
     }
 
-    val test2 = createStringWithLiteral(4, {
-        it / 2
-    })
 
-    print("Test2 $test2")
-
-
+    // INFO 🔥 Extension Function Literal with Receiver
     val sb = StringBuilder()
     val sbNew = sb.extra({
 
@@ -50,8 +58,8 @@ fun main() {
 
 }
 
-
-inline fun createStringWithLiteral(value: Int, block: (Int) -> Int): String {
+// INFO 🔥 High Order Function
+inline fun createString(value: Int, block: (Int) -> Int): String {
     return block(value * value).toString()
 }
 
@@ -68,6 +76,21 @@ inline fun createStringWithLiteral(block: StringBuilder.() -> Unit): String {
     return sb.toString()
 }
 
+class HTML {
+    fun body() {
+        println("This is the body of HTML file")
+    }
+}
+
+fun html(init: HTML.() -> Unit): HTML {
+
+    val html = HTML() // create the receiver object
+    html.init() // pass the receiver object to the lambda return html
+    return html
+}
+
+
+// INFO 🔥 Extension Function Literal with Receiver
 /**
  * This function is extension function of [StringBuilder] class by [StringBuilder]. before function name.
  *

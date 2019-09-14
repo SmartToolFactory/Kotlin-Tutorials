@@ -61,7 +61,7 @@ fun main() {
         it.toUpperCase()
     }
 
-    // INFO Function Literal With Receşver
+    // INFO Function Literal With Receiver
     val resultLiteralReceiver = testLiteralWithReceiver(testString) {
         toUpperCase()
     }
@@ -76,7 +76,7 @@ fun main() {
         toUpperCase()
     }
 
-    println("TEST-> resultHighOrder: $resultHighOrder, resultLiteralReceiver: $resultLiteralReceiver, resultExtensionLiteral: $resultExtensionLiteral")
+    println("TEST-> resultHighOrder: $resultHighOrder, resultLiteralReceiver: $resultLiteralReceiver, resultExtension: $resultExtension, resultExtensionLiteral: $resultExtensionLiteral")
 
 
 }
@@ -97,6 +97,7 @@ fun runTransformation(action: (String, Int) -> String): String {
  INFO 🔥 Both functions give the same result
   * First function is High Order function that takes function as a param that takes String as param
   * Second function is Function Literal With Receiver that is action is extension function of String
+  * Third one is Extension Function which is called by a String object only and this corresponds to String inside the function
  */
 
 // INFO High Order Function
@@ -113,8 +114,9 @@ fun testLiteralWithReceiver(value: String, action: String.() -> String): String 
 }
 
 // INFO Extension Function
-fun String.testExtension(action: (String) -> String) {
-    action(this)
+fun String.testExtension(action: (String) -> String): String {
+    val result = action(this)
+    return result
 }
 
 // INFO Extension Function that Literal With Receiver

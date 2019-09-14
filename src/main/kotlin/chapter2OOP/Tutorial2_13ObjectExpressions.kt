@@ -8,6 +8,7 @@ fun main(args: Array<String>) {
 
     val window = Window()
 
+    // This is Anonymous inner class that implements OnClickListener interface
     // INFO 🔥 Object Expressions
     window.onWindowClick(object : OnClickListener {
         override fun onClick() {
@@ -100,7 +101,7 @@ fun main(args: Array<String>) {
     // INFO 🔥 ⚠️  SAME OBJECTS because they are Companion Objects in type of Factory
     val f: Factory<MyClass> = MyCompanionClass
     val g: Factory<MyClass> = MyCompanionClass
-    print("TestStringConcatanation for Factory MyCompanionClass instances f $f, and g $g")
+    print("TestStringConcatenation for Factory MyCompanionClass instances f $f, and g $g")
 }
 
 // INFO 🔥 Object Expressions

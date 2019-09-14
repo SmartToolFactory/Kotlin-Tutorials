@@ -37,8 +37,8 @@ fun main(args: Array<String>) {
 
     // INFO 🔥 Standard Delegates
     // INFO 🔥 Lazy
-//    println(lazyValue)
-//    println(lazyValue)
+    println(lazyValue)
+    println(lazyValue)
 
     // INFO 🔥 Observable
 //    val user = UserObservable()

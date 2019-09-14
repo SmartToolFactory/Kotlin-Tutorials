@@ -29,6 +29,14 @@ fun main(args: Array<String>) {
 // is the same as
     1.shl(2)
 
+    infix fun String.sameAs(x: String): Boolean {
+        return this == x
+    }
+
+  val isThisTrue =  "Obj" sameAs "Obj"
+
+    println("🎃 Infix result $isThisTrue")
+
     // INFO Tail Recursive Function
 
     println("Factorial result: ${fact(5)}")
