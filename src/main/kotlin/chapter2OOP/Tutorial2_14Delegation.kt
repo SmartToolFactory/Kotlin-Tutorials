@@ -3,7 +3,7 @@ package chapter2OOP
 import kotlin.properties.Delegates
 import kotlin.reflect.KProperty
 
-fun main(args: Array<String>) {
+fun main() {
 
 //    // INFO 🔥 Implementation by Delegation
 //    val b = BaseImpl(10)

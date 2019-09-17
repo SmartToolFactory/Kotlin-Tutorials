@@ -15,7 +15,7 @@ fun main(args: Array<String>) {
 }
 
 // INFO Companion Object Class
-class Car(val horsepowers: Int){
+class Car(val horsepowers: Int) {
 
 
     companion object Factory {
@@ -59,6 +59,7 @@ public enum class Planet(val mass: Double, val radius: Double) {
 
 abstract class Shape protected constructor() {
 
+    // IMPORTANT ⚠️⚠️ val, and var are NOT ALLOWED with SECOND constructor
     constructor(x: Int, Y: Int) : this()
 
     var XLocation: Int
@@ -89,9 +90,11 @@ abstract class Shape protected constructor() {
 
 }
 
-class Ellipsis : Shape() {
+class Ellipsis(var xBase: Int, yBase: Int) : Shape(xBase, yBase) {
+
 
     override fun isHit(x: Int, y: Int): Boolean {
+
 
         val xRadius = Width.toDouble() / 2
         val yRadius = Height.toDouble() / 2

@@ -99,7 +99,7 @@ class Person3 {
 
 class Person4 constructor(val firstName: String, val lastName: String, val age: Int?) {
 
-    // INFO Secondary Constructor
+    // INFO 🔥 Secondary Constructor that calls Primary Constructor
     constructor(firstName: String, lastName: String) : this(firstName, lastName, null) {
         println("😳 Secondary constructor of Person4")
     }

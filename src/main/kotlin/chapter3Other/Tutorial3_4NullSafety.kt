@@ -32,7 +32,7 @@ fun main() {
         item?.let { println(it) } // prints Kotlin and ignores null
     }
 
-//    A safe call can also be placed on the left side of an assignment.
+//    BaseClassA safe call can also be placed on the left side of an assignment.
 //    Then, if one of the receivers in the safe calls chain is null,
 //    the assignment is skipped, and the expression on the right is not evaluated at all:
 

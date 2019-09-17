@@ -112,11 +112,11 @@ class A {
         private val somefield: Int = 1
 
         fun foo(s: String) {
-            println("Field <somefield> from B" + this.somefield)
+            println("Field <somefield> from InterfaceB" + this.somefield)
 
             // 🔥 this with @ annotation points to instance of defined class
-            println("Field <somefield> from B" + this@B.somefield)
-            println("Field <somefield> from A" + this@A.somefield)
+            println("Field <somefield> from InterfaceB" + this@B.somefield)
+            println("Field <somefield> from BaseClassA" + this@A.somefield)
         }
     }
 }

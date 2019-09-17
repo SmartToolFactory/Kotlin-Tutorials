@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
     // value
 
     val oneTo10 = 1..10
-    val alpha = "A".."Z"
+    val alpha = "BaseClassA".."Z"
 
     // Use in to search a Range
     println("R in alpha : ${"R" in alpha}")

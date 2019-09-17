@@ -17,10 +17,10 @@ fun main(args: Array<String>) {
     var letterGrade: Char = 'A'
 
     // instance of -> is
-    println("A is a Char : ${letterGrade is Char} ")
+    println("BaseClassA is a Char : ${letterGrade is Char} ")
 
     // Get ASCII code of character
-    println("A ascii: ${letterGrade.toInt()}")
+    println("BaseClassA ascii: ${letterGrade.toInt()}")
 
     println("3.14 to int ${3.14.toInt()}")
 

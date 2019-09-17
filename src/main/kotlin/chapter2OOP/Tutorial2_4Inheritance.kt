@@ -6,7 +6,7 @@ fun main(args: Array<String>) {
 
     // Class with interface and base class
 //    val c = C()
-//    // INFO 🔥 f() method calls super method of Class A and Interface B
+//    // INFO 🔥 f() method calls super method of Class BaseClassA and Interface InterfaceB
 //    c.f()
 
 
@@ -21,6 +21,8 @@ sealed class VehicleType {
 open class Vehicle(var type: VehicleType, var manufacturer: String) {
 
 }
+
+class SportsCar: Vehicle(VehicleType.CarType(1), "Tesla")
 
 
 // TODO 🔥 ??? 'manufacturer' hides member of supertype  and needs 'override' modifier

@@ -1,8 +1,9 @@
 package chapter2OOP
 
 import chapter2OOP.model.*
+import chapter2OOP.model.Person
 
-fun main(args: Array<String>) {
+fun main() {
 
     // create obj object of myClass class
 //    val obj = MyClass()
@@ -30,7 +31,7 @@ fun main(args: Array<String>) {
     val constructors = Constructors(5)
 
     val auto1 = Auto(5, "Honda")
-    val auto2 = Auto( name = "Ferrari")
+    val auto2 = Auto(name = "Ferrari")
     val auto3 = Auto(2, "BMW")
 
 

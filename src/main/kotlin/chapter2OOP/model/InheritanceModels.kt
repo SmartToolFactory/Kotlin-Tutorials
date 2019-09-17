@@ -31,11 +31,11 @@ class Derived(
 }
 
 
-open class A {
+open class BaseClassA {
 
     // INFO This method needs to be overridden in classes that extend this class
     open fun f() {
-        print("A")
+        print("BaseClassA")
     }
 
     fun a() {
@@ -43,11 +43,11 @@ open class A {
     }
 }
 
-interface B {
+interface InterfaceB {
 
     // interface members are 'open' by default
     fun f() {
-        print("B")
+        print("InterfaceB")
     }
 
     fun b() {
@@ -55,31 +55,30 @@ interface B {
     }
 
     // INFO f(), and b() methods are not ABSTRACT but foo is abstract and must be
-    // overridden on class that implement B interface
+    // overridden on class that implement InterfaceB interface
     fun foo()
 }
 
-class C() : A(), B {
+class C() : BaseClassA(), InterfaceB {
 
     override fun foo() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     // INFO only invokes methods called with super
-    // 🔥 The compiler requires f() to be overridden because it's open fun in A
+    // 🔥 The compiler requires f() to be overridden because it's open fun in BaseClassA
     override fun f() {
-        super<A>.f() // call to A.f()
-        super<B>.f() // call to B.f() }
+        super<BaseClassA>.f() // call to BaseClassA.f()
+        super<InterfaceB>.f() // call to InterfaceB.f() }
     }
 
 }
 
-class InterfaceTestClass() : B {
+class InterfaceTestClass() : InterfaceB {
 
     override fun foo() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
 
 }
 

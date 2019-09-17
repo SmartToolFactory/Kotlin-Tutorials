@@ -16,7 +16,7 @@ fun main() {
     println("a ${a(2)}")
 
 
-    // INFO 🔥 A value of type (A, B) -> C can be passed or assigned where a A.(B) -> C
+    // INFO 🔥 BaseClassA value of type (BaseClassA, InterfaceB) -> C can be passed or assigned where a BaseClassA.(InterfaceB) -> C
     val repeatFun: String.(Int) -> String = { times ->
         this.repeat(times)
     }
@@ -88,7 +88,7 @@ class IntTransformer : (Int) -> Int {
     override operator fun invoke(x: Int): Int = x * x
 }
 
-// INFO 🔥 A value of type (A, B) -> C can be passed or assigned where a A.(B) -> C
+// INFO 🔥 BaseClassA value of type (BaseClassA, InterfaceB) -> C can be passed or assigned where a BaseClassA.(InterfaceB) -> C
 fun runTransformation(action: (String, Int) -> String): String {
     return action("hello-", 3)
 }
