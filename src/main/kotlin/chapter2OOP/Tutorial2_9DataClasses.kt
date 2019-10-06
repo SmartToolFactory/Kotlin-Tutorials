@@ -19,6 +19,8 @@ fun main() {
 
     println("Person1 == Person2 -> ${person1 == person2}") // prints true
 
+    // 🔥 variables with default values can be omitted when data class is instantiated
+    val carData = CarData(manifacturer = "", model ="")
 
     /*
           ***  EQUALITY ***
@@ -43,6 +45,21 @@ fun main() {
     println("BookData1${bookData1.hashCode()} == BookData2${bookData2.hashCode()} -> ${bookData1 == bookData2}") // prints true
     println("BookData1 === BookData2 -> ${bookData1 === bookData2}") // prints false
 
+
+}
+
+//To exclude a property from the generated implementations, declare it inside the class body:
+data class PersonData(val name: String) {
+    var age: Int = 0
+}
+
+// 🔥 variables with default values can be omitted when data class is instantiated
+data class CarData(
+    var type: Int? = 0,
+    var manifacturer: String,
+    var model: String
+) {
+    fun type(type:Int):CarData = apply {this.type = type}
 
 }
 
@@ -143,9 +160,6 @@ class Book(val name: String, val age: Int)
 
 data class BookData(val name: String, val age: Int)
 
-//To exclude a property from the generated implementations, declare it inside the class body:
-data class PersonData(val name: String) {
-    var age: Int = 0
-}
+
 
 

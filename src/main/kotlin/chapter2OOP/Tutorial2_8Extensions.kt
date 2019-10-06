@@ -1,6 +1,6 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
 
     // INFO 🔥 Extension function
     val testString: String = "Hello World  "
@@ -86,7 +86,7 @@ fun CExtension.foo(i: Int) {
 }
 
 /*
-    Note that extensions can be de􏰁ned with a nullable receiver type.
+    Note that extensions can be defined with a nullable receiver type.
     Such extensions can be called on an object variable even if its value is null,
     and can check for this == null inside the body.
     This is what allows you to call toString() in Kotlin without checking for null:

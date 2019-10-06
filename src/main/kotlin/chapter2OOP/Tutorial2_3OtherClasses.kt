@@ -1,6 +1,6 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
 
     // Companion Object
     val car = Car.makeCar(150)

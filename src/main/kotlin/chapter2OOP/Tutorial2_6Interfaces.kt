@@ -1,6 +1,6 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
 
     val child = Child()
     println("Child propertyWithImplementation ${child.propertyWithImplementation}")

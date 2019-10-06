@@ -26,7 +26,8 @@ fun main(args: Array<String>) {
 
     // Closed range
     for (i in 1 until 10) {
-        // i in [1, 10), 10 is excluded println(i)
+        // i in [1, 10), 10 is excluded
+        println(i)
     }
 
     // Reverse a range

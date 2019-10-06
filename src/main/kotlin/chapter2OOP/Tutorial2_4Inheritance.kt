@@ -1,6 +1,6 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
 
 //    val derived = Derived("Foo", "Bar")
 
@@ -9,7 +9,9 @@ fun main(args: Array<String>) {
 //    // INFO 🔥 f() method calls super method of Class BaseClassA and Interface InterfaceB
 //    c.f()
 
+    val sportsCar = SportsCar()
 
+    println("SportsCar type: ${sportsCar.type}, manufacturer: ${sportsCar.manufacturer}")
 }
 
 

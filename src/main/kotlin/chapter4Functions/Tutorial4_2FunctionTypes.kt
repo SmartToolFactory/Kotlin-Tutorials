@@ -7,7 +7,7 @@ fun main() {
     val intFunction: (Int) -> Int = IntTransformer()
     println("intFunction: $intFunction(5)") // prints x * x
 
-    // Function that takes 2 int params and returns int
+    // Lambda Expression that takes 2 int params and returns int
     val testFun: (Int, Int) -> Int = { x, y -> x + y }
     val testFunInferred = { x: Int, y: Int -> x + y }
 
@@ -100,12 +100,12 @@ fun runTransformation(action: (String, Int) -> String): String {
   * Third one is Extension Function which is called by a String object only and this corresponds to String inside the function
  */
 
-// INFO High Order Function
+// INFO 🔥 High Order Function
 fun testHighOrder(value: String, action: (String) -> String): String {
     return action(value)
 }
 
-// INFO Function Literal With Receiver
+// INFO 🔥 Function Literal With Receiver
 fun testLiteralWithReceiver(value: String, action: String.() -> String): String {
     // INFO Both result implementations are the same
 //    val result =  action(value)
@@ -113,13 +113,13 @@ fun testLiteralWithReceiver(value: String, action: String.() -> String): String 
     return result
 }
 
-// INFO Extension Function
+// INFO 🔥 High Order Extension Function
 fun String.testExtension(action: (String) -> String): String {
     val result = action(this)
     return result
 }
 
-// INFO Extension Function that Literal With Receiver
+// INFO 🔥 Extension Function that Literal With Receiver
 fun String.testLiteralExtension(action: String.() -> String): String {
     // INFO Both result implementations are the same
     val result = action()

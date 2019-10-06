@@ -4,6 +4,11 @@ fun main() {
 
 
     // INFO 🔥 Lambda Expression
+    val test: (String) -> Unit = { s -> println(s) }
+    test("Test String")
+    val test2 = { s: String -> println(s) }
+    test2("Test String 2")
+
     val sumAlternative1 = { x: Int, y: Int -> x + y }
     val sumAlternative2: (Int, Int) -> Int = { x, y -> x + y }
     println("Sum Alt1: ${sumAlternative1(2, 3)}")
@@ -12,7 +17,7 @@ fun main() {
     // INFO Passing Lambda as last parameter
     val items = listOf<Int>(1, 2, 3)
 
-    // If lambda is the las parameter it can be taken outside the parenthesis
+    // If lambda is the last parameter it can be taken outside the parenthesis
     val prod = items.fold(1, { acc, e -> acc * e })
     val product = items.fold(1) { acc, e -> acc * e }
 
@@ -112,8 +117,8 @@ fun isOdd(value: Int, action: Int.() -> Boolean): Boolean {
     return value.action()
 }
 
-// INFO 🔥🔥 Function Literal  that returns String
-inline fun createStringBlock(num: Int, block: (Int) -> String): String {
+// INFO 🔥🔥 High Oder Function
+fun createStringBlock(num: Int, block: (Int) -> String): String {
     return block(num).toUpperCase()
 }
 
@@ -121,7 +126,7 @@ inline fun createStringBlock(num: Int, block: (Int) -> String): String {
 // INFO 🔥🔥 Function Literal with Receiver
 // StringBuilder.() sets this function as extension function of StringBuilder class
 //  receiver is defined as StringBuilder
-inline fun createString(block: StringBuilder.() -> Unit): String {
+fun createString(block: StringBuilder.() -> Unit): String {
 
     val sb = StringBuilder()     // create the receiver object
     sb.block()                   // pass the receiver object to the lambda
@@ -130,12 +135,12 @@ inline fun createString(block: StringBuilder.() -> Unit): String {
 }
 
 // INFO 🔥 Extension Functions Literal with Receiver
-inline fun StringBuilder.extra(block: StringBuilder.() -> Unit): StringBuilder {
+fun StringBuilder.extra(block: StringBuilder.() -> Unit): StringBuilder {
     block()
     return this
 }
 
-inline fun StringBuilder.extra2(value: Int, block: (Int) -> Int): StringBuilder {
+fun StringBuilder.extra2(value: Int, block: (Int) -> Int): StringBuilder {
     this.append(block(value).toString())
     return this
 }

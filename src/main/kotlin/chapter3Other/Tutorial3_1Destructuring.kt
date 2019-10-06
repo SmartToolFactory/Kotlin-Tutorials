@@ -21,6 +21,7 @@ fun main() {
     // Info Underscore for unused variables (since 1.1)
     val (_:String, _:Int, interest:Float) = account
 
+
 }
 
 

@@ -1,6 +1,6 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
 
     // TODO Static Nested Classes
     val line = BasicGraph.Line(1, 0, -2, 0)

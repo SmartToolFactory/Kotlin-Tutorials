@@ -76,10 +76,12 @@ class Customer(name: String) {
 
 // INFO 🔥 Constructors with val/var properties
 class User(val id: Long, email: String) {
+
     val hasEmail = email.isNotBlank()    //email can be accessed here
 
     init {
         //email can be accessed here
+        println("Email $email")
     }
 
     fun getEmail() {

@@ -1,4 +1,3 @@
-import io.reactivex.Observable;
 
 public class TestStringConcatanation {
 

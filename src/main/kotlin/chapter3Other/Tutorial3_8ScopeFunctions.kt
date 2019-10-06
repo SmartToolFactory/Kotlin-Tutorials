@@ -13,15 +13,15 @@ import java.util.*
     also			it			    Context object		Yes
 
     //return receiver T
-    fun <T> T.also(block: (T) -> Unit): T //T exposed as it
-    fun <T> T.apply(block: T.() -> Unit): T //T exposed as this
+    fun <T> T.also(block: (T) -> Unit): T               //T exposed as it
+    fun <T> T.apply(block: T.() -> Unit): T             //T exposed as this
 
     //return arbitrary value R
-    fun <T, R> T.let(block: (T) -> R): R //T exposed as it
-    fun <T, R> T.run(block: T.() -> R): R  //T exposed as this
+    fun <T, R> T.let(block: (T) -> R): R                //T exposed as it
+    fun <T, R> T.run(block: T.() -> R): R               //T exposed as this
 
     //return arbitrary value R, not an extension function
-    fun <T, R> with(receiver: T, block: T.() -> R): R //T exposed as this
+    fun <T, R> with(receiver: T, block: T.() -> R): R   //T exposed as this
 
     Context object: object itself           T
     Lambda result: Last called function     R
@@ -105,7 +105,7 @@ fun main() {
 
     val modifiedFirstItem = numbersLet.first().let { firstItem ->
         println("The first item of the list is '$firstItem'")
-        if (firstItem.length >= 5) firstItem else "!" + firstItem + "!"
+        if (firstItem.length >= 5) firstItem else "!$firstItem!"
     }.toUpperCase()
     println("First item after modifications: '$modifiedFirstItem'")
 

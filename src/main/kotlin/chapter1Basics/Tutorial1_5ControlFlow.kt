@@ -2,7 +2,7 @@ package chapter1Basics
 
 import java.util.*
 
-fun main(args: Array<String>) {
+fun main() {
 
     // This list does not have remove and methods
     val daysOfWeek: List<String> = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")

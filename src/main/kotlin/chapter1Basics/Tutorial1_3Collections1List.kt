@@ -114,6 +114,9 @@ fun main(args: Array<String>) {
     val myLinkedList: LinkedList<String> = LinkedList();
     myLinkedList.add("New text")
 
+
+    val anotherIntList = arrayListOf(5 ,8, 20, 40 ,100, 110)
+
     /*
      *  INFO METHODS
      */
@@ -153,7 +156,7 @@ fun main(args: Array<String>) {
 //    a.indexOfFirst()
 //    a.indexOfLast()
 
-    listInt.intersect(numbers)
+    listInt.intersect(anotherIntList)  //[20, 40]  creates a list of common items
     listInt.isEmpty()                 //false
     listInt.isNotEmpty()              //true
     listInt.last()                    //10

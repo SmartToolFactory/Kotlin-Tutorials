@@ -4,11 +4,22 @@ fun main() {
     val direction = Direction.NORTH
 
     val waiting = ProtocolState.WAITING
+   println("WAITING signal(): ${ waiting.signal()}")
 
+    var state = ProtocolState.WAITING
+    repeat(4) {
+        state = state.signal()
+
+        println("state: $state")
+    }
+
+    val redColor = Color.RED
+
+    println("Color: $redColor, rgb: ${redColor.rgb}")
 
     val printerType = EnumPrinterType.DOTMATRIX
 
-    printerType.pageAmount = 10
+    println("printerType: $printerType, pageAmount: ${printerType.pageAmount}, price: ${printerType.price}")
 
 
 }
@@ -35,6 +46,10 @@ enum class ProtocolState {
     },
 
     TALKING {
+        override fun signal() = WALKING
+    },
+
+    WALKING {
         override fun signal() = WAITING
     };
 
@@ -44,9 +59,10 @@ enum class ProtocolState {
 // 🔥 INFO Working with Enum Constants
 
 
-// 🔥 Enum constructors are private, enums can npt be instantiated
+// 🔥 Enum constructors are private, enums can not be instantiated
 enum class EnumPrinterType(var pageAmount: Int, internal var price: String) {
 
     DOTMATRIX(3, "cheap"), INKJET(5, "expensive"), LASER(7, "very expensive")
 
 }
+

@@ -1,6 +1,6 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
 
     // INFO  Setters and getters
 //    val setterAndGetterWrapper = SetterAndGetters()
@@ -11,6 +11,7 @@ fun main(args: Array<String>) {
     val user = User("Jackson", "Hitch")
     user.myName = "Johnny"
 
+    // INFO 🔥⚠️ Throws StackOverflow exception when get() called
 //    println("User type ${user.myName}")
 
     // INFO Backing Property
@@ -18,6 +19,8 @@ fun main(args: Array<String>) {
     println("Human age: ${humanWithBackingProperty.age}")
     humanWithBackingProperty.age = 15
     println("Human age after set(): ${humanWithBackingProperty.age}")
+    // Lambda method
+    humanWithBackingProperty.printAge()
 
 
 }
@@ -50,7 +53,7 @@ class Person {
     // get: if type is not empty -> trim for remove whitespace and add '.' else return default type
     var lastName: String = ""
         get() {
-            if (!field.isEmpty()) {
+            if (field.isNotEmpty()) {
                 return field.trim() + "."
             }
             return field

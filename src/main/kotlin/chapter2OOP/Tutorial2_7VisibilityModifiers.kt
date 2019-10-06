@@ -1,13 +1,13 @@
 package chapter2OOP
 
-fun main(args: Array<String>) {
+fun main() {
     val subclass = Subclass()
     // INFO ⚠️ only c, and d properties are visible to instance of derived class
     println("Subclass c ${subclass.c}, d ${subclass.d}")
 
 }
 
-open class Outer {
+open class ParentClass {
 
     private val a = 1
     protected open val b = 2
@@ -20,7 +20,7 @@ open class Outer {
 
 }
 
-class Subclass : Outer() {
+class Subclass : ParentClass() {
 
     // a is not visible
 // b, c and d are visible // Nested and e are visible
@@ -33,7 +33,7 @@ class Subclass : Outer() {
     }
 }
 
-class Unrelated(o: Outer) {
+class Unrelated(o: ParentClass) {
 // o.a, o.b are not visible
 // o.c and o.d are visible (same module)
 // Outer.Nested is not visible, and Nested::e is not visible either
