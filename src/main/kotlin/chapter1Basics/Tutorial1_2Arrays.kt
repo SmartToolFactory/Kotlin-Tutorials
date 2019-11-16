@@ -1,10 +1,6 @@
 package chapter1Basics
 
-import chapter2OOP.MyClass
-import chapter2OOP.User
-
-fun main(args: Array<String>) {
-
+fun main() {
 
 
     // INFO Initializing Arrays Method 1
@@ -23,7 +19,7 @@ fun main(args: Array<String>) {
 
 
     // Iterator
-    val iterator = myArray.iterator();
+    val iterator = myArray.iterator()
 
     while (iterator.hasNext()) {
         println("Item: ${iterator.nextInt()}")
@@ -42,6 +38,7 @@ fun main(args: Array<String>) {
     // INFO Initializing Arrays Method 2
     // 🔥 WARNING This is array with 3 null elements
     val stringArray = arrayOfNulls<String>(3)
+
 
     stringArray[0] = "Hello World"
     stringArray.forEach { s -> println("arrayOfNulls: $s") }
@@ -84,6 +81,5 @@ fun main(args: Array<String>) {
     // WARNING 🔥 This is an EMPTY ARRAY with 0 length, no value can be assigned to this array. Returns ArrayIndexOutOfBoundsException
 //    val emptyStringArray = arrayOf<String>()
 //    emptyStringArray[0] = "TestStringConcatenation"
-
 
 }

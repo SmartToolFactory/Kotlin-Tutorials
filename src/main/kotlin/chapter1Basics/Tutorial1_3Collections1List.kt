@@ -3,7 +3,7 @@ package chapter1Basics
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun main(args: Array<String>) {
+fun main() {
 
     /*
      ***** LISTs *****
@@ -19,6 +19,8 @@ fun main(args: Array<String>) {
     // Mutable
     val listMutable1 = arrayListOf(1, 2, 3)
     val listMutable2 = mutableListOf("a", "b", "c")
+
+    val arrayList = ArrayList<String>()
 
     // INFO empty lists
     // Immutable(Read-only)

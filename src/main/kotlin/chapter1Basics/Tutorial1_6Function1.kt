@@ -1,6 +1,8 @@
 package chapter1Basics
 
-fun main(args: Array<String>) {
+import java.lang.IllegalArgumentException
+
+fun main() {
 
     // INFO Default Argument Functions
     println(myFunction("Earth"))
@@ -33,7 +35,7 @@ fun main(args: Array<String>) {
         return this == x
     }
 
-  val isThisTrue =  "Obj" sameAs "Obj"
+    val isThisTrue = "Obj" sameAs "Obj"
 
     println("🎃 Infix result $isThisTrue")
 
@@ -104,3 +106,11 @@ fun fact(x: Int): Int {
 
 }
 
+fun fibonacci(index: Int): Int {
+
+    return when {
+        index < 0 -> throw IllegalArgumentException("Index cannot be lower than 0")
+        index in 0..2 -> index
+        else -> fibonacci(index - 1) + fibonacci(index - 2)
+    }
+}
