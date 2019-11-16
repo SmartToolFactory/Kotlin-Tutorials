@@ -11,6 +11,16 @@ class MyClass {
     }
 }
 
+class MyObject(name: String) {
+
+    val objName = name
+
+    init {
+        println("Name: $name")
+    }
+
+}
+
 
 // INFO CONSTRUCTOR
 // age parameter can be NULL
@@ -51,13 +61,14 @@ class MYNewClass(private val name: String) {
 }
 
 // INFO 🔥 Assign Constructor parameters to class fields
-// INFO 🔥 ⚠️ ️Prefixing your constructor arguments with val or var is not a must;
+// INFO 🔥 ⚠️ ️Prefixing your constructor arguments with val or var is not a must
 // if you don't want the getter (or setter if you use var) to be generated, you can always do the following:
 
 class Person2(firstName: String, lastName: String, howOld: Int?) {
 
     private val name: String
     private val age: Int?
+
 
     init {
         // IMPORTANT 🔥🔥🔥 Properties must be initialized in constructor(this could also be inside init{}),
@@ -135,4 +146,3 @@ class Auto(age: Int) {
         println("🚙 Secondary Constructor of Auto class with type $name and i $i")
     }
 }
-

@@ -1,7 +1,5 @@
 package chapter1Basics
 
-import java.lang.IllegalArgumentException
-
 fun main() {
 
     // INFO Default Argument Functions
@@ -104,13 +102,4 @@ fun fact(x: Int): Int {
 
     return factTail(x, 1)
 
-}
-
-fun fibonacci(index: Int): Int {
-
-    return when {
-        index < 0 -> throw IllegalArgumentException("Index cannot be lower than 0")
-        index in 0..2 -> index
-        else -> fibonacci(index - 1) + fibonacci(index - 2)
-    }
 }
