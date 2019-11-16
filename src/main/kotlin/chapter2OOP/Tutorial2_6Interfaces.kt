@@ -24,7 +24,8 @@ interface MyInterface2 {
 
     val prop: Int // abstract
     // INFO 🔥⚠️ This CANNOT be var -> Property in interface cannot have a backing field
-    val propertyWithImplementation: String get() = "foo"
+    val propertyWithImplementation: String
+        get() = "foo"
 
     fun foo() {
         println(prop)

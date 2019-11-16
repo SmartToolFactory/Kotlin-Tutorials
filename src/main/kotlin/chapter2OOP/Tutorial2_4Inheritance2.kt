@@ -2,6 +2,7 @@ package chapter2OOP
 
 import chapter2OOP.model.BusinessAccount
 import chapter2OOP.model.PrivateAccount
+import chapter2OOP.model.Snake
 import chapter2OOP.model.UnionAccount
 
 fun main() {
@@ -22,6 +23,10 @@ fun main() {
     unionAccount.setBase(12.54)
     unionAccount.displayValue()
 
+    unionAccount.unionProperty = "Test"
+
+    println("Union property: ${unionAccount.unionProperty}")
+
     /*
         Private  baseAmount: 22.5
         Private AFTER baseAmount: 130.0
@@ -34,4 +39,9 @@ fun main() {
         UnionAccount Parent super.baseAmount: 61.8, derived: 12.54
      */
 
+
+    val snake = Snake()
+    println("Snake Sound: ${snake.makeSound()}")
+    println("Snake Move: ${snake.doMove()}")
+    println("Snake Max Age: ${snake.MAX_AGE}")
 }
