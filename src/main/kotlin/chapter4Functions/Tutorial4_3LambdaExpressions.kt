@@ -1,5 +1,14 @@
 package chapter4Functions
 
+
+/*
+    Lambda function takes parameters from when it's invoked
+    definition uses that argument in codeBody
+
+    val lambdaName : Type = { argumentList -> codeBody }
+    or
+    val lambdaName: Type = {argument: TypeOfArgument -> codeBody }
+ */
 fun main() {
 
 

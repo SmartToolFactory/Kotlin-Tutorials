@@ -10,6 +10,8 @@ fun main() {
     // Lambda Expression that takes 2 int params and returns int
     val testFun: (Int, Int) -> Int = { x, y -> x + y }
     val testFunInferred = { x: Int, y: Int -> x + y }
+    // Lambda means-> testFun: (Int, Int) -> Int
+    val resFun = testFun(2,4)
 
 //    The compiler can infer the function types for variables if there is enough information:
     val a = { i: Int -> i + 1 } // The inferred type is (Int) -> Int
