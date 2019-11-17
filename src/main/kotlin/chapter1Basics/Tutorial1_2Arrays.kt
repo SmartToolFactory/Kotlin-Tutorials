@@ -61,6 +61,10 @@ fun main() {
     val numbersFromOne = IntArray(6) { it + 1 }
     val myInts = intArrayOf(1, 1, 2, 3, 5, 8, 13, 21)
 
+    for (i in 0 until myInts.size) {
+        println("i: ${myInts[i]}")
+    }
+
     // Non primitive-arrays
     val boxedInts = arrayOfNulls<Int>(size) //equivalent in Java: new Integer[size]
     val boxedZeros = Array(size) { 0 }
@@ -81,5 +85,9 @@ fun main() {
     // WARNING 🔥 This is an EMPTY ARRAY with 0 length, no value can be assigned to this array. Returns ArrayIndexOutOfBoundsException
 //    val emptyStringArray = arrayOf<String>()
 //    emptyStringArray[0] = "TestStringConcatenation"
+
+
+    // 🔥 2D Arrays
+
 
 }
