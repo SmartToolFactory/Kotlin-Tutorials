@@ -2,13 +2,12 @@ package chapter1Basics
 
 import chapter1Basics.TestFunctions.Companion.binarySearch
 import chapter1Basics.TestFunctions.Companion.binarySearchRecursive
-import chapter1Basics.TestFunctions.Companion.factorialIterative
 import chapter1Basics.TestFunctions.Companion.linearSearch
+import chapter1Basics.TestFunctions.Companion.searchMostPopularItem
 import java.lang.IllegalArgumentException
 
 
 fun main() {
-
 
 
 //    /**** FACTORIAL ****/
@@ -61,6 +60,13 @@ fun main() {
     val indexBinaryRecursive = binarySearchRecursive(80, 0, intArray.size - 1, intArray)
     println("Index with RECURSIVE binary search: $indexBinaryRecursive")
 
+
+    /**** Popular Search ****/
+    val popularArray = arrayOf(1, 2, 3, 4, 5, 6, 7, 7, 7, 7)
+
+    val popularItem = searchMostPopularItem(popularArray)
+
+    println("Popular item: $popularItem")
 
 }
 
@@ -152,6 +158,10 @@ class TestFunctions {
          */
 
 
+        fun palindromeSimple(text: String): Boolean {
+            return text == text.reversed()
+        }
+
         /**
          * Time complexity O(n)
          * Space complexity O(1)
@@ -168,7 +178,7 @@ class TestFunctions {
                 n++
             }
 
-            println("O(n) = $n")
+            println("palindrome run  #$n times")
 
             return true
 
@@ -289,6 +299,36 @@ class TestFunctions {
             }
 
             return itemIndex
+        }
+
+        fun searchMostPopularItem(array: Array<Int>): Int {
+
+            var maxCount = 0
+
+            val map = HashMap<Int, Int>()
+
+            array.forEach {
+                if (map.containsKey(it)) {
+                    var count = map[it]!! + 1
+                    map[it] = count
+                    if (count > maxCount) {
+                        maxCount = count
+                    }
+                } else {
+                    map[it] = 0
+                }
+            }
+
+
+            val popularItems = map.entries.filter { mutableEntry ->
+                mutableEntry.value == maxCount
+            }.map {
+                it.key
+            }
+
+
+
+            return popularItems.first()
         }
     }
 }
