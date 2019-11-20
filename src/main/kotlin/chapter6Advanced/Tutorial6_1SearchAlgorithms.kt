@@ -1,6 +1,12 @@
 package chapter6Advanced
 
-import chapter1Basics.TestFunctions
+import chapter6Advanced.SearchAlgorithms.Companion.binarySearch
+import chapter6Advanced.SearchAlgorithms.Companion.binarySearchRecursive
+import chapter6Advanced.SearchAlgorithms.Companion.jumpSearch
+import chapter6Advanced.SearchAlgorithms.Companion.linearSearch
+import kotlin.math.floor
+import kotlin.math.min
+import kotlin.math.sqrt
 
 fun main() {
 
@@ -8,23 +14,25 @@ fun main() {
     val intArray = arrayOf(1, 2, 4, 6, 9, 11, 15, 23, 30, 32, 38, 40, 49, 56, 57, 67, 80, 83, 88, 89, 94, 99, 101, 200)
 
     // Linear Search
-    val indexLinear = TestFunctions.linearSearch(80, intArray)
+    val indexLinear = linearSearch(80, intArray)
     println("Index with linear search: $indexLinear")
 
     // Binary Search with iteration
-    val indexBinary = TestFunctions.binarySearch(80, intArray)
+    val indexBinary = binarySearch(80, intArray)
     println("Index with binary search: $indexBinary")
     // Recursive Binary Search
-    val indexBinaryRecursive = TestFunctions.binarySearchRecursive(80, 0, intArray.size - 1, intArray)
+    val indexBinaryRecursive = binarySearchRecursive(80, 0, intArray.size - 1, intArray)
     println("Index with RECURSIVE binary search: $indexBinaryRecursive")
+
+    // Jump Search
+    val indexJump = jumpSearch(80, intArray)
+    println("Index with JUMP search: $indexJump")
 
 
     /**** Popular Search ****/
-    val popularArray = arrayOf(1, 2, 3, 4, 5, 6, 7, 7, 7, 7)
-
-    val popularItem = TestFunctions.searchMostPopularItem(popularArray)
-
-    println("Popular item: $popularItem")
+//    val popularArray = arrayOf(1, 2, 3, 4, 5, 6, 7, 7, 7, 7)
+//    val popularItem = TestFunctions.searchMostPopularItem(popularArray)
+//    println("Popular item: $popularItem")
 }
 
 class SearchAlgorithms {
@@ -100,7 +108,7 @@ class SearchAlgorithms {
          */
         fun binarySearchRecursive(target: Int, leftIndex: Int, rightIndex: Int, array: Array<Int>): Int {
 
-            var itemIndex = -1
+            val itemIndex = -1
 
             while (leftIndex <= rightIndex) {
                 val middleIndex = (rightIndex + leftIndex) / 2
@@ -124,12 +132,82 @@ class SearchAlgorithms {
             return itemIndex
         }
 
+
+        /**
+         * Time complexity O(sqrt(n))
+         * Space complexity O(1)
+         */
         fun jumpSearch(target: Int, array: Array<Int>): Int {
 
-            var index = -1
+            val notFoundIndex = -1
+            val arraySize = array.size
+
+            // Target is not in this array
+            if (array.isEmpty() || array[0] > target || array[arraySize - 1] < target) return notFoundIndex
+
+            // Finding step to be jumped based on square root of the array
+            val step = floor(sqrt(arraySize.toDouble())).toInt()
+
+            // Left and right of the block
+            var left = 0
+            var right = 0
+
+            // Check for the possible block left, right that target can be in
+
+            // min is used if the last index is for example 8 but size is 10
+            // So set last right of the block as last index of the array
+            loop@ while (array[right] < target) {
+
+                left = right
+
+                right = min(arraySize - 1, right + step)
+
+                if (array[right] >= target) {
+                    break@loop
+                }
+
+            }
+
+            // Target can either be left or right index, if one of them we don't have to loop
+            if (array[right] == target) {
+                return right
+            } else if (array[left] == target) {
+                return left
+            }
 
 
-            return index
+            // 🔥 Linear Search
+//            for (i in left..right) {
+//                if (array[i] == target) return i
+//            }
+
+            // Or 🔥 Binary Search
+            return binarySearchRecursive(target, left, right, array)
+
+            return notFoundIndex
+        }
+
+        fun jumpSearch(integers: IntArray, elementToSearch: Int): Int {
+
+            val arrayLength = integers.size
+            var jumpStep = sqrt(arrayLength.toDouble()).toInt()
+            var previousStep = 0
+
+            while (integers[min(jumpStep, arrayLength) - 1] < elementToSearch) {
+                previousStep = jumpStep
+                jumpStep += jumpStep
+                if (previousStep >= arrayLength)
+                    return -1
+            }
+
+            // Search in block  from indexes between left index and minimum of right or last index
+            while (integers[previousStep] < elementToSearch) {
+                previousStep++
+                if (previousStep == min(jumpStep, arrayLength))
+                    return -1
+            }
+
+            return if (integers[previousStep] == elementToSearch) previousStep else -1
         }
 
         fun searchMostPopularItem(array: Array<Int>): Int {
