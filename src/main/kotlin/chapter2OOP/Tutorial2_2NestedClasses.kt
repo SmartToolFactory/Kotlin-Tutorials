@@ -95,7 +95,7 @@ class OuterOfInnerClass {
         private var id: Int = 101
 
         fun foo() {
-            // 🔥 INFO  ACCESS the outer class member even private
+            // 🔥 INFO  ACCESS the outer class member even when it's private
             println("type is ${name}")
             println("Id is ${id}")
         }

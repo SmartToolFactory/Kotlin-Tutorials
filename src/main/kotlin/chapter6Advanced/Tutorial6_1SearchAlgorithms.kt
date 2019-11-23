@@ -68,7 +68,7 @@ class SearchAlgorithms {
             val itemIndex = -1
 
             // 6 elements array size
-            var rightIndex = array.size - 1 // 5
+            var rightIndex = array.size - 1
             var leftIndex = 0
 
             // Looking for 11, we should check if middle index is equals to target

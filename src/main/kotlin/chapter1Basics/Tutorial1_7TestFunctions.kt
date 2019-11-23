@@ -2,6 +2,7 @@ package chapter1Basics
 
 import chapter1Basics.TestFunctions.Companion.binarySearch
 import chapter1Basics.TestFunctions.Companion.binarySearchRecursive
+import chapter1Basics.TestFunctions.Companion.fibonacciWithMemoization
 import chapter1Basics.TestFunctions.Companion.linearSearch
 import chapter1Basics.TestFunctions.Companion.searchMostPopularItem
 import java.lang.IllegalArgumentException
@@ -37,6 +38,9 @@ fun main() {
 //    println("Fibonacci Loop Time: $timeFiboWithLoop")
 //
 //
+    val fibonacciResultDynamic = fibonacciWithMemoization(7)
+    println("fibonacciResultDynamic: $fibonacciResultDynamic")
+
 //    /**** PALINDROME ****/
 //    val resPalindromeString = palindrome("ABCCBA")
 //    println("Palindrome: $resPalindromeString")
@@ -74,6 +78,7 @@ class TestFunctions {
 
     companion object {
 
+        val fibonacciMap = HashMap<Int, Int>()
 
         fun factorialIterative(num: Int): Int {
 
@@ -135,8 +140,8 @@ class TestFunctions {
             if (index == 0 || index == 1) return index
 
             // Low, High
-            // Index    0,  1,  2,  3,  4,  5,  6
-            // Result   0,  1,  1,  2,  3,  5,  8
+            // Index    0,  1,  2,  3,  4,  5,  6, 7
+            // Result   0,  1,  1,  2,  3,  5,  8, 13
             var result = 0
 
             var low = 0
@@ -150,6 +155,32 @@ class TestFunctions {
             }
 
             return result
+        }
+
+        fun fibonacciWithMemoization(index: Int): Int {
+
+            if (fibonacciMap.containsKey(index)) {
+                return fibonacciMap[index]!!
+            }
+
+            if (index <= 1) {
+                return index
+            }
+
+            var low = 0
+            var high = 1
+            var sum = 0
+
+            for (i in 2..index) {
+                sum = low + high
+                low = high
+                high = sum
+                if (!fibonacciMap.containsKey(i)) fibonacciMap[i] = sum
+            }
+
+            return sum
+
+
         }
 
 
@@ -277,7 +308,7 @@ class TestFunctions {
          */
         fun binarySearchRecursive(target: Int, leftIndex: Int, rightIndex: Int, array: Array<Int>): Int {
 
-            var itemIndex = -1
+            val itemIndex = -1
 
             while (leftIndex <= rightIndex) {
                 val middleIndex = (rightIndex + leftIndex) / 2
@@ -309,7 +340,7 @@ class TestFunctions {
 
             array.forEach {
                 if (map.containsKey(it)) {
-                    var count = map[it]!! + 1
+                    val count = map[it]!! + 1
                     map[it] = count
                     if (count > maxCount) {
                         maxCount = count
