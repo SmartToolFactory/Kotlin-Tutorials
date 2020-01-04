@@ -7,7 +7,7 @@ fun main() {
     val numbers: IntArray = intArrayOf(1, 2, 3, 4, 5)
     println("Hey!! I am array Example numbers[2]: " + numbers[2])
 
-    val myArray = IntArray(3);
+    val myArray = IntArray(3)
     myArray[0] = 1
     myArray[1] = 2
     myArray[2] = 3
@@ -83,11 +83,65 @@ fun main() {
     println("nulls[0]: ${nulls[0]}")
 
     // WARNING 🔥 This is an EMPTY ARRAY with 0 length, no value can be assigned to this array. Returns ArrayIndexOutOfBoundsException
-//    val emptyStringArray = arrayOf<String>()
+    val emptyStringArray = arrayOf<String>()
 //    emptyStringArray[0] = "TestStringConcatenation"
 
 
     // 🔥 2D Arrays
+    val coordinates = arrayOf(
+        arrayOf(1, 2),
+        arrayOf(2, 3),
+        arrayOf(3, 4),
+        arrayOf(4, 5),
+        arrayOf(5, 6),
+        arrayOf(6, 7)
+    )
+
+    val arr = Array<Array<Int>>(6) { arrayOf(it) }
+    arr[0] = arrayOf(1, 2)
+    arr[1] = arrayOf(2, 3)
+    arr[2] = arrayOf(3, 4)
+    arr[3] = arrayOf(4, 5)
+    arr[4] = arrayOf(5, 6)
+    arr[5] = arrayOf(6, 7)
+
+    coordinates.forEach {
+        println("Array in array: $it")
+    }
+
+    val solution = Solution()
+
+    solution.checkStraightLine(coordinates)
+}
 
 
+class Solution {
+    fun checkStraightLine(coordinates: Array<Array<Int>>): Boolean {
+
+        val y2 = coordinates[1][1].toDouble()
+        val x2 = coordinates[1][0].toDouble()
+        val y1 = coordinates[0][1].toDouble()
+        val x1 = coordinates[0][0].toDouble()
+
+        var m = 0.0
+
+        if (y2 != y1) {
+            m = ((y2 - y1) / (x2 - x1))
+        }
+
+        for (i in 2 until coordinates.size) {
+            val y = coordinates[i][1] - coordinates[i - 1][1]
+            val x = coordinates[i][0] - coordinates[i - 1][0]
+
+            if (x == 0) {
+                return false
+            } else if (m != (y / x).toDouble()) {
+                return false
+            }
+
+        }
+
+
+        return true
+    }
 }

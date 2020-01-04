@@ -4,7 +4,7 @@ fun main() {
 
     var a: Int = 1000;
 
-    a += 10
+    a += 10F
     println("a: $a")
 
     if (true is Boolean) {

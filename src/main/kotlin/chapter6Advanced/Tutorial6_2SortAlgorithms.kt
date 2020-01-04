@@ -82,7 +82,7 @@ class SortUtils {
 
         Best Case Sorted array as input. Or almost all elements are in proper place. [ O(N) ]. O(1) swaps.
         Worst Case: Reversely sorted / Very few elements are in proper place. [ O(N2) ] . O(N2) swaps.
-        Average Case: [ O(N2) ] . O(N2) swaps.
+        Average Case: [ O(N^2) ] . O(N^2) swaps.
         Space Complexity: A temporary variable is used in swapping [ auxiliary, O(1) ]. Hence it is In-Place sort.
 
         Advantage:
