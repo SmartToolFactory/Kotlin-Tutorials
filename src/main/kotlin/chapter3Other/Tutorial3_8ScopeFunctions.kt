@@ -35,23 +35,23 @@ fun main() {
     val myString = "Hello"
 
     // this -> Lambda result
-    val runObject = myString.run {
+    val runObject: Unit = myString.run {
         println("str.run-> The receiver string length: $length")
         //println("The receiver string length: ${this.length}") // does the same
     }
 
     // it -> Lambda result
-    val letObject = myString.let {
+    val letObject: Unit = myString.let {
         println("str.let-> The receiver string's length is ${it.length}")
     }
 
     // this -> Context object
-    val strApply = myString.apply {
+    val strApply: String = myString.apply {
         println("str.apply-> The receiver string length: $length")
     }
 
     // it -> Context object
-    val strAlso = myString.also {
+    val strAlso: String = myString.also {
 
     }
 
@@ -165,8 +165,8 @@ fun main() {
 
     val numbers = mutableListOf("one", "two", "three")
     numbers
-            .also { println("The list elements before adding new one: $it") }
-            .add("four")
+        .also { println("The list elements before adding new one: $it") }
+        .add("four")
 
     // INFO 🔥 takeIf and takeUnless
 

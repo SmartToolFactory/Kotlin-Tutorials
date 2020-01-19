@@ -184,7 +184,6 @@ class SearchAlgorithms {
             // Or 🔥 Binary Search
             return binarySearchRecursive(target, left, right, array)
 
-            return notFoundIndex
         }
 
         fun jumpSearch(integers: IntArray, elementToSearch: Int): Int {
@@ -238,6 +237,27 @@ class SearchAlgorithms {
 
             return popularItems.first()
         }
+    }
+
+    fun twoSum(nums: IntArray, target: Int): Array<Int> {
+
+        val map = HashMap<Int, Int>()
+
+        for (i in nums.indices) {
+
+            map[nums[i]] = i
+
+            val complement  = target - nums[i]
+
+            if (map.contains(complement)) {
+                return arrayOf(i, map[complement]!!)
+            }
+
+        }
+
+
+        throw IllegalAccessError()
+
     }
 
 }

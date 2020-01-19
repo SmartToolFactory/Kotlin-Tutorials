@@ -78,7 +78,7 @@ class TestFunctions {
 
     companion object {
 
-        val fibonacciMap = HashMap<Int, Int>()
+        private val fibonacciMap = HashMap<Int, Int>()
 
         fun factorialIterative(num: Int): Int {
 
