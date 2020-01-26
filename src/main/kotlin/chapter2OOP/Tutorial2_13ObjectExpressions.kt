@@ -9,6 +9,7 @@ fun main() {
     val window = Window()
 
     // This is Anonymous inner class that implements OnClickListener interface
+
     // INFO 🔥 Object Expressions
     window.onWindowClick(object : OnClickListener {
         override fun onClick() {

@@ -16,7 +16,7 @@ fun main() {
     person1.age = 10
     person2.age = 20
 
-    // Copying data from one data class to another
+    // 🔥🔥 Copying data from one data class to another, only copies properties in constructor
     val person3 = person2.copy(name = "Dave")
 
     println("person1: ${person1.hashCode()}, person2: ${person2.hashCode()}, person3: ${person3.hashCode()}")
@@ -61,6 +61,7 @@ fun main() {
 //🔥🔥 To exclude a property from the generated implementations, declare it inside the class body:
 data class PersonData(val name: String) {
     var age: Int = 0
+
 }
 
 // 🔥 variables with default values can be omitted when data class is instantiated

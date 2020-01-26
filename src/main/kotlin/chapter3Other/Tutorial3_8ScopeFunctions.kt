@@ -12,9 +12,7 @@ import java.util.*
     apply			this			Context object		Yes
     also			it			    Context object		Yes
 
-    //return receiver T
-    fun <T> T.also(block: (T) -> Unit): T               //T exposed as it
-    fun <T> T.apply(block: T.() -> Unit): T             //T exposed as this
+
 
     //return arbitrary value R
     fun <T, R> T.let(block: (T) -> R): R                //T exposed as it
@@ -23,8 +21,12 @@ import java.util.*
     //return arbitrary value R, not an extension function
     fun <T, R> with(receiver: T, block: T.() -> R): R   //T exposed as this
 
-    Context object: object itself           T
+        //return receiver T
+    fun <T> T.also(block: (T) -> Unit): T               //T exposed as it
+    fun <T> T.apply(block: T.() -> Unit): T             //T exposed as this
+
     Lambda result: Last called function     R
+    Context object: object itself           T
 
  */
 fun main() {

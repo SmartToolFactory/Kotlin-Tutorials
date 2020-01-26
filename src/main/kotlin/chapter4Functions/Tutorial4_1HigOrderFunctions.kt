@@ -52,8 +52,6 @@ fun main() {
     val product = items.fold(1, Int::times)
 
 
-
-
 }
 
 // INFO 🔥 High-order function
@@ -84,6 +82,18 @@ fun <T, R> Collection<T>.fold(
     }
 
     return accumulator
+}
+
+// INFO 🔥 High-order function
+fun invokeAfterDelay(delayInMs: Long, predicateAfterDelay: () -> Unit) {
+    println("STARTING DELAY FUNCTION")
+    delay(delayInMs)
+    predicateAfterDelay()
+}
+
+
+fun delay(timeInMillis: Long = 0) {
+    Thread.sleep(timeInMillis)
 }
 
 

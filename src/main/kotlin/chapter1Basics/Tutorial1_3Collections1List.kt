@@ -126,6 +126,7 @@ fun main() {
     val listInt = listOf(10, 20, 30, 40, 10)
     val listString = listOf("joel", "ed", "chris", "maurice", "john", "rachel")
 
+
     listInt.any{it > 20}              //true
     listInt.contains(10)              //true
     listInt.count()                   //5
@@ -133,18 +134,18 @@ fun main() {
     listInt.distinct()                //[10, 20, 30, 40]
 //    a.distinctBy()
 
-    listInt.drop(1)                   //[20, 30, 40, 10]
-    listInt.drop(2)                   //[30, 40, 10]
-    listInt.dropLast(1)               //[10, 20, 30, 40]
-    listInt.dropLast(2)               //[10, 20, 30]
+    listInt.drop(1)               //[20, 30, 40, 10]
+    listInt.drop(2)               //[30, 40, 10]
+    listInt.dropLast(1)           //[10, 20, 30, 40]
+    listInt.dropLast(2)            //[10, 20, 30]
     listInt.dropWhile{it < 30}        //[30, 40, 10]
     listInt.dropLastWhile{it != 30}   //[10, 20, 30]
 
     listInt.filter{it != 10}          //[20, 30, 40]
     listInt.find{it != 10}            //20
     listInt.first()                   //10
-    listInt.first { s-> s>10 }
-    listInt.firstOrNull()             //TODO
+    listInt.first { s-> s>10 }        //20
+    listInt.firstOrNull()             //10 or null
     listInt.fold(0){ acc, x -> acc+x}  //110 (sum function)
     listInt.forEach{println(it)}      //prints out the list values
 

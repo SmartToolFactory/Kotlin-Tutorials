@@ -1,7 +1,11 @@
 package chapter1Basics
 
-fun main() {
 
+fun highOrderFunction(arr: Array<Int>) {
+
+}
+
+fun main() {
 
     // INFO Initializing Arrays Method 1
     val numbers: IntArray = intArrayOf(1, 2, 3, 4, 5)
@@ -16,7 +20,6 @@ fun main() {
     for (i in myArray) {
         println("myArray i: $i")
     }
-
 
     // Iterator
     val iterator = myArray.iterator()
@@ -53,6 +56,8 @@ fun main() {
     sqrArray.forEach { it -> println("Sqr : $it") }
 
 
+
+
     // INFO Other Initialization types
     val size = 10
 
@@ -61,8 +66,13 @@ fun main() {
     val numbersFromOne = IntArray(6) { it + 1 }
     val myInts = intArrayOf(1, 1, 2, 3, 5, 8, 13, 21)
 
+    // Alternative 1 for loop
     for (i in 0 until myInts.size) {
         println("i: ${myInts[i]}")
+    }
+    // Alternative 2 for loop
+    for (element in myInts) {
+        println("i: ${element}")
     }
 
     // Non primitive-arrays

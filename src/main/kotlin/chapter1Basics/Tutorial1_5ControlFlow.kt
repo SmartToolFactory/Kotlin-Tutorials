@@ -1,8 +1,6 @@
 package chapter1Basics
 
-import chapter2OOP.test
 import java.util.*
-import kotlin.system.measureTimeMillis
 
 fun main() {
 
@@ -64,15 +62,18 @@ fun main() {
 
     }
 
-    val arr3: Array<Int> = arrayOf(3, 6, 9)
+    /*
+        Loop through Arrays
+     */
+    val array: Array<Int> = arrayOf(3, 6, 9)
 
     // Iterate for indexes
-    for (i in arr3.indices) {
-        println("Mult 3 : ${arr3[i]}")
+    for (i in array.indices) {
+        println("Mult 3 : ${array[i]}")
     }
 
     // Output indexes
-    for ((index, value) in arr3.withIndex()) {
+    for ((index, value) in array.withIndex()) {
         println("Index : $index & Value : $value")
     }
 

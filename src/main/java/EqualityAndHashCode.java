@@ -38,7 +38,7 @@ public class EqualityAndHashCode {
         System.out.println("Currency2: " + currency2 + ", hashCode: " + currency2.hashCode());
 
         System.out.println("Currency1 equals Currency2: " + currency1.equals(currency2));
-        // 🔥 This never returns true even when both equals method and hashcode is overridden to be sme
+        // 🔥 This never returns TRUE even when both equals method and hashcode is overridden to be same
         // Only when both objects are same
         System.out.println("Currency1 == Currency2: " + (currency1 == currency2));
 

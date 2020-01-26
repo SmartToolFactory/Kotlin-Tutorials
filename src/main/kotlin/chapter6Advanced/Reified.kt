@@ -16,7 +16,7 @@ class Reified {
 
     }
 
-    private inline fun <reified T : Any> getClassOf(): Class<T> {
+    private inline fun <reified T> getClassOf(): Class<T> {
         return T::class.java
     }
 
