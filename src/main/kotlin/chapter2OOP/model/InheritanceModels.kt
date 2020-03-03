@@ -33,7 +33,6 @@ class Derived(
 
 open class BaseClassA {
 
-    // INFO This method needs to be overridden in classes that extend this class
     open fun f() {
         print("BaseClassA")
     }
@@ -79,6 +78,42 @@ class InterfaceTestClass() : InterfaceB {
     override fun foo() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
-
 }
 
+
+// INFO Super with Constructor
+// Parent class
+open class Computer(
+    val name: String,
+    val brand: String
+) {
+
+    open var age: Double = 0.0
+
+    open fun start() {
+
+    }
+}
+
+// Child class (initializes the parent class)
+class Laptop : Computer {
+
+    override var age: Double = 0.0
+        get() = super.age
+        set(value) {
+            field = value + 2
+        }
+
+
+    val batteryLife: Double
+
+    // Calls super() to initialize the Parent class
+    constructor(name: String, brand: String, batteryLife: Double) : super(name, brand) {
+        this.batteryLife = batteryLife
+    }
+
+    // Calls another constructor (which calls super())
+    constructor(name: String, brand: String) : this(name, brand, 0.0) {
+
+    }
+}

@@ -22,7 +22,7 @@ fun main() {
     println("strLength: $strLength")
 
     // lengthCompare(): (String, String) -> Boolean = { x, y -> x.length > y.length }
-    val strLength2  = compareStrings("Alpha", "Zeta", lengthCompare())
+    val strLength2 = compareStrings("Alpha", "Zeta", lengthCompare())
     println("strLength2: $strLength2")
 
 
@@ -51,6 +51,7 @@ fun main() {
 // Function references can also be used for higher-order function calls:
     val product = items.fold(1, Int::times)
 
+
 }
 
 // INFO 🔥 High-order function
@@ -67,6 +68,7 @@ fun compareStrings(str1: String, str2: String, block: (String, String) -> Boolea
 fun lengthCompare(): (String, String) -> Boolean = { x, y -> x.length > y.length }
 
 
+
 // INFO 🔥 High-order function
 fun <T, R> Collection<T>.fold(
     initial: R,
@@ -80,6 +82,18 @@ fun <T, R> Collection<T>.fold(
     }
 
     return accumulator
+}
+
+// INFO 🔥 High-order function
+fun invokeAfterDelay(delayInMs: Long, predicateAfterDelay: () -> Unit) {
+    println("STARTING DELAY FUNCTION")
+    delay(delayInMs)
+    predicateAfterDelay()
+}
+
+
+fun delay(timeInMillis: Long = 0) {
+    Thread.sleep(timeInMillis)
 }
 
 

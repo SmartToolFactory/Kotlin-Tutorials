@@ -1,13 +1,23 @@
 package chapter4Functions
 
+
+/*
+    Lambda function takes parameters from when it's invoked
+    definition uses that argument in codeBody
+
+    val lambdaName : Type = { argumentList -> codeBody }
+    or
+    val lambdaName: Type = {argument: TypeOfArgument -> codeBody }
+ */
 fun main() {
 
-
     // INFO 🔥 Lambda Expression
-    val test: (String) -> Unit = { s -> println(s) }
-    test("Test String")
-    val test2 = { s: String -> println(s) }
-    test2("Test String 2")
+    val lambda1: (String) -> Unit = { s -> println(s) }
+    lambda1("lambda1 String")
+
+
+    val lambda2 = { s: String -> println(s) }
+    lambda2("lambda2 String 2")
 
     val sumAlternative1 = { x: Int, y: Int -> x + y }
     val sumAlternative2: (Int, Int) -> Int = { x, y -> x + y }
@@ -29,9 +39,10 @@ fun main() {
     ints.filter { it > 0 } // this literal is of type '(it: Int) -> Boolean'
 
 
-    // INFO 🔥🔥 Lambda Expression with Receiver
+    // INFO 🔥🔥🔥 Lambda Expression with Receiver
 
     // Lambda expression  that has a Receiver String. and function literal () -> Unit that returns Unit
+
 
     val greet: String.() -> Unit = {
         println("Function Literal Receiver: $this")
@@ -46,25 +57,48 @@ fun main() {
         "length is ${this.length}"
     }
     println("myString: ${myString("TestStringConcatenation")}")
+    "TestStringConcatenation".myString()
 
     // Lambda expression that has a Receiver Int. and function literal () -> Boolean that returns a Boolean
-    val isEven: Int.() -> Boolean = { this % 2 == 0 }
+    // 🤨 isEven becomes EXTENSION of an Integer by Int.(). () with no params means that
+    // 🤨 isEven is called such as 3.isEven() or isEven(3)
+    val isEven: Int.() -> Boolean = {
+        this % 2 == 0
+    }
+    // Both returns same result
     isEven(3)
+    3.isEven()
+
+    // Lambda expression that has a Receiver Int. and function literal (Int) -> Boolean that returns a Boolean
+    val isWithCarry: Int.(Int) -> Boolean = { divider: Int ->
+        this % divider != 0
+    }
 
 
-    val total: Int.(Int) -> Int = { other -> plus(other) }
+    // Both returns same result
+    isWithCarry(3, 2)
+    3.isWithCarry(2)
 
-    // INFO 🔥🔥 Anonymous Function with Receiver
 
-//    The anonymous function syntax allows you to specify the receiver type of a function literal directly.
-//    This can be useful if you need to declare a variable of a function type with receiver, and to use it later.
-    val total2 = fun Int.(other: Int): Int = this + other
-
+    val total: Int.(Int) -> Int = { other -> this.plus(other) }
     println("Function Literal with Receiver total2: Int.(Int)-> Int: " + total(3, 4))
 
 
-    // INFO 🔥🔥 Function Literal with Receiver
+    val testLambdaReceiver: String.(Int) -> String = { number: Int ->
+        this + number
+    }
 
+    testLambdaReceiver("Hello", 4)
+    "Hello".testLambdaReceiver(4)
+
+    // INFO 🔥🔥 Anonymous Function with Receiver
+//    The anonymous function syntax allows you to specify the receiver type of a function literal directly.
+//    This can be useful if you need to declare a variable of a function type with receiver, and to use it later.
+    val sumWithLiteralParam = fun Int.(other: Int): Int = this + other
+    sumWithLiteralParam(3, 4)
+
+
+    // INFO 🔥🔥 Function Literal with Receiver
     // This function is defined as Function Literal with Receiver
     val isOdd = isOdd(4) {
         this % 2 == 1
@@ -83,7 +117,6 @@ fun main() {
 
     }
     println("stringCreated $stringCreated")
-
 
     val sb = StringBuilder()
     val sbNew = sb.extra({
@@ -144,7 +177,4 @@ fun StringBuilder.extra2(value: Int, block: (Int) -> Int): StringBuilder {
     this.append(block(value).toString())
     return this
 }
-
-
-
 

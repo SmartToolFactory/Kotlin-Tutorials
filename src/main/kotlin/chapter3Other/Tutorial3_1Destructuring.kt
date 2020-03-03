@@ -38,3 +38,4 @@ fun function(): Result {
 
     return Result(result, status)
 }
+

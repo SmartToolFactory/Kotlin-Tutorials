@@ -1,6 +1,6 @@
 package chapter1Basics
 
-fun main(args: Array<String>) {
+fun main() {
 
     // INFO Default Argument Functions
     println(myFunction("Earth"))
@@ -33,7 +33,7 @@ fun main(args: Array<String>) {
         return this == x
     }
 
-  val isThisTrue =  "Obj" sameAs "Obj"
+    val isThisTrue = "Obj" sameAs "Obj"
 
     println("🎃 Infix result $isThisTrue")
 
@@ -103,4 +103,3 @@ fun fact(x: Int): Int {
     return factTail(x, 1)
 
 }
-

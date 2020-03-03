@@ -1,6 +1,6 @@
 package chapter1Basics
 
-fun main(args: Array<String>) {
+fun main() {
 
     /*
       ***** MAPs *****
@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
     val keys: MutableSet<String> = mapMutable.keys
     val values: MutableCollection<Int> = mapMutable.values
     val entries: MutableSet<MutableMap.MutableEntry<String, Int>> = mapMutable.entries
-    val iterator = mapMutable.iterator();
+    val iterator = mapMutable.iterator()
 
     mapMutable.put("c",3)
 

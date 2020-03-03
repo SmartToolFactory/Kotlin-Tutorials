@@ -57,4 +57,5 @@ fun main() {
     // Filters out the null elements
     val intList: List<Int> = nullableList.filterNotNull()
 
+
 }

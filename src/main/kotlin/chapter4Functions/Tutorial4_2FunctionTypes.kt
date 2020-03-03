@@ -10,14 +10,17 @@ fun main() {
     // Lambda Expression that takes 2 int params and returns int
     val testFun: (Int, Int) -> Int = { x, y -> x + y }
     val testFunInferred = { x: Int, y: Int -> x + y }
+    // Lambda means-> testFun: (Int, Int) -> Int
+    val resFun = testFun(2, 4)
 
 //    The compiler can infer the function types for variables if there is enough information:
     val a = { i: Int -> i + 1 } // The inferred type is (Int) -> Int
     println("a ${a(2)}")
 
 
-    // INFO 🔥 BaseClassA value of type (BaseClassA, InterfaceB) -> C can be passed or assigned where a BaseClassA.(InterfaceB) -> C
-    val repeatFun: String.(Int) -> String = { times ->
+    // INFO 🔥🔥 BaseClassA value of type (BaseClassA, InterfaceB) -> C can be passed or assigned
+    // where a BaseClassA.(InterfaceB) -> C
+    val repeatFun: String.(Int) -> String = { times:Int ->
         this.repeat(times)
     }
     val twoParameters: (String, Int) -> String = repeatFun // OK
@@ -57,22 +60,22 @@ fun main() {
     val testString = "Hello World"
 
     // INFO High Order Function
-    val resultHighOrder = testHighOrder(testString) {
+    val resultHighOrder: String = testHighOrder(testString) {
         it.toUpperCase()
     }
 
     // INFO Function Literal With Receiver
-    val resultLiteralReceiver = testLiteralWithReceiver(testString) {
+    val resultLiteralReceiver: String = testLiteralWithReceiver(testString) {
         toUpperCase()
     }
 
     // INFO Extension Function
-    val resultExtension = testString.testExtension {
+    val resultExtension: String = testString.testExtension {
         it.toUpperCase()
     }
 
     // INFO Extension Function that Literal With Receiver
-    val resultExtensionLiteral = testString.testLiteralExtension {
+    val resultExtensionLiteral: String = testString.testLiteralExtension {
         toUpperCase()
     }
 
@@ -97,7 +100,8 @@ fun runTransformation(action: (String, Int) -> String): String {
  INFO 🔥 Both functions give the same result
   * First function is High Order function that takes function as a param that takes String as param
   * Second function is Function Literal With Receiver that is action is extension function of String
-  * Third one is Extension Function which is called by a String object only and this corresponds to String inside the function
+  * Third one is Extension Function which is called by a String object only
+  * and this corresponds to String inside the function
  */
 
 // INFO 🔥 High Order Function
@@ -105,20 +109,42 @@ fun testHighOrder(value: String, action: (String) -> String): String {
     return action(value)
 }
 
+/**
+action: String.() defines here that if we have  a String inside this function
+that String call action() with no params since its String extension with .()
+
+😎 Basically it means: action() lambda will be called only by receiver(String) inside this high-order
+function.
+
+🎃 If we want to call lambda action() with any param, for instance action(String)
+we should change action: String.() to String.(String)
+
+ */
 // INFO 🔥 Function Literal With Receiver
 fun testLiteralWithReceiver(value: String, action: String.() -> String): String {
     // INFO Both result implementations are the same
-//    val result =  action(value)
+
+    // value here act as String of String.() and action is without params()
     val result = value.action()
     return result
 }
 
+/**
+ * This is an extension function that does not require a String param since only String class instance
+ * can call this function, and this caller String can be sent as a parameter to lambda
+ * by using action(this)
+ */
 // INFO 🔥 High Order Extension Function
 fun String.testExtension(action: (String) -> String): String {
     val result = action(this)
     return result
 }
 
+/**
+ * This function is an extension function which can be called only by a String instance.
+ * Since it has String.() literal with receiver and receiver is a String,
+ * it's already called on a String which does not require a parameter as the function above
+ */
 // INFO 🔥 Extension Function that Literal With Receiver
 fun String.testLiteralExtension(action: String.() -> String): String {
     // INFO Both result implementations are the same

@@ -9,6 +9,7 @@ fun main() {
     val window = Window()
 
     // This is Anonymous inner class that implements OnClickListener interface
+
     // INFO 🔥 Object Expressions
     window.onWindowClick(object : OnClickListener {
         override fun onClick() {
@@ -69,6 +70,8 @@ fun main() {
 
     foo()
 
+    println("************** Object Declarations **************")
+
     // INFO 🔥 Object Declarations
     var mySingletonObject = MySingletonObject.getInstance()
     println("MySingletonObject first: $mySingletonObject")
@@ -92,7 +95,7 @@ fun main() {
     val companion1: MyClass1.Named = MyClass1
     val companion2: MyClass2.Companion = MyClass2
 
-    // INFO 🔥 Companion Objects create new MyCustomClass instances because they return MyCustomClass()
+    // INFO 🔥 Companion Objects create new MyCustomClass instances because they return new instances ofMyCustomClass()
     // INFO 🔥 ⚠️ NOT SAME OBJECTS
     val instance1 = MyCustomClass.Factory.create()
     val instance2 = MyCustomClass.create()

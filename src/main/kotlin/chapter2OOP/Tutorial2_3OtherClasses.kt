@@ -59,7 +59,7 @@ public enum class Planet(val mass: Double, val radius: Double) {
 
 abstract class Shape protected constructor() {
 
-    // IMPORTANT ⚠️⚠️ val, and var are NOT ALLOWED with SECOND constructor
+    // IMPORTANT 🔥🔥 val, and var are NOT ALLOWED with SECOND constructor
     constructor(x: Int, Y: Int) : this()
 
     var XLocation: Int

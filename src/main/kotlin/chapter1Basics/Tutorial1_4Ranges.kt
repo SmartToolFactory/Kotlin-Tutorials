@@ -1,6 +1,6 @@
 package chapter1Basics
 
-fun main(args: Array<String>) {
+fun main() {
 
     // ----- RANGES -----
     // You define ranges by providing a starting and ending
