@@ -19,8 +19,15 @@ fun main() {
     // 🔥🔥 Copying data from one data class to another, only copies properties in constructor
     val person3 = person2.copy(name = "Dave")
 
-    println("person1: ${person1.hashCode()}, person2: ${person2.hashCode()}, person3: ${person3.hashCode()}")
+    // 🔥 If primary constructor properties have same values objects have Structural Equality
+    val person4 = person2.copy(person2.name)
 
+
+    // Prints: person1: 2314539, person2: 2314539, person3: 2122764, person4: 2314539
+    println("person1: ${person1.hashCode()}, person2: ${person2.hashCode()}, " +
+            "person3: ${person3.hashCode()}, person4: ${person4.hashCode()}")
+
+    // Referential equality returns true only for the SAME objects even for data classes
     println("Person1 == Person2 -> ${person1 == person2}") // prints true
     println("Person1 === Person2 -> ${person1 === person2}") // prints false
 

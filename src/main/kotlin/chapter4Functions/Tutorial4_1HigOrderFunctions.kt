@@ -1,14 +1,23 @@
 package chapter4Functions
 
+import java.lang.Thread.sleep
+
 fun main() {
 
 
     // INFO 🔥 High-order functions
-
     val bigger = compare(2, 3) { x, y ->
         x > y
     }
-    println("Bigger: $bigger")
+
+    // INFO 🔥 High-order functions
+    // This function uses lambda
+    val compareLambda: (Int, Int) -> Boolean = { x, y ->
+        x > y
+    }
+
+    val bigger2 = compare(2, 3, compareLambda)
+    println("Bigger: $bigger, Bigger2 $bigger2")
 
 
     val strFirst = compareStrings("Zeta", "Alpha") { x, y ->
@@ -51,6 +60,26 @@ fun main() {
 // Function references can also be used for higher-order function calls:
     val product = items.fold(1, Int::times)
 
+    // High order function takes String and (Int) -> Int lambda function as parameter
+    // Returns String to int or predefined result of lambda function
+    // INFO 🔥 High-order function takes a LAMBDA function
+    highOrderFun("3", lambdaFun())
+
+    // INFO 🔥 High-order function takes a REGULAR function that returns LAMBDA function
+    highOrderFun("3", nonLambdaFunction())
+
+
+    val condition1 = 2 > 3
+
+    // INFO 🔥 High-order function
+    // this high-order function gets condition1 as Boolean, action1:() -> Unit and action2:()->Unit
+    runWithCondition(
+        condition1,
+        {
+            println("Action1 Invoked")
+        },
+        lambdaAction2()
+    )
 
 }
 
@@ -64,9 +93,9 @@ fun compareStrings(str1: String, str2: String, block: (String, String) -> Boolea
     return block(str1, str2)
 }
 
+
 // INFO 🔥 Lambda function
 fun lengthCompare(): (String, String) -> Boolean = { x, y -> x.length > y.length }
-
 
 
 // INFO 🔥 High-order function
@@ -96,4 +125,30 @@ fun delay(timeInMillis: Long = 0) {
     Thread.sleep(timeInMillis)
 }
 
+
+// INFO 🔥 High-order function
+fun highOrderFun(str: String, predicate: (String) -> Int): Int {
+    return predicate(str)
+}
+
+// INFO 🔥 Lambda function
+fun lambdaFun(): (String) -> Int = {
+    it.toIntOrNull() ?: -1
+}
+
+// INFO 🔥🔥 NOT a lambda function, REGULAR function that returns a LAMBDA function
+fun nonLambdaFunction(): (String) -> Int {
+    return { s: String -> s.toIntOrNull() ?: -1 }
+}
+
+// INFO 🔥 High-order function
+fun runWithCondition(condition: Boolean, action1: () -> Unit, action2: (() -> Unit)? = null) {
+    if (condition) action1()
+    else if (action2 != null) action2()
+}
+
+// INFO 🔥 Lambda Function
+fun lambdaAction2(): () -> Unit = {
+    println("Action2 Invoked")
+}
 

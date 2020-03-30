@@ -27,9 +27,17 @@ private fun testScopedFunctions() {
     }
 
     testString.applyMe {
+
+    }
+
+    withMe(testString) {
+        toUpperCase()
+        capitalize()
     }
 
 }
+
+
 
 fun <T, R> T.letMe(predicate: (T) -> R): R {
     return predicate(this)
@@ -37,7 +45,6 @@ fun <T, R> T.letMe(predicate: (T) -> R): R {
 
 fun <T, R> T.runMe(predicate: T.() -> R): R {
     return this.predicate()
-
 }
 
 
@@ -51,6 +58,9 @@ fun <T> T.applyMe(predicate: T.() -> Unit): T {
     return this
 }
 
+fun <T, R> withMe(receiver: T, predicate: (T).() -> R): R {
+    return receiver.predicate()
+}
+
 
 class Task(val date: Long, val description: String)
-

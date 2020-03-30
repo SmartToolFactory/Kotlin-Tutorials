@@ -1,5 +1,7 @@
+import java.util.ArrayList;
+import java.util.List;
 
-public class TestStringConcatanation {
+public class TestStringConcatenation {
 
     public static void main(String[] args) {
 
@@ -13,6 +15,20 @@ public class TestStringConcatanation {
         testStringBuilder();
         totalTime = System.nanoTime() - startTime;
         System.out.println("Total time for StringBuilder: " + totalTime);
+
+
+        Account account = new BankAccount();
+        BankAccount bankAccount = new BankAccount();
+        InterestAccount interestAccount = new InterestAccount();
+
+
+        List<? extends Account> accountList = new ArrayList<>();
+
+        List<? super InterestAccount> interestList = new ArrayList<>();
+
+        interestList.add(interestAccount);
+
+
 
     }
 
@@ -40,6 +56,19 @@ public class TestStringConcatanation {
         stringBuilder.append("Lorem Ipsum");
 
         return stringBuilder.toString();
+
+    }
+
+
+    interface Account {
+
+    }
+
+    static class BankAccount implements Account {
+
+    }
+
+    static class InterestAccount implements Account {
 
     }
 }

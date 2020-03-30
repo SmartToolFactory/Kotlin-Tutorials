@@ -143,7 +143,7 @@ class Example {
 }
 
 
-class DelegatedUser() {
+class DelegatedUser {
 
     private var value: String? = null
 

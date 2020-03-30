@@ -9,6 +9,7 @@ fun main() {
 }
 
 private fun testRouteHandler() {
+
     routeHandler("/index.html") {
 
         if (request.query != "") {

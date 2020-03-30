@@ -40,6 +40,7 @@ fun main() {
     }
     // Invocation of lambda
     val resLambda = compLambda(2, 4)
+    compLambda.invoke(2, 4)
 
     // Lambda
     val comp2Lambda = { a: Int, b: Int ->
@@ -80,7 +81,6 @@ fun main() {
     val lambdaResult = anotherLambda("Hello World")
     println(lambdaResult)
 
-
     val swapLambda: (Int, Int, MutableList<Int>) -> List<Int> = { index1, index2, list ->
 
         require(!(index1 < 0 || index2 < 0)) { "Index cannot be smaller than zero" }
@@ -116,8 +116,16 @@ fun main() {
     // Alternative 2 to pass function to high order functions
     highOrderFunction(3, ::parameterFunction)
 
+    "Hello World".highTes {
+        it.reversed()
+    }
+
+
 }
 
+fun String.highTes(action: (String) -> String) {
+    action(this)
+}
 
 // INFO 🔥 Lambda Functions
 
@@ -136,12 +144,11 @@ fun concatLambdaFunction(num: Int): (String) -> String = {
 /**
  * Lambda function that takes args and returns a lambda
  */
-fun lambdaFunctionWithParam(arg: Int): () -> Int {
+fun lambdaFunctionWithParam(arg: Int): () -> Int = {
     val message = "I was created by CreateFunction()"
     println("createFunction() message: $message")
-    return { arg }
+    arg * 2
 }
-
 
 // INFO 🔥 High-order functions
 private fun highOrderSum(a: Int, predicate: () -> Int): Int {
