@@ -56,8 +56,6 @@ fun main() {
     sqrArray.forEach { it -> println("Sqr : $it") }
 
 
-
-
     // INFO Other Initialization types
     val size = 10
 
@@ -76,10 +74,10 @@ fun main() {
     }
 
     // Non primitive-arrays
-    val boxedInts = arrayOfNulls<Int>(size) //equivalent in Java: new Integer[size]
+    val boxedInts = arrayOfNulls<Int>(size) // 🔥 equivalent in Java: new Integer[size]
     val boxedZeros = Array(size) { 0 }
 
-    val nulls = arrayOfNulls<String>(size) //equivalent in Java: new String[size]
+    val nulls = arrayOfNulls<String>(size) // 🔥 equivalent in Java: new String[size]
     val strings = Array(size) { "n = $it" }
     val myStrings = arrayOf("foo", "bar", "baz")
 
@@ -92,7 +90,8 @@ fun main() {
     nulls[0] = "Hey"
     println("nulls[0]: ${nulls[0]}")
 
-    // WARNING 🔥 This is an EMPTY ARRAY with 0 length, no value can be assigned to this array. Returns ArrayIndexOutOfBoundsException
+    // WARNING 🔥 This is an EMPTY ARRAY with 0 length, no value can be assigned to this array.
+    // Returns ArrayIndexOutOfBoundsException
     val emptyStringArray = arrayOf<String>()
 //    emptyStringArray[0] = "TestStringConcatenation"
 

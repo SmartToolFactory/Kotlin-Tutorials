@@ -11,23 +11,23 @@ suspend fun main() {
 //    globalLaunchWithRunBlocking()
 
     // INFO 🔥 Join
-    globalLaunchWithJoin()
+//    globalLaunchWithJoin()
 
     // INFO 🔥 Structured Concurrency
-//    structuredConcurrency()
+    structuredConcurrency()
 
 
     // INFO 🔥 Scope Builder
-    scopeBuilder()
+//    scopeBuilder()
 
     // INFO 🔥 Extract Function Refactoring
-    extractFunctionRefactoring()
+//    extractFunctionRefactoring()
 
     // INFO 🔥 Coroutines ARE light-weight
-    coroutinesLightweight()
+//    coroutinesLightweight()
 
     // INFO 🔥 Global Coroutines are like daemon threads
-    coroutinesLikeDaemonThreads()
+//    coroutinesLikeDaemonThreads()
 
 
 }
@@ -58,6 +58,7 @@ private fun globalLaunchWithRunBlocking() {
         // launch new coroutine in background and continue
         delay(1000L)
         println("World! ${Thread.currentThread().name}")
+        Thread.currentThread()
     }
 
     println("Hello,") // main thread continues here immediately
@@ -79,7 +80,11 @@ private suspend fun globalLaunchWithJoin() {
         println("World! ${Thread.currentThread().name}")
     }
     println("Hello,")
+    println("One,")
+    println("Two,")
     job.join() // wait until child coroutine completes
+    println("Three")
+
 //sampleEnd
 
     // Invoked just after thread joins
@@ -97,6 +102,7 @@ fun structuredConcurrency() = runBlocking {
     launch {
         // launch new coroutine in the scope of runBlocking
         delay(3000L) // runs after delay
+        // main thread
         println("World! thread: ${Thread.currentThread().name}")
     }
     // Runs first

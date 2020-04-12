@@ -50,28 +50,26 @@ fun main() {
         // functions inside {} are basically call to sb.block() in function body
     }
     println("stringFromLiteralWithReceiver2: $stringFromLiteralWithReceiver2")
-//
-//
-//    html {
-//        this.body()
-//    }
-//
-//
-//    // INFO 🔥 Extension Function Literal with Receiver
-//    val sb = StringBuilder()
-//    val sbNew = sb.extra({
-//
-//    })
-//
-//    sb.extra {
-//
-//    }
-//
-//    val ch = sbNew.extra2(3) {
-//        val num = it * 2
-//        num
-//    }
 
+
+    html {
+        this.body()
+    }
+
+    // INFO 🔥 Extension Function Literal with Receiver
+    val sb = StringBuilder()
+    val sbNew = sb.extra({
+
+    })
+
+    sb.extra {
+
+    }
+
+    val ch = sbNew.extra2(3) {
+        val num = it * 2
+        num
+    }
 
 }
 

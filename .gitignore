@@ -1,2 +1,5 @@
 
 *.len
+/build/
+/.gradle/vcs-1/
+/.gradle/
