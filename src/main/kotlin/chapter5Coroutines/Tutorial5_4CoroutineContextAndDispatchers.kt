@@ -21,10 +21,10 @@ fun main() {
 //    jobInTheContext()
 
     // 🔥 INFO Children of a coroutine
-//    childrenOfACoroutine()
+    childrenOfACoroutine()
 
     // 🔥 INFO Parental responsibilities
-    parentalResponsibilities()
+//    parentalResponsibilities()
 }
 
 /**
@@ -172,10 +172,18 @@ fun childrenOfACoroutine() {
 
             // and the other inherits the parent context
             launch {
-                delay(100)
-                println("job2: I am a child of the request coroutine")
+                try {
+                    delay(100)
+                    println("job2: I am a child of the request coroutine")
+
+                } catch (e: Exception) {
+                    println("Exception $e with message ${e.message} in scope $this")
+                }
+
+                // 🔥 This where it's canceled, if this block was in try then we could catch the CancellationException
                 delay(1000)
                 println("job2: I will not execute this line if my parent request is cancelled")
+
             }
 
         }

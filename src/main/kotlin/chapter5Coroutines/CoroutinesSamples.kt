@@ -1,7 +1,6 @@
 package chapter5Coroutines
 
 import chapter4Functions.delay
-import chapter6Advanced.letMe
 import kotlinx.coroutines.*
 
 fun main() {
@@ -9,14 +8,14 @@ fun main() {
     println("START")
 
     // 🔥 INFO With runBlocking
-    runBlocking {
-
-        println("Before suspend function")
-        val token = getToken()
-        println("After token thread: ${Thread.currentThread().name}")
-        println("Token: $token")
-
-    }
+//    runBlocking {
+//
+//        println("Before suspend function")
+//        val token = getToken()
+//        println("After token thread: ${Thread.currentThread().name}")
+//        println("Token: $token")
+//
+//    }
 
     /*
         Prints:
@@ -55,7 +54,7 @@ fun main() {
 }
 
 
-suspend fun getToken():String {
+suspend fun getToken(): String {
     delay(3000)
     return "token"
 }
@@ -85,5 +84,16 @@ suspend fun coroutineScopeWithException() {
             delay(500)
             println("${Thread.currentThread().name} after exception...")
         }
+
     }
+}
+
+fun fib(n: Int): Long {
+
+    return when (n) {
+        0 -> 0L
+        1 -> n.toLong()
+        else -> fib(n - 1) + fib(n - 2)
+    }
+
 }

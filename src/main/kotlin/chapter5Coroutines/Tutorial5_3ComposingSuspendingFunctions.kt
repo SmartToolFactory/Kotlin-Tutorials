@@ -69,10 +69,64 @@ fun main() = runBlocking<Unit> {
 //    println("Completed in $time ms")
 
     // 🔥 Structured concurrency with async
-    val time = measureTimeMillis {
-        println("The answer is ${concurrentSum()}")
+//    val time = measureTimeMillis {
+//        println("The answer is ${concurrentSum()}")
+//    }
+//    println("Completed in $time ms")
+
+    /**
+        Prints:
+
+        doSomethingUsefulOne in thread: main
+        doSomethingUsefulTwo in thread: main
+        The answer is 42
+        Completed in 1036 ms
+     */
+
+//    val timeDeferred = measureTimeMillis {
+//        println("The answer is ${concurrentSumDeferred()}")
+//    }
+//    println("Completed in $timeDeferred ms")
+
+    /**
+        Prints:
+        doSomethingUsefulOne in thread: main
+        doSomethingUsefulTwo in thread: main
+        The answer is 42
+        🎃 Completed in 2036 ms
+     */
+
+//    val timeWithContext = measureTimeMillis {
+//        println("The answer is ${concurrentSumWithContext()}")
+//    }
+//    println("Completed in $timeWithContext ms")
+
+    /**
+        Prints:
+        doSomethingUsefulOne in thread: DefaultDispatcher-worker-1
+        doSomethingUsefulTwo in thread: DefaultDispatcher-worker-2
+        The answer is 42
+        Completed in 2064 ms
+     */
+
+    // 🔥 INFO Cancellation is propagated
+
+    try {
+        failedConcurrentSum()
+    } catch(e: ArithmeticException) {
+        println("Computation failed with ArithmeticException")
     }
-    println("Completed in $time ms")
+
+
+    /*
+        Cancellation is always propagated through coroutines hierarchy
+
+        Prints:
+        Second child throws an exception
+        First child was cancelled
+        Computation failed with ArithmeticException
+
+     */
 
 }
 
@@ -135,12 +189,54 @@ fun somethingUsefulTwoAsync() = GlobalScope.async {
     Because the async coroutine builder is defined as an extension on CoroutineScope,
     we need to have it in the scope and that is what the coroutineScope function provides:
 
-    This way, if something goes wrong inside the code of the concurrentSum function and
+    🔥 This way, if something goes wrong inside the code of the concurrentSum function and
     it throws an exception, all the coroutines that were launched in its scope will be cancelled.
  */
 
 suspend fun concurrentSum(): Int = coroutineScope {
     val one = async { doSomethingUsefulOne() }
     val two = async { doSomethingUsefulTwo() }
+    one.await() + two.await()
+}
+
+/**
+ * Takes TWICE the time function above takes since [doSomethingUsefulOne] and [doSomethingUsefulTwo]
+ * functions are executed synchronously
+ */
+suspend fun concurrentSumDeferred(): Int = coroutineScope {
+    val one = async { doSomethingUsefulOne() }.await()
+    val two = async { doSomethingUsefulTwo() }.await()
+    one + two
+}
+
+/**
+ *
+ */
+suspend fun concurrentSumWithContext(): Int = coroutineScope {
+    val one = withContext(Dispatchers.Default) { doSomethingUsefulOne() }
+    val two = withContext(Dispatchers.Default) { doSomethingUsefulTwo() }
+    one + two
+}
+
+// 🔥 INFO Cancellation is propagated
+
+/**
+ * [ArithmeticException] thrown cancels first [async] block and then propagates to function
+ * itself which causes a [ArithmeticException] in top level
+ */
+suspend fun failedConcurrentSum(): Int = coroutineScope {
+
+    val one = async<Int> {
+        try {
+            delay(Long.MAX_VALUE) // Emulates very long computation
+            42
+        } finally {
+            println("First child was cancelled")
+        }
+    }
+    val two = async<Int> {
+        println("Second child throws an exception")
+        throw ArithmeticException()
+    }
     one.await() + two.await()
 }

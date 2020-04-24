@@ -1,10 +1,6 @@
 package chapter1Basics
 
 
-fun highOrderFunction(arr: Array<Int>) {
-
-}
-
 fun main() {
 
     // INFO Initializing Arrays Method 1
