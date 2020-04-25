@@ -1,6 +1,7 @@
 package chapter5Coroutines
 
 import kotlinx.coroutines.*
+import java.lang.Thread.sleep
 
 fun main() = runBlocking {
 
@@ -61,7 +62,14 @@ private suspend fun CoroutineScope.cancel() {
 }
 
 
-
+/**
+ * Coroutine cancellation is cooperative. A coroutine code has to cooperate to be cancellable.
+ * All the suspending functions in kotlinx.coroutines are cancellable.
+ * They check for cancellation of coroutine and throw CancellationException when cancelled.
+ *
+ * However, if a coroutine is working in a computation and does not check for cancellation,
+ * then it cannot be cancelled
+ */
 // INFO 🔥 Cancellation is cooperative
 private suspend fun CoroutineScope.cancelCooperative() {
 
@@ -87,6 +95,22 @@ private suspend fun CoroutineScope.cancelCooperative() {
     println("main: I'm tired of waiting!")
     job.cancelAndJoin() // cancels the job and waits for its completion
     println("main: Now I can quit.")
+
+    /*
+        🔥🔥 Does not quit after cancel method is called, because suspension point such us
+        delay is not invoked
+
+        Prints:
+        cancelCooperative()
+        I'm sleeping 0 ...
+        I'm sleeping 1 ...
+        I'm sleeping 2 ...
+        main: I'm tired of waiting!
+        I'm sleeping 3 ...
+        I'm sleeping 4 ...
+        main: Now I can quit.
+
+     */
 }
 
 /**
@@ -229,7 +253,6 @@ private suspend fun CoroutineScope.cancelNonCancelable() {
     println("main: I'm tired of waiting!")
     job.cancelAndJoin() // cancels the job and waits for its completion println("main: Now I can quit.")
 }
-
 
 
 // INFO 🔥 Timeout
