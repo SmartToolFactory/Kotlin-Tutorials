@@ -29,9 +29,15 @@ fun main() = runBlocking {
 //    exceptionsAreTransparentAndUnwrapped()
 
     // 🔥 INFO Supervision
-    exceptionWithSupervisorJob()
+//    testJobAndSupervisorJobInScope()
+//    exceptionWithSupervisorJob()
 //    supervisionExceptionAndCancellations()
 
+    // 🔥 INFO Supervision Scope
+//    supervisionScope()
+
+    // 🔥INFO Exceptions in supervised coroutines
+    exceptionsInSupervisedCoroutines()
 }
 
 /**
@@ -293,7 +299,7 @@ private suspend fun exceptionsWithChildren() {
                 println("🔥 Child1 #$i, thread: ${Thread.currentThread().name}}, coroutineScope: $this")
 
                 // 🔥🔥🔥 If throws exception other than CancellationException,
-                // parent and parent cancels other coroutines
+                // parent is canceled and it cancels other coroutines
                 if (i == 1) throw RuntimeException()
                 // 🔥🔥🔥 Only cancels this coroutine
 //                if (i == 1) throw CancellationException()
@@ -478,12 +484,59 @@ private suspend fun exceptionsAreTransparentAndUnwrapped() {
 
 }
 
+/**
+ *
+ * * Passing a [SupervisorJob] as a parameter of a coroutine builder [CoroutineScope.launch] or
+ * [CoroutineScope.async] won't let that launch function to have a [SupervisorJob]
+ * job.
+ *
+ * * E
+ *
+ */
+private suspend fun testJobAndSupervisorJobInScope() {
+
+    val scope = CoroutineScope(Job())
+
+    println("START scope: $scope , job ${scope.coroutineContext[Job]}")
+
+    // 🔥🔥 This SupervisorJob does only affect this coroutine, NOT it's child coroutines
+    scope.launch(SupervisorJob()) {
+        println("Inside scope: $this, job ${this.coroutineContext[Job]}")
+
+        // new coroutine -> can suspend
+        // 🔥🔥 Without supervisorJob in launch when it throws an Exception other siblings also get canceled
+        val childJob1 = launch(SupervisorJob()) {
+            // Child 1
+            for (i in 0 until 5) {
+                delay(500)
+                println("🔥 Child1 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+                if (i == 2) throw AssertionError("First child is cancelled")
+            }
+        }
+
+        // JOB of this childJob2 is Job since it does not take any CoroutineContext
+        val childJob2 = launch {
+            // Child 2
+            for (i in 0 until 5) {
+                delay(500)
+                println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+            }
+        }
+
+        println("childJob1: $childJob1, childJob2: $childJob2")
+    }
+
+    sleep(3000)
+    println("END")
+
+}
+
 
 /**
  * [SupervisorJob] let's parent coroutine to continue if a child coroutine throws an Exception
  *
  * And other important thing is every child should handle by themselves since exceptions
- * are not propagated to **parent**
+ * are NOT propagated to **parent**
  */
 // 🔥 INFO Supervision
 private suspend fun exceptionWithSupervisorJob() {
@@ -493,6 +546,7 @@ private suspend fun exceptionWithSupervisorJob() {
     /*
         Exception Handlers
      */
+    // Not works since child handles exceptions with SuperVisorJob()
     val parentCoroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
         println("PARENT CoroutineExceptionHandler Caught exception $exception")
     }
@@ -504,12 +558,13 @@ private suspend fun exceptionWithSupervisorJob() {
     val myCoroutineScope =
         CoroutineScope(coroutineContext + parentCoroutineExceptionHandler + supervisor + Dispatchers.IO)
 
-    println("START with scope: $myCoroutineScope")
+    println("START with scope: $myCoroutineScope, job: ${myCoroutineScope.coroutineContext[Job]}")
 
-    with(myCoroutineScope) {
+    val parentJob = myCoroutineScope.launch {
         println("Inside scope: $this, thread: ${Thread.currentThread().name}")
 
-            val firstChild = launch(childCoroutineExceptionHandler) {
+        val firstChild =
+            launch(myCoroutineScope.coroutineContext + childCoroutineExceptionHandler) {
 
                 for (i in 0 until 5) {
                     delay(500)
@@ -518,16 +573,16 @@ private suspend fun exceptionWithSupervisorJob() {
                 }
             }
 
-            val secondChild = launch {
-                try {
-                    for (i in 0 until 5) {
-                        delay(500)
-                        println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
-                    }
-                } catch (e: Exception) {
-                    println("Child2 EXCEPTION: $e")
+        val secondChild = launch {
+            try {
+                for (i in 0 until 5) {
+                    delay(500)
+                    println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
                 }
+            } catch (e: Exception) {
+                println("Child2 EXCEPTION: $e")
             }
+        }
     }
 
     sleep(3000)
@@ -603,4 +658,89 @@ private suspend fun supervisionExceptionAndCancellations() {
 
 
      */
+}
+
+/**
+ * For scoped concurrency supervisorScope can be used instead of
+ * coroutineScope for the same purpose.
+ *
+ * * It propagates cancellation only in one direction and cancels all
+ * children only if it has failed itself.
+ *
+ * * It also waits for all children
+ * before completion just like coroutineScope does.
+ */
+// 🔥 INFO Supervision Scope
+private suspend fun supervisionScope() {
+
+    try {
+        supervisorScope<Unit> {
+            val child = launch {
+                try {
+                    println("Child is sleeping")
+                    delay(Long.MAX_VALUE)
+                } finally {
+                    println("Child is cancelled")
+                }
+            }
+            // Give our child a chance to execute and print using yield
+            yield()
+            println("Throwing exception from scope")
+            throw AssertionError()
+        }
+    } catch (e: AssertionError) {
+        println("Caught assertion error")
+    }
+
+    sleep(3000L)
+    println("END")
+
+    /*
+        Prints:
+
+        Child is sleeping
+        Throwing exception from scope
+        Child is cancelled
+        Caught assertion error
+        END
+
+        🔥 IF yield is commented out
+        Prints:
+
+        Throwing exception from scope
+        Caught assertion error
+        END
+     */
+}
+
+/**
+ * Another crucial difference between regular and supervisor jobs is exception handling.
+ * Every child should handle its exceptions by itself via exception handling mechanisms.
+ * This difference comes from the fact that child's failure is not propagated to the parent.
+ */
+// 🔥INFO Exceptions in supervised coroutines
+private suspend fun exceptionsInSupervisedCoroutines() {
+
+    val handler = CoroutineExceptionHandler { _, exception ->
+        println("Caught $exception")
+    }
+
+    supervisorScope {
+        val child = launch(handler) {
+            println("Child throws an exception")
+            throw AssertionError()
+        }
+        println("Scope is completing")
+    }
+    println("Scope is completed")
+
+    /*
+        Prints:
+
+        Scope is completing
+        Child throws an exception
+        Caught java.lang.AssertionError
+        Scope is completed
+     */
+
 }
