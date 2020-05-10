@@ -20,7 +20,7 @@ fun main() {
     val person3 = person2.copy(name = "Dave")
 
     // 🔥 If primary constructor properties have same values objects have Structural Equality
-    val person4 = person2.copy(person2.name)
+    val person4 = person2.copy(name = person2.name)
 
 
     // Prints: person1: 2314539, person2: 2314539, person3: 2122764, person4: 2314539
