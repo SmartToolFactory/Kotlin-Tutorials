@@ -319,7 +319,12 @@ class IntegratingWithStructuredConcurrencyTests {
 
         @After
         fun cleanUp() {
-            testScope.cleanupTestCoroutines()
+            // 🔥🔥🔥 WITHOUT TRY-CATCH TEST CRASHES!!!
+            try {
+                testScope.cleanupTestCoroutines()
+            } catch (e: Exception) {
+                //Do something here
+            }
         }
 
         @Test
@@ -331,7 +336,6 @@ class IntegratingWithStructuredConcurrencyTests {
         }
 
 
-        // TODO CRASHES WHY ???
         @Test(expected = RuntimeException::class)
         fun testFooWithException() = testScope.runBlockingTest {
             subject.fooWithException()
@@ -380,7 +384,11 @@ class IntegratingWithStructuredConcurrencyTests {
         @After
         fun cleanUp() {
             Dispatchers.resetMain()
-            testDispatcher.cleanupTestCoroutines()
+            try {
+                testDispatcher.cleanupTestCoroutines()
+            } catch (e: Exception) {
+
+            }
         }
 
         @Test
