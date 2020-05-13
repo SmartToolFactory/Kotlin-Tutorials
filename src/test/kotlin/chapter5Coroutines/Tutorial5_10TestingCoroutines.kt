@@ -315,6 +315,10 @@ class IntegratingWithStructuredConcurrencyTests {
         fun setup() {
             // provide the scope explicitly, in this example using a constructor parameter
             subject = Subject(testScope)
+
+            // 🔥🔥🔥 If this scopoe used instead of same scope tests fail
+//            subject = Subject(CoroutineScope(SupervisorJob()))
+
         }
 
         @After
@@ -335,18 +339,41 @@ class IntegratingWithStructuredConcurrencyTests {
             Truth.assertThat(actual).isEqualTo(5)
         }
 
-
+        /**
+         * For this test to not crash put `  testScope.cleanupTestCoroutines()`
+         * inside **try-catch** block
+         */
         @Test(expected = RuntimeException::class)
         fun testFooWithException() = testScope.runBlockingTest {
             subject.fooWithException()
         }
 
+        @Test
+        fun `Test subject that assigns value via coroutine`() = testScope.runBlockingTest {
+
+            // GIVEN
+            val subjectWithValue = SubjectWithValue(testScope)
+
+            // WHEN
+             subjectWithValue.getMockResponse()
+            // 🔥🔥 Required to progress time beyond delay
+            advanceUntilIdle()
+
+            // THEN
+            Truth.assertThat(subjectWithValue.result).isEqualTo(5)
+        }
+
+
         class Subject(private val scope: CoroutineScope) {
 
+            /**
+             * This function does not work with delay
+             */
             fun foo(): Int {
                 var res = 0
                 scope.launch {
                     // launch uses the testScope injected in setup
+                    delay(2000)
                     res = 5
                 }
                 return res
@@ -364,6 +391,27 @@ class IntegratingWithStructuredConcurrencyTests {
                 delay(1000)
                 throw RuntimeException("Failed via TEST exception")
             }
+        }
+
+        class SubjectWithValue(private val scope: CoroutineScope) {
+
+            var result = -1
+
+            fun getMockResponse() {
+
+                result = 0
+
+                scope.launch {
+                    result = getDelayedResponse()
+                }
+
+            }
+
+            private suspend fun getDelayedResponse(): Int {
+                delay(10_000)
+                return 5
+            }
+
         }
     }
 
