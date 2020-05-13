@@ -355,7 +355,7 @@ class IntegratingWithStructuredConcurrencyTests {
             val subjectWithValue = SubjectWithValue(testScope)
 
             // WHEN
-             subjectWithValue.getMockResponse()
+            subjectWithValue.getMockResponse()
             // 🔥🔥 Required to progress time beyond delay
             advanceUntilIdle()
 
@@ -445,10 +445,20 @@ class IntegratingWithStructuredConcurrencyTests {
             someFunction()
         }
 
-        // TODO CRASHES WHY ???
+        // TODO CRASHES BECAUSE this function uses MainScope
         @Test(expected = RuntimeException::class)
         fun testSomeFunctionWithException() = testDispatcher.runBlockingTest {
             someFunctionWithException()
+        }
+
+
+        /**
+         * This function PASSES because it uses the same scope
+         * [TestCoroutineDispatcher.runBlockingTest] runs in
+         */
+        @Test(expected = RuntimeException::class)
+        fun `Test exception with function with same scope`() = testDispatcher.runBlockingTest {
+            anotherFunctionWithException()
         }
 
         private fun someFunction() {
@@ -459,6 +469,12 @@ class IntegratingWithStructuredConcurrencyTests {
 
         private fun someFunctionWithException() {
             MainScope().launch {
+                throw RuntimeException("Failed via TEST exception")
+            }
+        }
+
+        private fun CoroutineScope.anotherFunctionWithException() {
+            launch {
                 throw RuntimeException("Failed via TEST exception")
             }
         }
