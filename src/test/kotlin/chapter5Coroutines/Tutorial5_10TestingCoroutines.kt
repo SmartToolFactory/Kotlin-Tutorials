@@ -215,6 +215,8 @@ class RunBlockingTests {
      * to the function under test via parameter injection.
      */
 
+    // TODO Any test in a launch without proper scope or dispatcher fails,
+    // TODO This code is not WORKING, and test FAILS
     @Test(expected = TimeoutCancellationException::class)
     fun testFooWithTimeout() = runBlockingTest {
 
@@ -224,11 +226,10 @@ class RunBlockingTests {
         // ...
     }
 
-    private fun CoroutineScope.fooWithTimeout(resultDeferred: Deferred<Foo>) {
+    private suspend fun CoroutineScope.fooWithTimeout(resultDeferred: Deferred<Foo>) {
 
         launch {
             withTimeout(1_000) {
-                delay(3000)
                 resultDeferred.await() // await() will suspend forever waiting for uncompleted
                 // ...
             }
@@ -403,6 +404,23 @@ class IntegratingWithStructuredConcurrencyTests {
 
                 scope.launch {
                     result = getDelayedResponse()
+                }
+
+            }
+
+            /**
+             * Function that gets result if it's before timeout, after timeout it throws
+             * [TimeoutCancellationException]
+             */
+            fun getMockResponseWithTimeout() {
+
+                scope.launch {
+
+                    result = 0
+
+                    withTimeout(3000) {
+                        result = getDelayedResponse()
+                    }
                 }
 
             }
