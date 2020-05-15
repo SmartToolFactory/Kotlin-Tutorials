@@ -162,6 +162,8 @@ class RunBlockingTests {
     /**
      * ## Testing launch or async with delay
      *
+     * 🔥 NOT WORKING, advance time with launch is probably broken for now
+     *
      * If the coroutine created by launch or async calls delay then the runBlockingTest
      * will not auto-progress time right away.
      * This allows tests to observe the interaction of multiple coroutines with different delays.
@@ -202,7 +204,7 @@ class RunBlockingTests {
 
 
     /**
-     * # 🔥 NOT WORKING? No TimeoutCancellationException is thrown
+     * # 🔥🔥 NOT WORKING? TimeoutCancellationException is NOT thrown
      *
      * ## Testing withTimeout using runBlockingTest
      * Time control can be used to test timeout code.
@@ -215,8 +217,7 @@ class RunBlockingTests {
      * to the function under test via parameter injection.
      */
 
-    // TODO Any test in a launch without proper scope or dispatcher fails,
-    // TODO This code is not WORKING, and test FAILS
+    // TODO This code is not WORKING, and test FAILS because something is wrong with LAUNCH
     @Test(expected = TimeoutCancellationException::class)
     fun testFooWithTimeout() = runBlockingTest {
 
@@ -317,14 +318,14 @@ class IntegratingWithStructuredConcurrencyTests {
             // provide the scope explicitly, in this example using a constructor parameter
             subject = Subject(testScope)
 
-            // 🔥🔥🔥 If this scopoe used instead of same scope tests fail
+            // 🔥🔥🔥 If this scope used instead of same scope tests fail
 //            subject = Subject(CoroutineScope(SupervisorJob()))
 
         }
 
         @After
         fun cleanUp() {
-            // 🔥🔥🔥 WITHOUT TRY-CATCH TEST CRASHES!!!
+            // 🔥🔥🔥 WITHOUT TRY-CATCH TEST CRASHES when it throws exception!!!
             try {
                 testScope.cleanupTestCoroutines()
             } catch (e: Exception) {
@@ -335,18 +336,8 @@ class IntegratingWithStructuredConcurrencyTests {
         @Test
         fun testFoo() = testScope.runBlockingTest {
             // TestCoroutineScope.runBlockingTest uses the Dispatcher and exception handler provided by `testScope`
-
             val actual = subject.foo()
             Truth.assertThat(actual).isEqualTo(5)
-        }
-
-        /**
-         * For this test to not crash put `  testScope.cleanupTestCoroutines()`
-         * inside **try-catch** block
-         */
-        @Test(expected = RuntimeException::class)
-        fun testFooWithException() = testScope.runBlockingTest {
-            subject.fooWithException()
         }
 
         @Test
@@ -358,10 +349,42 @@ class IntegratingWithStructuredConcurrencyTests {
             // WHEN
             subjectWithValue.getMockResponse()
             // 🔥🔥 Required to progress time beyond delay
-            advanceUntilIdle()
+            advanceTimeBy(10_000)
 
             // THEN
             Truth.assertThat(subjectWithValue.result).isEqualTo(5)
+        }
+
+        /**
+         * 🔥🔥 For this test to not crash put `  testScope.cleanupTestCoroutines()`
+         * inside **try-catch** block
+         */
+        @Test(expected = RuntimeException::class)
+        fun `Exception with delay`() = testScope.runBlockingTest {
+
+            // GIVEN
+            val subjectWithValue = SubjectWithValue(testScope)
+
+            // WHEN
+            subjectWithValue.throwExceptionAfterDelay()
+        }
+
+        /**
+         * 🔥 NOT WORKING, time is progressed after delay !!!
+         */
+        @Test(expected = TimeoutCancellationException::class)
+        fun `Exception after time out`() = testScope.runBlockingTest {
+
+            // GIVEN
+            val subjectWithValue = SubjectWithValue(testScope)
+
+            // WHEN
+            subjectWithValue.getMockResponseWithTimeout()
+            advanceTimeBy(4_000)
+
+            // THEN
+            println("Test result: ${subjectWithValue.result}")
+
         }
 
 
@@ -374,24 +397,12 @@ class IntegratingWithStructuredConcurrencyTests {
                 var res = 0
                 scope.launch {
                     // launch uses the testScope injected in setup
-                    delay(2000)
+//                    delay(2000)
                     res = 5
                 }
                 return res
             }
 
-            fun fooWithException() {
-
-                scope.launch {
-                    println("fooWithException() thread: ${Thread.currentThread().name}")
-                    funThatThrowsException()
-                }
-            }
-
-            private suspend fun funThatThrowsException() {
-                delay(1000)
-                throw RuntimeException("Failed via TEST exception")
-            }
         }
 
         class SubjectWithValue(private val scope: CoroutineScope) {
@@ -413,20 +424,31 @@ class IntegratingWithStructuredConcurrencyTests {
              * [TimeoutCancellationException]
              */
             fun getMockResponseWithTimeout() {
-
+                result = -10
                 scope.launch {
 
-                    result = 0
-
-                    withTimeout(3000) {
+                    println("🤪 getMockResponseWithTimeout() thread: ${Thread.currentThread().name}, in launch scope: $scope")
+                    withTimeout(3_000) {
+                        println("🙄 getMockResponseWithTimeout() thread: ${Thread.currentThread().name}, in timeout scope: $scope")
                         result = getDelayedResponse()
                     }
                 }
+            }
 
+            fun throwExceptionAfterDelay() {
+
+                scope.launch {
+                    println("⛱ fooWithException() thread: ${Thread.currentThread().name}, scope: $this")
+                    delay(6_000)
+                    println("😎 fooWithException() After delay")
+                    throw RuntimeException("Failed via TEST exception")
+                }
             }
 
             private suspend fun getDelayedResponse(): Int {
+                println("😱 getDelayedResponse() BEFORE DELAY")
                 delay(10_000)
+                println("😱 getDelayedResponse() AFTER DELAY")
                 return 5
             }
 
@@ -485,12 +507,18 @@ class IntegratingWithStructuredConcurrencyTests {
             }
         }
 
+        /**
+         * Test using this method fails since it has is own scope
+         */
         private fun someFunctionWithException() {
             MainScope().launch {
                 throw RuntimeException("Failed via TEST exception")
             }
         }
 
+        /**
+         * Using the same scope as tests have make it possible to have passed tests
+         */
         private fun CoroutineScope.anotherFunctionWithException() {
             launch {
                 throw RuntimeException("Failed via TEST exception")
@@ -504,6 +532,7 @@ class IntegratingWithStructuredConcurrencyTests {
         @Test
         fun testFooWithAutoProgress() {
             val scope = TestCoroutineScope()
+
             scope.launch {
                 val res = foo()
                 // foo is suspended waiting for time to progress
@@ -511,6 +540,7 @@ class IntegratingWithStructuredConcurrencyTests {
                 // foo's coroutine will be completed before here
                 Truth.assertThat(res).isEqualTo(5)
             }
+
         }
 
         private suspend fun foo(): Int {
