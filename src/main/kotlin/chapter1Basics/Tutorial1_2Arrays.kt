@@ -66,7 +66,7 @@ fun main() {
     }
     // Alternative 2 for loop
     for (element in myInts) {
-        println("i: ${element}")
+        println("i: $element")
     }
 
     // Non primitive-arrays
@@ -121,6 +121,7 @@ fun main() {
 
 
 class Solution {
+
     fun checkStraightLine(coordinates: Array<Array<Int>>): Boolean {
 
         val y2 = coordinates[1][1].toDouble()
@@ -143,9 +144,7 @@ class Solution {
             } else if (m != (y / x).toDouble()) {
                 return false
             }
-
         }
-
 
         return true
     }

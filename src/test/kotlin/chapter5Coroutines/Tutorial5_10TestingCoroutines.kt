@@ -87,7 +87,7 @@ class RunBlockingTests {
 
 
     @Test
-    fun `Run blocking test`() = runBlockingTest {
+    fun `Run blocking test using async`() = runBlockingTest {
 
         // GIVEN
         val expected = "Hello World"
@@ -100,6 +100,27 @@ class RunBlockingTests {
 
         // THEN
         Truth.assertThat(actual.await()).isEqualTo(expected)
+    }
+
+
+    /**
+     * ❌ This test fails
+     */
+    @Test
+    fun `Run blocking test using launch`() = runBlockingTest {
+
+        // GIVEN
+        val expected = "Hello World"
+        var result = ""
+
+        // WHEN
+        launch {
+            // 🔥🔥 Time is advanced by delay duration instantly
+            result = getResultWithVeryLongDelay()
+        }
+
+        // THEN
+        Truth.assertThat(result).isEqualTo(expected)
     }
 
     private suspend fun getResultWithVeryLongDelay(): String {
@@ -370,7 +391,7 @@ class IntegratingWithStructuredConcurrencyTests {
         }
 
         /**
-         * 🔥 NOT WORKING, time is progressed after delay !!!
+         * ❌ NOT WORKING, time is progressed after delay !!!
          */
         @Test(expected = TimeoutCancellationException::class)
         fun `Exception after time out`() = testScope.runBlockingTest {
@@ -553,9 +574,7 @@ class IntegratingWithStructuredConcurrencyTests {
             return 3
         }
 
-
     }
-
 
 }
 

@@ -7,6 +7,7 @@ fun main() {
     val intFunction: (Int) -> Int = IntTransformer()
     println("intFunction: $intFunction(5)") // prints x * x
 
+
     // Lambda Expression that takes 2 int params and returns int
     val testFun: (Int, Int) -> Int = { x, y -> x + y }
     val testFunInferred = { x: Int, y: Int -> x + y }
@@ -60,22 +61,22 @@ fun main() {
     val testString = "Hello World"
 
     // INFO High Order Function
-    val resultHighOrder: String = testHighOrder(testString) {
+    val resultHighOrder: String = exampleHighOrder(testString) {
         it.toUpperCase()
     }
 
     // INFO Function Literal With Receiver
-    val resultLiteralReceiver: String = testLiteralWithReceiver(testString) {
+    val resultLiteralReceiver: String = exampleLiteralWithReceiver(testString) {
         toUpperCase()
     }
 
     // INFO Extension Function
-    val resultExtension: String = testString.testExtension {
+    val resultExtension: String = testString.exampleExtension {
         it.toUpperCase()
     }
 
     // INFO Extension Function that Literal With Receiver
-    val resultExtensionLiteral: String = testString.testLiteralExtension {
+    val resultExtensionLiteral: String = testString.exampleLiteralExtension {
         toUpperCase()
     }
 
@@ -105,7 +106,7 @@ fun runTransformation(action: (String, Int) -> String): String {
  */
 
 // INFO 🔥 High Order Function
-fun testHighOrder(value: String, action: (String) -> String): String {
+fun exampleHighOrder(value: String, action: (String) -> String): String {
     return action(value)
 }
 
@@ -121,7 +122,7 @@ we should change action: String.() to String.(String)
 
  */
 // INFO 🔥 Function Literal With Receiver
-fun testLiteralWithReceiver(value: String, action: String.() -> String): String {
+fun exampleLiteralWithReceiver(value: String, action: String.() -> String): String {
     // INFO Both result implementations are the same
 
     // value here act as String of String.() and action is without params()
@@ -135,7 +136,7 @@ fun testLiteralWithReceiver(value: String, action: String.() -> String): String 
  * by using action(this)
  */
 // INFO 🔥 High Order Extension Function
-fun String.testExtension(action: (String) -> String): String {
+fun String.exampleExtension(action: (String) -> String): String {
     val result = action(this)
     return result
 }
@@ -146,10 +147,9 @@ fun String.testExtension(action: (String) -> String): String {
  * it's already called on a String which does not require a parameter as the function above
  */
 // INFO 🔥 Extension Function that Literal With Receiver
-fun String.testLiteralExtension(action: String.() -> String): String {
+fun String.exampleLiteralExtension(action: String.() -> String): String {
     // INFO Both result implementations are the same
     val result = action()
     return result
 }
-
 

@@ -36,5 +36,3 @@ interface MyInterface2 {
 class Child : MyInterface2 {
     override var prop: Int = 29
 }
-
-
