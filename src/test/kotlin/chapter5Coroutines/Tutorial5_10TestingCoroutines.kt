@@ -225,7 +225,7 @@ class RunBlockingTests {
 
 
     /**
-     * # 🔥🔥 NOT WORKING? TimeoutCancellationException is NOT thrown
+     * # 🔥🔥 ❌ NOT WORKING? TimeoutCancellationException is NOT thrown
      *
      * ## Testing withTimeout using runBlockingTest
      * Time control can be used to test timeout code.

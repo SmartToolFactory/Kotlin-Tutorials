@@ -17,6 +17,13 @@ fun main() {
         }
     })
 
+    val myClickListener = object : OnClickListener {
+        override fun onClick() {
+
+        }
+
+    }
+
     // 🔥🔥🔥 NOT WORKING, SAM conversion does not work for Kotlin interfaces, at least as of 1.31
 //    window.onWindowClick(OnClickListener{
 //

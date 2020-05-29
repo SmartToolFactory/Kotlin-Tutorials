@@ -12,21 +12,23 @@ fun main() {
  */
 
 private fun testScopedFunctions() {
-    val testString = "Hello"
+
+     val testString = "Hello"
 
 
-    testString.letMe<String, Int> {
+    val resLet = testString.letMe<String, Int> {
         it.toIntOrNull() ?: -1
     }
 
-    testString.runMe {
+    val resRun = testString.runMe {
+        toIntOrNull() ?: -1
     }
 
 
-    testString.alsoMe {
+    val resAlso = testString.alsoMe {
     }
 
-    testString.applyMe {
+    val resApply = testString.applyMe {
 
     }
 
@@ -36,7 +38,6 @@ private fun testScopedFunctions() {
     }
 
 }
-
 
 
 fun <T, R> T.letMe(predicate: (T) -> R): R {
