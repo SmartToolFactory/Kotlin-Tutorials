@@ -4,12 +4,13 @@ import kotlinx.coroutines.*
 import java.lang.Thread.sleep
 
 
+@ExperimentalStdlibApi
 suspend fun main() {
 
     // INFO 🔥 Global Scope
-//    globalLaunch()
+    globalLaunch()
 
-    globalLaunchWithRunBlocking()
+//    globalLaunchWithRunBlocking()
 
     // INFO 🔥 Join
 //    globalLaunchWithJoin()
@@ -33,6 +34,7 @@ suspend fun main() {
 
 }
 
+@ExperimentalStdlibApi
 private fun globalLaunch() {
 
     println("globalLaunch()")
@@ -42,7 +44,8 @@ private fun globalLaunch() {
         println("globalLaunch() initialize...")
         // launch new coroutine in background and continue
         delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
-        println("World! ${Thread.currentThread().name}") // print after delay
+        println("World! in thread${Thread.currentThread().name}, scope: $this" +
+                " dispatcher: ${this.coroutineContext[CoroutineDispatcher]}") // print after delay
     }
 
     println("Hello, ${Thread.currentThread().name}") // main thread continues while coroutine is delayed
@@ -115,7 +118,7 @@ private suspend fun globalLaunchWithJoin() {
     val job = GlobalScope.launch {
         // launch a new coroutine and keep a reference to its Job
         delay(3000L)
-        println("World! ${Thread.currentThread().name}")
+        println("World! ${Thread.currentThread().name}, scope: $this")
     }
     println("Hello,")
     println("One,")

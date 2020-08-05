@@ -18,10 +18,10 @@ fun main() = runBlocking {
 //    cancelComputation()
 
     // INFO 🔥 Closing resources with finally
-//    cancelWithTryAndFinally()
+    cancelWithTryAndFinally()
 
     // INFO 🔥 Run non-cancellable block
-    cancelNonCancelable()
+//    cancelNonCancelable()
 
     // INFO 🔥 Timeout or Null
 
@@ -175,7 +175,7 @@ private suspend fun CoroutineScope.cancelWithTryAndFinally() {
                 delay(500L)
             }
         } catch (e: Exception) {
-            println("Exception e: ${e.message}")
+            println("Exception: $e")
         } finally {
             println("I'm running finally")
         }
@@ -195,7 +195,7 @@ private suspend fun CoroutineScope.cancelWithTryAndFinally() {
         I'm sleeping 1 ...
         I'm sleeping 2 ...
         main: I'm tired of waiting!
-        Exception e: Job was cancelled
+      Exception: kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@3b95a09c
         I'm running finally
         main: Job canceled!
      */

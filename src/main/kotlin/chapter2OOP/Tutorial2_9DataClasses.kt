@@ -27,6 +27,8 @@ fun main() {
     println("person1: ${person1.hashCode()}, person2: ${person2.hashCode()}, " +
             "person3: ${person3.hashCode()}, person4: ${person4.hashCode()}")
 
+    println("${person1.toString()}") // prints PersonData(name=John)
+
     // Referential equality returns true only for the SAME objects even for data classes
     println("Person1 == Person2 -> ${person1 == person2}") // prints true
     println("Person1 === Person2 -> ${person1 === person2}") // prints false
@@ -61,6 +63,9 @@ fun main() {
     // BookData2: 72624405 == BookData3: 72624405 -> true
 
     println("BookData1 === BookData2 -> ${bookData1 === bookData2}") // prints false
+
+    println("Book1: ${book1.toString()}") // prints Book1: chapter2OOP.Book@1d44bcfa
+    println("Book1Data: ${bookData1.toString()}") // prints Book1Data: BookData(name=LOTR, age=54)
 
 
 }
@@ -99,13 +104,15 @@ var age:Int = 1
 }
 
 Difference in equals, hashCode, & toString
-the most important difference between definition 1 and definitions 2 & 3 is that in definition 1, the equals, hashcode and toString methods are overridden for you:
+the most important difference between definition 1 and definitions 2 & 3 is that in definition 1,
+the equals, hashcode and toString methods are overridden for you:
 
 equals and hashCode methods test for structural equality
 toString method returns a nice, human-friendly string
 Code example:
 
-NOTE: in Kotlin, the == operator calls an object's .equals() method. see operator overloading on kotlinlang.org for more info.
+NOTE: in Kotlin, the == operator calls an object's .equals() method. see operator overloading
+on kotlinlang.org for more info.
 
 data class Person1 (var name:String, var age:Int)
 class Person2 (var name:String, var age:Int)

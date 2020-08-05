@@ -1,11 +1,7 @@
 package chapter5Coroutines
 
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import java.lang.Thread.sleep
-import java.util.concurrent.TimeUnit
 
 
 fun main() = runBlocking {
@@ -117,9 +113,10 @@ fun main() = runBlocking {
 //    }
 
     // 🔥 flowOn operator
-    exampleFlowOn().collect {
-        println("Collected in thread: ${Thread.currentThread().name}, value: $it")
-    }
+    exampleFlowOn()
+            .collect {
+                println("Collected in thread: ${Thread.currentThread().name}, value: $it")
+            }
 }
 
 /*
@@ -199,8 +196,8 @@ fun exampleFlowCancellation(): Flow<Int> = flow {
 fun exampleMap(): Flow<Int> = flow {
 
     (1..3).asFlow() // a flow of requests
-        .map { request -> performRequest(request) }
-        .collect { response -> println(response) }
+            .map { request -> performRequest(request) }
+            .collect { response -> println(response) }
 
 }
 
@@ -215,13 +212,12 @@ fun CoroutineScope.exampleTransform() {
     launch {
 
         (1..3).asFlow() // a flow of requests
-            .transform { request ->
-                emit("Making request $request")
-                delay(100)
-                emit(performRequest(request))
-            }
-
-            .collect { response -> println(response) }
+                .transform { request ->
+                    emit("Making request $request")
+                    delay(100)
+                    emit(performRequest(request))
+                }
+                .collect { response -> println(response) }
 
         /*
             Prints:
@@ -265,14 +261,14 @@ fun CoroutineScope.exampleTake() {
     launch {
 
         (1..100).asFlow()
-            .map {
-                delay(500)
-                it
-            }
-            .take(3)
-            .collect {
-                println("Item: $it")
-            }
+                .map {
+                    delay(500)
+                    it
+                }
+                .take(3)
+                .collect {
+                    println("Item: $it")
+                }
     }
 
     /*
@@ -288,14 +284,14 @@ fun CoroutineScope.exampleTakeWhile() {
     launch {
 
         (1..100).asFlow()
-            .map {
-                delay(500)
-                it
-            }
-            .takeWhile { it < 4 }
-            .collect {
-                println("Item: $it")
-            }
+                .map {
+                    delay(500)
+                    it
+                }
+                .takeWhile { it < 4 }
+                .collect {
+                    println("Item: $it")
+                }
 
     }
 }
@@ -324,10 +320,10 @@ fun CoroutineScope.exampleReduce() {
 
         val sum = (1..5).asFlow()
 //            .map { it * it } // squares of numbers from 1 to 5
-            .reduce { a, b ->
-                println("in reduce: ${a + b}")
-                a + b
-            } // sum them (terminal operator)
+                .reduce { a, b ->
+                    println("in reduce: ${a + b}")
+                    a + b
+                } // sum them (terminal operator)
         println("Sum with reduce: $sum")
 
     }
@@ -349,10 +345,10 @@ fun CoroutineScope.exampleFold() {
     launch {
 
         val sum = (1..5).asFlow()
-            .fold(0) { a, b ->
-                println("in fold: ${a + b}")
-                a + b
-            }
+                .fold(0) { a, b ->
+                    println("in fold: ${a + b}")
+                    a + b
+                }
 
         println("Sum with fold: $sum")
 
@@ -389,16 +385,16 @@ fun CoroutineScope.exampleFlowsAreSequential() {
     launch {
 
         (1..5).asFlow()
-            .filter {
-                println("Filter $it")
-                it % 2 == 0
-            }
-            .map {
-                println("Map $it")
-                "string $it"
-            }.collect {
-                println("Collect $it")
-            }
+                .filter {
+                    println("Filter $it")
+                    it % 2 == 0
+                }
+                .map {
+                    println("Map $it")
+                    "string $it"
+                }.collect {
+                    println("Collect $it")
+                }
 
     }
 

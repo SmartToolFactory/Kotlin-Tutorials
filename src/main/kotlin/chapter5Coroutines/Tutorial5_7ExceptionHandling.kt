@@ -29,8 +29,8 @@ fun main() = runBlocking {
 //    exceptionsAreTransparentAndUnwrapped()
 
     // 🔥 INFO Supervision
-    exceptionWithSupervisorJob()
-//    supervisionExceptionAndCancellations()
+//    exceptionWithSupervisorJob()
+    supervisionExceptionAndCancellations()
 
     // 🔥 INFO Supervision Scope
 //    supervisionScope()
@@ -217,6 +217,8 @@ private suspend fun cancellationWithChildren() {
     val job = GlobalScope.launch {
 
         println("Global scope: $this")
+
+        // First child job
         val childJob1 = launch {
             println("Child1 scope: $this")
             for (i in 0 until 5) {
@@ -225,6 +227,7 @@ private suspend fun cancellationWithChildren() {
             }
         }
 
+        // Second child job
         val childJob2 = launch {
             for (i in 0 until 5) {
                 delay(500)
@@ -232,6 +235,7 @@ private suspend fun cancellationWithChildren() {
             }
         }
 
+        // Third child job
         val childJob3 = launch {
             for (i in 0 until 5) {
                 delay(500)
@@ -253,7 +257,7 @@ private suspend fun cancellationWithChildren() {
     println("END")
 
     /*
-        If childJob1 and childJob3 are canceled sequentially
+        If childJob1 and childJob3 are canceled sequentially other child jobs continue to execute
 
        Prints:
        Global scope: StandaloneCoroutine{Active}@121dd6b9
@@ -293,6 +297,7 @@ private suspend fun exceptionsWithChildren() {
         val childJob1 = launch {
 
             println("Child1 scope: $this")
+
             for (i in 0 until 5) {
                 delay(500)
                 println("🔥 Child1 #$i, thread: ${Thread.currentThread().name}}, coroutineScope: $this")
@@ -395,6 +400,13 @@ private suspend fun exceptionsWithChildren() {
 
 }
 
+/**
+ * When multiple children of a coroutine fail with an exception the general rule is
+ * "the first exception wins", so the first exception gets handled.
+ *
+ * All additional exceptions that happen after the first one are attached to the
+ * first exception as suppressed ones.
+ */
 // 🔥 Exceptions aggregation
 private suspend fun exceptionsAggregation() {
 
@@ -487,12 +499,14 @@ private suspend fun exceptionsAreTransparentAndUnwrapped() {
  * * [SupervisorJob] let's parent coroutine to continue if a child coroutine throws an Exception
  *
  * * Whenever a child scope is created it does create a new [Job] instance instead of
- * inheriting from parent. Thus, **`childJob1`** should have it's own [SupervisorJob] in [CoroutineScope.launch]
+ * inheriting from parent. Thus, **`childJob1`** should have it's own [SupervisorJob]
+ * in [CoroutineScope.launch]
  * builder method to handle it's exception without propagating to parent.
  *
  * are NOT propagated to **parent**
  *  @see <a href="https://medium.com/androiddevelopers/coroutines-first-things-first-e6187bf3bb21">Cancellation and Exceptions in Coroutines</a>
  */
+
 // 🔥 INFO Supervision
 private suspend fun exceptionWithSupervisorJob() {
 
@@ -566,26 +580,31 @@ private suspend fun supervisionExceptionAndCancellations() {
 
     val supervisor = SupervisorJob()
 
-
     with(CoroutineScope(coroutineContext + supervisor)) {
 
         // launch the first child -- its exception is ignored for this example (don't do this in practice!)
         val firstChild = launch(CoroutineExceptionHandler { _, _ -> }) {
+
             println("First child is failing")
             throw AssertionError("First child is cancelled")
+
         }
 
         // launch the second child
         val secondChild = launch {
+
             firstChild.join()
+
             // Cancellation of the first child is not propagated to the second child
             println("First child is cancelled: ${firstChild.isCancelled}, but second one is still active")
+
             try {
                 delay(Long.MAX_VALUE)
             } finally {
                 // But cancellation of the supervisor is propagated
                 println("Second child is cancelled because supervisor is cancelled")
             }
+
         }
 
         // wait until the first child fails & completes
@@ -683,11 +702,14 @@ private suspend fun exceptionsInSupervisedCoroutines() {
     }
 
     supervisorScope {
+
         val child = launch(handler) {
             println("Child throws an exception")
             throw AssertionError()
         }
+
         println("Scope is completing")
+
     }
     println("Scope is completed")
 

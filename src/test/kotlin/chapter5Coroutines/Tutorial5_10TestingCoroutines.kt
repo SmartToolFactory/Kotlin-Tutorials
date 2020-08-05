@@ -369,7 +369,10 @@ class IntegratingWithStructuredConcurrencyTests {
 
             // WHEN
             subjectWithValue.getMockResponse()
-            // 🔥🔥 Required to progress time beyond delay
+            /*
+                🔥🔥 Required to progress time beyond delay, because getMockResponse()
+                function has another launch builder
+             */
             advanceTimeBy(10_000)
 
             // THEN

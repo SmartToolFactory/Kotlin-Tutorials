@@ -1,6 +1,6 @@
 package chapter4Functions
 
-fun main(args: Array<String>) {
+fun main() {
 
     // INFO 🔥 Inline Function
     /**********************************************/

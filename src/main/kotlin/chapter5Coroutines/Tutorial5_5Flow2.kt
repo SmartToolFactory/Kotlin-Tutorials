@@ -50,12 +50,8 @@ fun main() = runBlocking<Unit> {
     // 🔥 INFO Transparent catch
 //    exampleTransparentCatch()
 
-    // 🔥 INFO Custom interval
-//    exampleCustomInterval()
-
     // 🔥 INFO Catching declaratively
 //    exampleCatchingDecleratively()
-
 
     /*
        🔥 Flow Completion
@@ -67,7 +63,10 @@ fun main() = runBlocking<Unit> {
     // 🔥 INFO  Declarative handling
 //    exampleFlowCompletionDeclarative()
 
-    exampleFlowCompletionDeclarativeExceptions()
+//    exampleFlowCompletionDeclarativeExceptions()
+
+    // 🔥 INFO Custom interval
+    exampleCustomInterval()
 }
 
 
@@ -639,13 +638,13 @@ suspend fun exampleFlowCompletionDeclarativeExceptions2() {
     🔥 Custom Interval Implementation
  */
 // Custom Interval implementation
-@ExperimentalCoroutinesApi
 private fun exampleCustomInterval() {
 
     val coroutineScope = CoroutineScope(SupervisorJob())
 
-    coroutineScope.launch {
-        val job = interval(1, TimeUnit.SECONDS)
+  val job =  coroutineScope.launch {
+
+        val jobInterval = interval(1, TimeUnit.SECONDS)
             .onStart {
                 emit(-1)
             }
@@ -657,14 +656,16 @@ private fun exampleCustomInterval() {
             }
             .launchIn(coroutineScope)
 
+      println("JobInterval $jobInterval")
+
     }
 
+    println("Job: $job")
 
     sleep(5000)
 }
 
-@ExperimentalCoroutinesApi
-fun CoroutineScope.interval(timeInMillis: Long, timeUnit: TimeUnit): Flow<Long> = flow {
+fun interval(timeInMillis: Long, timeUnit: TimeUnit): Flow<Long> = flow {
 
     var counter: Long = 0
 
@@ -678,7 +679,7 @@ fun CoroutineScope.interval(timeInMillis: Long, timeUnit: TimeUnit): Flow<Long> 
         else -> timeInMillis
     }
 
-    while (isActive) {
+    while (true) {
         delay(delayTime)
         emit(counter++)
     }

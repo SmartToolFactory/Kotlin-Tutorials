@@ -83,7 +83,6 @@ fun main() {
     var mySingletonObject = MySingletonObject.getInstance()
     println("MySingletonObject first: $mySingletonObject")
     mySingletonObject = MySingletonObject.getInstance()
-
     // INFO 🔥 ⚠️ Both objects are the same
     println("MySingletonObject second: $mySingletonObject")
 
@@ -111,7 +110,12 @@ fun main() {
     // INFO 🔥 ⚠️  SAME OBJECTS because they are Companion Objects in type of Factory
     val f: Factory<MyClass> = MyCompanionClass
     val g: Factory<MyClass> = MyCompanionClass
-    print("TestStringConcatenation for Factory MyCompanionClass instances f $f, and g $g")
+    print("Factory MyCompanionClass instances f $f, and g $g")
+
+    val myClass1 = f.create()
+    val myClass2 = f.create()
+
+    println("Companion create() myClass1 $myClass1, myClass2: $myClass2")
 }
 
 // INFO 🔥 Object Expressions
