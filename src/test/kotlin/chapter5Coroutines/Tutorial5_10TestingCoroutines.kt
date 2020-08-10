@@ -85,7 +85,26 @@ class RunBlockingTests {
         // ...
     }
 
+    /**
+     * ✅ THIS TEST PASSES
+     */
+    @Test
+    fun `Run blocking test`() = runBlockingTest {
 
+        // GIVEN
+        val expected = "Hello World"
+
+        // WHEN
+        // 🔥🔥 Time is advanced by delay duration instantly
+        val actual = getResultWithVeryLongDelay()
+
+        // THEN
+        Truth.assertThat(actual).isEqualTo(expected)
+    }
+
+    /**
+     * ✅ THIS TEST PASSES
+     */
     @Test
     fun `Run blocking test using async`() = runBlockingTest {
 
@@ -118,6 +137,27 @@ class RunBlockingTests {
             // 🔥🔥 Time is advanced by delay duration instantly
             result = getResultWithVeryLongDelay()
         }
+
+        // THEN
+        Truth.assertThat(result).isEqualTo(expected)
+    }
+
+    /**
+     * ✅ THIS TEST PASSES
+     */
+    @Test
+    fun `Run blocking test using launch and advance time until Idle`() = runBlockingTest {
+
+        // GIVEN
+        val expected = "Hello World"
+        var result = ""
+
+        // WHEN
+        launch {
+            // 🔥🔥 Time is advanced by delay duration instantly
+            result = getResultWithVeryLongDelay()
+        }
+        advanceUntilIdle()
 
         // THEN
         Truth.assertThat(result).isEqualTo(expected)
@@ -362,22 +402,47 @@ class IntegratingWithStructuredConcurrencyTests {
         }
 
         @Test
-        fun `Test subject that assigns value via coroutine`() = testScope.runBlockingTest {
+        fun `Test subject that assigns value via coroutine suspend`() = testScope.runBlockingTest {
 
             // GIVEN
             val subjectWithValue = SubjectWithValue(testScope)
 
             // WHEN
-            subjectWithValue.getMockResponse()
-            /*
-                🔥🔥 Required to progress time beyond delay, because getMockResponse()
-                function has another launch builder
-             */
-            advanceTimeBy(10_000)
+            subjectWithValue.getMockResponseSuspended()
 
+            println("🎃 Before TEST ends")
             // THEN
             Truth.assertThat(subjectWithValue.result).isEqualTo(5)
         }
+
+        @Test
+        fun `Test subject that assigns value via coroutine and launch`() =
+            testScope.runBlockingTest {
+
+                // GIVEN
+                val subjectWithValue = SubjectWithValue(testScope)
+
+                // WHEN
+                subjectWithValue.getMockResponseWithLaunch()
+                /*
+                    🔥🔥 Required to progress time beyond delay, because getMockResponse()
+                    function has another launch builder
+                 */
+                advanceTimeBy(10_000)
+
+                // THEN
+                println("🎃 Before TEST ends in thread: ${Thread.currentThread().name}")
+                Truth.assertThat(subjectWithValue.result).isEqualTo(5)
+
+                /*
+                    Without advance time
+                    Prints:
+                    😱 getDelayedResponse() BEFORE DELAY in thread: main @coroutine#2
+                    🎃 Before TEST ends in thread: main @coroutine#1
+                    😱 getDelayedResponse() AFTER DELAY in thread: main @coroutine#2
+                 */
+
+            }
 
         /**
          * 🔥🔥 For this test to not crash put `  testScope.cleanupTestCoroutines()`
@@ -433,7 +498,13 @@ class IntegratingWithStructuredConcurrencyTests {
 
             var result = -1
 
-            fun getMockResponse() {
+            suspend fun getMockResponseSuspended(): Int {
+                result = 0
+                result = getDelayedResponse()
+                return result
+            }
+
+            fun getMockResponseWithLaunch() {
 
                 result = 0
 
@@ -464,15 +535,15 @@ class IntegratingWithStructuredConcurrencyTests {
                 scope.launch {
                     println("⛱ fooWithException() thread: ${Thread.currentThread().name}, scope: $this")
                     delay(6_000)
-                    println("😎 fooWithException() After delay")
-                    throw RuntimeException("Failed via TEST exception")
+                    println("😎 fooWithException() After delay in thread: ${Thread.currentThread().name}")
+                    throw RuntimeException("Failed via TEST exception in thread: ${Thread.currentThread().name}")
                 }
             }
 
             private suspend fun getDelayedResponse(): Int {
-                println("😱 getDelayedResponse() BEFORE DELAY")
+                println("😱 getDelayedResponse() BEFORE DELAY in thread: ${Thread.currentThread().name}")
                 delay(10_000)
-                println("😱 getDelayedResponse() AFTER DELAY")
+                println("😱 getDelayedResponse() AFTER DELAY in thread: ${Thread.currentThread().name}")
                 return 5
             }
 

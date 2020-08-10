@@ -197,6 +197,7 @@ suspend fun exampleCollectLatest() {
 
     val time = measureTimeMillis {
         flowSample()
+
             .collectLatest { value -> // cancel & restart on the latest value
                 println("Collecting $value")
                 delay(300) // pretend we are processing it for 300 ms
@@ -364,7 +365,7 @@ suspend fun exampleFlatMapConcat() {
      */
 }
 
-// 🔥 INFO flatMapMerge (⚠️ RxJava concatMap concurrent)
+// 🔥 INFO flatMapMerge (⚠️ RxJava flatMap)
 
 /**
  * Another flattening mode is to concurrently collect all the incoming flows and merge
@@ -644,17 +645,17 @@ private fun exampleCustomInterval() {
 
   val job =  coroutineScope.launch {
 
-        val jobInterval = interval(1, TimeUnit.SECONDS)
-            .onStart {
-                emit(-1)
-            }
-            .onEach {
-                println(it)
-            }
-            .map {
-                "Current time $it"
-            }
-            .launchIn(coroutineScope)
+      val jobInterval = interval(1, TimeUnit.SECONDS)
+              .onStart {
+                  emit(-1)
+              }
+              .onEach {
+                  println(it)
+              }
+              .map {
+                  "Current time $it"
+              }
+              .launchIn(coroutineScope)
 
       println("JobInterval $jobInterval")
 
