@@ -23,6 +23,7 @@ fun main() = runBlocking {
 //    cancellationAndExceptions2()
 //    cancellationWithChildren()
 //    exceptionsWithChildren()
+    exceptionWithChildrenHandlers()
 
     // 🔥 Exceptions aggregation
 //    exceptionsAggregation()
@@ -30,13 +31,15 @@ fun main() = runBlocking {
 
     // 🔥 INFO Supervision
 //    exceptionWithSupervisorJob()
-    supervisionExceptionAndCancellations()
+//    supervisionExceptionWithOutCoroutineExceptionHandler()
+//    supervisionExceptionAndCancellations()
 
     // 🔥 INFO Supervision Scope
 //    supervisionScope()
 
     // 🔥INFO Exceptions in supervised coroutines
-//    exceptionsInSupervisedCoroutines()
+//    exceptionsInSupervisorScope()
+//    exceptionsInSupervisorScope2()
 }
 
 /**
@@ -47,14 +50,14 @@ fun main() = runBlocking {
 private suspend fun exceptionPropagation() {
 
     val job = GlobalScope.launch {
-        println("Throwing exception from launch")
+        println("Throwing exception from launch ${Thread.currentThread().name}")
         throw IndexOutOfBoundsException() // Will be printed to the console by Thread.defaultUncaughtExceptionHandler
     }
     job.join()
-    println("Joined failed job")
+    println("Joined failed job ${Thread.currentThread().name}")
 
     val deferred = GlobalScope.async {
-        println("Throwing exception from async")
+        println("Throwing exception from async ${Thread.currentThread().name}")
         throw ArithmeticException() // Nothing is printed, relying on user to call await
     }
 
@@ -62,16 +65,17 @@ private suspend fun exceptionPropagation() {
         deferred.await()
         println("Unreached")
     } catch (e: ArithmeticException) {
-        println("Caught ArithmeticException")
+        println("Caught ArithmeticException ${Thread.currentThread().name}")
     }
 
     /*
         Prints:
-        Throwing exception from launch
+        Throwing exception from launch DefaultDispatcher-worker-1
         Exception in thread "DefaultDispatcher-worker-1" java.lang.IndexOutOfBoundsException
-        Joined failed job
-        Throwing exception from async
-        Caught ArithmeticException
+        Joined failed job main
+        Throwing exception from async DefaultDispatcher-worker-1
+        Caught ArithmeticException main
+
      */
 }
 
@@ -91,10 +95,11 @@ private suspend fun exceptionPropagation() {
 private suspend fun coroutineExceptionHandlerFun() {
 
     val handler = CoroutineExceptionHandler { _, exception ->
-        println("Caught $exception")
+        println("Caught $exception, in thread: ${Thread.currentThread().name}")
     }
 
     val job = GlobalScope.launch(handler) {
+        println("Throwing exception in launch in thread: ${Thread.currentThread().name}")
         throw AssertionError()
     }
 
@@ -106,7 +111,8 @@ private suspend fun coroutineExceptionHandlerFun() {
 
     /*
         Prints:
-        Caught java.lang.AssertionError
+        Throwing exception in launch in thread: DefaultDispatcher-worker-1
+        Caught java.lang.AssertionError, in thread: DefaultDispatcher-worker-1
      */
 
 }
@@ -150,6 +156,14 @@ private suspend fun cancellationAndExceptions() {
         job.join()
     }
 
+    /*
+        Prints:
+        Cancelling child
+        Child is cancelled
+        Parent is not cancelled
+
+     */
+
 }
 
 /**
@@ -158,7 +172,7 @@ private suspend fun cancellationAndExceptions() {
  *
  * This behaviour cannot be overridden and is used to provide stable coroutines hierarchies
  * for structured concurrency which do not depend on CoroutineExceptionHandler implementation.
- * The original exception is handled by the parent when all its children terminate.
+ * The original exception is handled by the parent where causes all its children to terminate.
  */
 private suspend fun cancellationAndExceptions2() {
 
@@ -185,7 +199,10 @@ private suspend fun cancellationAndExceptions2() {
         launch { // the second child
             delay(10)
             println("Second child throws an exception")
+            // ⚠️ Alternative 1
             throw ArithmeticException()
+            // ⚠️ Alternative 2
+//            throw CancellationException()
         }
     }
     job.join()
@@ -283,7 +300,8 @@ private suspend fun cancellationWithChildren() {
  * Throwing exception other than [CancellationException] in one child coroutine
  * cancels parent coroutine and parent coroutine cancels it's children.
  *
- * [CancellationException] only stops the coroutine that threw that exception
+ * [CancellationException] only stops the coroutine that threw that exception if there is
+ * a [CoroutineExceptionHandler] used with job builder function, if NOT app CRASHES.
  */
 private suspend fun exceptionsWithChildren() {
 
@@ -400,6 +418,68 @@ private suspend fun exceptionsWithChildren() {
 
 }
 
+private suspend fun exceptionWithChildrenHandlers() {
+
+    val childCoroutineExceptionHandler1 = CoroutineExceptionHandler { _, exception ->
+        println("CHILD1 CoroutineExceptionHandler Caught exception $exception")
+    }
+
+    val childCoroutineExceptionHandler2 = CoroutineExceptionHandler { _, exception ->
+        println("CHILD2 CoroutineExceptionHandler Caught exception $exception")
+    }
+
+    val myCoroutineScope = CoroutineScope(coroutineContext + Dispatchers.Default)
+
+    println("START with scope: $myCoroutineScope, job: ${myCoroutineScope.coroutineContext[Job]}")
+
+    myCoroutineScope.launch {
+        println("Inside scope: $this, thread: ${Thread.currentThread().name}")
+
+        // 🔥🔥This job should have it's own SupervisorJob.
+        val firstChild =
+            launch(SupervisorJob() + childCoroutineExceptionHandler1) {
+
+                for (i in 0 until 5) {
+                    delay(500)
+                    println("🔥 Child1 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+                    if (i == 2) throw AssertionError("First child is cancelled")
+                }
+            }
+
+        val secondChild = launch(childCoroutineExceptionHandler2) {
+            try {
+                for (i in 0 until 5) {
+                    delay(500)
+                    println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+                }
+            } catch (e: Exception) {
+                println("Child2 EXCEPTION: $e")
+            }
+        }
+    }
+
+    delay(3000)
+    println("END")
+
+    /*
+        Prints:
+
+        START with scope: CoroutineScope(coroutineContext=[BlockingCoroutine{Active}@14514713, DefaultDispatcher]), job: BlockingCoroutine{Active}@14514713
+        Inside scope: StandaloneCoroutine{Active}@2a4404e2, thread: DefaultDispatcher-worker-1
+        🥶 Child2 i: 0, scope: StandaloneCoroutine{Active}@1ee5d268, Thread: DefaultDispatcher-worker-3
+        🔥 Child1 i: 0, scope: StandaloneCoroutine{Active}@4f974680, Thread: DefaultDispatcher-worker-2
+        🔥 Child1 i: 1, scope: StandaloneCoroutine{Active}@4f974680, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 1, scope: StandaloneCoroutine{Active}@1ee5d268, Thread: DefaultDispatcher-worker-2
+        🔥 Child1 i: 2, scope: StandaloneCoroutine{Active}@4f974680, Thread: DefaultDispatcher-worker-2
+        🥶 Child2 i: 2, scope: StandaloneCoroutine{Active}@1ee5d268, Thread: DefaultDispatcher-worker-3
+        CHILD1 CoroutineExceptionHandler Caught exception java.lang.AssertionError: First child is cancelled
+        🥶 Child2 i: 3, scope: StandaloneCoroutine{Active}@1ee5d268, Thread: DefaultDispatcher-worker-2
+        🥶 Child2 i: 4, scope: StandaloneCoroutine{Active}@1ee5d268, Thread: DefaultDispatcher-worker-2
+        END
+     */
+
+}
+
 /**
  * When multiple children of a coroutine fail with an exception the general rule is
  * "the first exception wins", so the first exception gets handled.
@@ -413,6 +493,7 @@ private suspend fun exceptionsAggregation() {
     val handler = CoroutineExceptionHandler { _, exception ->
         println("Caught $exception with suppressed ${exception.suppressed.contentToString()}")
     }
+
     val job = GlobalScope.launch(handler) {
 
         launch {
@@ -447,14 +528,14 @@ private suspend fun exceptionsAggregation() {
 private suspend fun exceptionsAreTransparentAndUnwrapped() {
 
     val handler = CoroutineExceptionHandler { _, exception ->
-        println("Caught original $exception")
+        println("CoroutineExceptionHandler caught original $exception")
     }
 
     val job = GlobalScope.launch(handler) {
 
         println("Outer scope: $this")
-        val inner = launch {
 
+        val inner = launch {
             println("Middle scope: $this")
 
             launch {
@@ -463,42 +544,39 @@ private suspend fun exceptionsAreTransparentAndUnwrapped() {
 
                 launch {
                     println("Lowest scope: $this")
-
                     throw IOException()
                 }
-
             }
         }
 
         try {
             inner.join()
         } catch (e: CancellationException) {
-            println("Rethrowing CancellationException with original cause")
+            println("Rethrowing CancellationException with original cause: ${e.message}")
             throw e
         }
-
     }
 
     job.join()
 
     /*
         Prints:
+        Outer scope: StandaloneCoroutine{Active}@1647223b
+        Middle scope: StandaloneCoroutine{Active}@349b4315
+        Inner scope: StandaloneCoroutine{Active}@354d26eb
+        Lowest scope: StandaloneCoroutine{Active}@4faa740e
 
-        Outer scope: StandaloneCoroutine{Active}@5f48c4f8
-        Middle scope: StandaloneCoroutine{Active}@73ca454b
-        Inner scope: StandaloneCoroutine{Active}@4e5fe9ac
-        Lowest scope: StandaloneCoroutine{Active}@2add1b91
-
-        Rethrowing CancellationException with original cause
-        Caught original java.io.IOException
+        Rethrowing CancellationException with original cause: StandaloneCoroutine is cancelling
+        CoroutineExceptionHandler caught original java.io.IOException
      */
 
 }
 
+
 /**
  * * [SupervisorJob] let's parent coroutine to continue if a child coroutine throws an Exception
  *
- * * Whenever a child scope is created it does create a new [Job] instance instead of
+ * * Whenever a child scope is created it does create a **NEW** [Job] instance instead of
  * inheriting from parent. Thus, **`childJob1`** should have it's own [SupervisorJob]
  * in [CoroutineScope.launch]
  * builder method to handle it's exception without propagating to parent.
@@ -522,7 +600,7 @@ private suspend fun exceptionWithSupervisorJob() {
     }
 
     val myCoroutineScope =
-        CoroutineScope(coroutineContext + parentCoroutineExceptionHandler  + Dispatchers.IO)
+        CoroutineScope(coroutineContext + parentCoroutineExceptionHandler + Dispatchers.IO)
 
     println("START with scope: $myCoroutineScope, job: ${myCoroutineScope.coroutineContext[Job]}")
 
@@ -556,21 +634,101 @@ private suspend fun exceptionWithSupervisorJob() {
     println("END")
 
     /*
+
+        ⚠️ If firs job uses launch(SupervisorJob() + childCoroutineExceptionHandler)
+        Child CoroutineExceptionHandler catches exception, otherwise
+        ParentCoroutineExceptionHandler catches the exception if it's added to parent scope.
+
         Prints:
+
         START with scope: kotlinx.coroutines.internal.ContextScope@45283ce2
         Inside scope: kotlinx.coroutines.internal.ContextScope@45283ce2, thread: main
-        🔥 Child1 i: 0, scope: StandaloneCoroutine{Active}@8c4d012, Thread: DefaultDispatcher-worker-4
-        🥶 Child2 i: 0, scope: StandaloneCoroutine{Active}@47f69e36, Thread: DefaultDispatcher-worker-2
-        🔥 Child1 i: 1, scope: StandaloneCoroutine{Active}@8c4d012, Thread: DefaultDispatcher-worker-5
-        🥶 Child2 i: 1, scope: StandaloneCoroutine{Active}@47f69e36, Thread: DefaultDispatcher-worker-3
-        🔥 Child1 i: 2, scope: StandaloneCoroutine{Active}@8c4d012, Thread: DefaultDispatcher-worker-3
+        Inside scope: StandaloneCoroutine{Active}@228a0e79, thread: DefaultDispatcher-worker-1
+        🥶 Child2 i: 0, scope: StandaloneCoroutine{Active}@689cf36a, Thread: DefaultDispatcher-worker-2
+        🔥 Child1 i: 0, scope: StandaloneCoroutine{Active}@55390709, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 1, scope: StandaloneCoroutine{Active}@689cf36a, Thread: DefaultDispatcher-worker-3
+        🔥 Child1 i: 1, scope: StandaloneCoroutine{Active}@55390709, Thread: DefaultDispatcher-worker-2
+        🥶 Child2 i: 2, scope: StandaloneCoroutine{Active}@689cf36a, Thread: DefaultDispatcher-worker-3
+        🔥 Child1 i: 2, scope: StandaloneCoroutine{Active}@55390709, Thread: DefaultDispatcher-worker-2
         CHILD CoroutineExceptionHandler Caught exception java.lang.AssertionError: First child is cancelled
-        🥶 Child2 i: 2, scope: StandaloneCoroutine{Active}@47f69e36, Thread: DefaultDispatcher-worker-5
-        🥶 Child2 i: 3, scope: StandaloneCoroutine{Active}@47f69e36, Thread: DefaultDispatcher-worker-1
-        🥶 Child2 i: 4, scope: StandaloneCoroutine{Active}@47f69e36, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 3, scope: StandaloneCoroutine{Active}@689cf36a, Thread: DefaultDispatcher-worker-2
+        🥶 Child2 i: 4, scope: StandaloneCoroutine{Active}@689cf36a, Thread: DefaultDispatcher-worker-2
         END
      */
+
 }
+
+/**
+ * Without [CoroutineExceptionHandler] app CRASHES because there is NO [CoroutineExceptionHandler]
+ * with parent scope, [myCoroutineScope], but second job still works
+ */
+private suspend fun supervisionExceptionWithOutCoroutineExceptionHandler() {
+
+    val supervisorJob = SupervisorJob()
+    val myCoroutineScope = CoroutineScope(supervisorJob)
+
+    myCoroutineScope.launch {
+        println("Inside scope: $this, thread: ${Thread.currentThread().name}")
+
+        /*
+            🔥🔥This job crashes since try-catch block does not recover from crash inside
+            launch
+         */
+
+        try {
+            launch {
+
+                for (i in 0 until 10) {
+                    delay(500)
+                    println("🔥 Child1 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+                    if (i == 2) throw AssertionError("First child is cancelled")
+                }
+            }
+
+        } catch (e: Exception) {
+            println("⚠️ First CHILD JOB crashed with ${e.message}, in thread: ${Thread.currentThread().name}")
+        }
+
+
+        /*
+            🔥🔥🔥 If this launch uses SupervisorJOb() it continues, and the parent coroutine waits for it to finish,
+            even after first child job crashes
+         */
+        launch(SupervisorJob()) {
+            try {
+                for (i in 0 until 10) {
+                    delay(500)
+                    println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+                }
+            } catch (e: Exception) {
+                println("Child2 EXCEPTION: $e")
+            }
+        }
+    }
+
+    sleep(4000)
+    println("END")
+
+    /*
+        Prints:
+        Inside scope: StandaloneCoroutine{Active}@170aad61, thread: DefaultDispatcher-worker-1
+        🔥 Child1 i: 0, scope: StandaloneCoroutine{Active}@107a89fc, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 0, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-2
+        🔥 Child1 i: 1, scope: StandaloneCoroutine{Active}@107a89fc, Thread: DefaultDispatcher-worker-2
+        🥶 Child2 i: 1, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 2, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-2
+        🔥 Child1 i: 2, scope: StandaloneCoroutine{Active}@107a89fc, Thread: DefaultDispatcher-worker-3
+        Exception in thread "DefaultDispatcher-worker-3" java.lang.AssertionError: First child is cancelled
+        🥶 Child2 i: 3, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 4, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 5, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-3
+        🥶 Child2 i: 6, scope: StandaloneCoroutine{Active}@14facc9e, Thread: DefaultDispatcher-worker-3
+        END
+
+     */
+
+}
+
 
 /**
 🔥🔥🔥 Adding a Job to [CoroutineScope] only effects that scope.
@@ -582,12 +740,10 @@ private suspend fun supervisionExceptionAndCancellations() {
 
     with(CoroutineScope(coroutineContext + supervisor)) {
 
-        // launch the first child -- its exception is ignored for this example (don't do this in practice!)
+        // launch the first child
         val firstChild = launch(CoroutineExceptionHandler { _, _ -> }) {
-
             println("First child is failing")
             throw AssertionError("First child is cancelled")
-
         }
 
         // launch the second child
@@ -695,10 +851,10 @@ private suspend fun supervisionScope() {
  * This difference comes from the fact that child's failure is not propagated to the parent.
  */
 // 🔥INFO Exceptions in supervised coroutines
-private suspend fun exceptionsInSupervisedCoroutines() {
+private suspend fun exceptionsInSupervisorScope() {
 
     val handler = CoroutineExceptionHandler { _, exception ->
-        println("Caught $exception")
+        println("CoroutineExceptionHandler caught $exception, in thread: ${Thread.currentThread().name}")
     }
 
     supervisorScope {
@@ -722,4 +878,47 @@ private suspend fun exceptionsInSupervisedCoroutines() {
         Scope is completed
      */
 
+}
+
+private suspend fun exceptionsInSupervisorScope2() {
+
+    val handler = CoroutineExceptionHandler { _, exception ->
+        println("CoroutineExceptionHandler caught $exception, in thread: ${Thread.currentThread().name}")
+    }
+
+    supervisorScope {
+
+        val child1 = launch(handler) {
+
+            for (i in 0 until 10) {
+                delay(200)
+                println("🔥 Child1 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+                if (i == 2) throw AssertionError("First child is cancelled")
+            }
+        }
+
+        val child2 = launch {
+            for (i in 0 until 5) {
+                delay(200)
+                println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
+            }
+        }
+    }
+
+    println("END")
+
+    /*
+        Prints:
+
+        🔥 Child1 i: 0, scope: StandaloneCoroutine{Active}@64a294a6, Thread: main
+        🥶 Child2 i: 0, scope: StandaloneCoroutine{Active}@7e0b37bc, Thread: main
+        🔥 Child1 i: 1, scope: StandaloneCoroutine{Active}@64a294a6, Thread: main
+        🥶 Child2 i: 1, scope: StandaloneCoroutine{Active}@7e0b37bc, Thread: main
+        🔥 Child1 i: 2, scope: StandaloneCoroutine{Active}@64a294a6, Thread: main
+        CoroutineExceptionHandler caught java.lang.AssertionError: First child is cancelled, in thread: main
+        🥶 Child2 i: 2, scope: StandaloneCoroutine{Active}@7e0b37bc, Thread: main
+        🥶 Child2 i: 3, scope: StandaloneCoroutine{Active}@7e0b37bc, Thread: main
+        🥶 Child2 i: 4, scope: StandaloneCoroutine{Active}@7e0b37bc, Thread: main
+        END
+     */
 }

@@ -1,6 +1,8 @@
 package chapter5Coroutines
 
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.launchIn
 import java.lang.Thread.sleep
 
 
@@ -8,7 +10,7 @@ import java.lang.Thread.sleep
 suspend fun main() {
 
     // INFO 🔥 Global Scope
-    globalLaunch()
+//    globalLaunch()
 
 //    globalLaunchWithRunBlocking()
 
@@ -16,7 +18,7 @@ suspend fun main() {
 //    globalLaunchWithJoin()
 
     // INFO 🔥 Structured Concurrency
-//    structuredConcurrency()
+    structuredConcurrency()
 
 
     // INFO 🔥 Scope Builder
@@ -31,8 +33,8 @@ suspend fun main() {
     // INFO 🔥 Global Coroutines are like daemon threads
 //    coroutinesLikeDaemonThreads()
 
-
 }
+
 
 @ExperimentalStdlibApi
 private fun globalLaunch() {
@@ -44,8 +46,10 @@ private fun globalLaunch() {
         println("globalLaunch() initialize...")
         // launch new coroutine in background and continue
         delay(1000L) // non-blocking delay for 1 second (default time unit is ms)
-        println("World! in thread${Thread.currentThread().name}, scope: $this" +
-                " dispatcher: ${this.coroutineContext[CoroutineDispatcher]}") // print after delay
+        println(
+            "World! in thread${Thread.currentThread().name}, scope: $this" +
+                    " dispatcher: ${this.coroutineContext[CoroutineDispatcher]}"
+        ) // print after delay
     }
 
     println("Hello, ${Thread.currentThread().name}") // main thread continues while coroutine is delayed
@@ -170,7 +174,7 @@ fun structuredConcurrency() = runBlocking {
         Prints:
         structuredConcurrency() scope: BlockingCoroutine{Active}@bebdb06
         Hello, thread: main
-        World! thread: main, socope: StandaloneCoroutine{Active}@3d82c5f3
+        World! thread: main, scope: StandaloneCoroutine{Active}@3d82c5f3
      */
 }
 

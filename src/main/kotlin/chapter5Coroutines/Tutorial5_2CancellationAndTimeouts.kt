@@ -9,7 +9,7 @@ fun main() = runBlocking {
 //    cancel()
 
     // INFO 🔥 Timeout
-//    cancelTimeout()
+    cancelTimeout()
 
     // INFO 🔥 Cancellation is cooperative
 //    cancelCooperative()
@@ -18,7 +18,7 @@ fun main() = runBlocking {
 //    cancelComputation()
 
     // INFO 🔥 Closing resources with finally
-    cancelWithTryAndFinally()
+//    cancelWithTryAndFinally()
 
     // INFO 🔥 Run non-cancellable block
 //    cancelNonCancelable()
@@ -45,8 +45,8 @@ private suspend fun CoroutineScope.cancel() {
     delay(1300L) // delay a bit
     println("main: I'm tired of waiting!")
 
-    job.cancel() // cancels the job
-//    job.join() // waits for job's completion
+//    job.cancel() // cancels the job
+    job.join() // waits for job's completion
 
     println("main: Now I can quit.")
 

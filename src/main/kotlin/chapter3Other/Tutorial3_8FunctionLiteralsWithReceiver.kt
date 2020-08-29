@@ -53,7 +53,11 @@ fun main() {
 
 
     html {
-        this.body()
+        this.body("Hello World")
+    }
+
+    html5 {
+        it.body("Hello World")
     }
 
     // INFO 🔥 Extension Function Literal with Receiver
@@ -107,8 +111,8 @@ fun createStringWithLiteral(block: StringBuilder.() -> Unit): String {
 }
 
 class HTML {
-    fun body() {
-        println("This is the body of HTML file")
+    fun body(text: String) {
+        println("This is the body of HTML file: $text")
     }
 }
 
@@ -116,6 +120,13 @@ fun html(init: HTML.() -> Unit): HTML {
 
     val html = HTML() // create the receiver object
     html.init() // pass the receiver object to the lambda return html
+    return html
+}
+
+fun html5(init: (HTML) -> Unit): HTML {
+    val html = HTML()
+    init(html)
+
     return html
 }
 

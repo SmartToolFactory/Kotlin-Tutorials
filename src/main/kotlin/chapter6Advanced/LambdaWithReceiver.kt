@@ -39,7 +39,6 @@ private fun testScopedFunctions() {
 
 }
 
-
 fun <T, R> T.letMe(predicate: (T) -> R): R {
     return predicate(this)
 }

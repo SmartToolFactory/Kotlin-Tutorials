@@ -1,9 +1,15 @@
 package chapter5Coroutines
 
 import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
+import java.lang.Thread.sleep
 
+/**
+ * * launch is asynchronous
+ * * async is synchronous if await is called immediately, async if async1{}.await + async2{}.await
+ * * withContext is synchronous even if different dispatchers with different threads are used
+ */
 fun main() = runBlocking<Unit> {
+
 
     // INFO 🔥 Sequential by default
     /*
@@ -69,53 +75,69 @@ fun main() = runBlocking<Unit> {
 //    println("Completed in $time ms")
 
     // 🔥 Structured concurrency with async
+//    //  ⚠️ Asynchronous with await
 //    val time = measureTimeMillis {
 //        println("The answer is ${concurrentSum()}")
 //    }
 //    println("Completed in $time ms")
 
     /**
-        Prints:
+    Prints:
 
-        doSomethingUsefulOne in thread: main
-        doSomethingUsefulTwo in thread: main
-        The answer is 42
-        Completed in 1036 ms
+    doSomethingUsefulOne in thread: main
+    doSomethingUsefulTwo in thread: main
+    The answer is 42
+    Completed in 1036 ms
      */
 
+    //  ⚠️ Synchronous with await
 //    val timeDeferred = measureTimeMillis {
 //        println("The answer is ${concurrentSumDeferred()}")
 //    }
 //    println("Completed in $timeDeferred ms")
 
     /**
-        Prints:
-        doSomethingUsefulOne in thread: main
-        doSomethingUsefulTwo in thread: main
-        The answer is 42
-        🎃 Completed in 2036 ms
+    Prints:
+    doSomethingUsefulOne in thread: main
+    doSomethingUsefulTwo in thread: main
+    The answer is 42
+    🎃 Completed in 2036 ms
      */
 
+    //  ⚠️ Synchronous with withContext
 //    val timeWithContext = measureTimeMillis {
 //        println("The answer is ${concurrentSumWithContext()}")
 //    }
 //    println("Completed in $timeWithContext ms")
 
     /**
-        Prints:
-        doSomethingUsefulOne in thread: DefaultDispatcher-worker-1
-        doSomethingUsefulTwo in thread: DefaultDispatcher-worker-2
-        The answer is 42
-        Completed in 2064 ms
+    Prints:
+    doSomethingUsefulOne in thread: DefaultDispatcher-worker-1
+    doSomethingUsefulTwo in thread: DefaultDispatcher-worker-2
+    The answer is 42
+    Completed in 2064 ms
      */
+
+//    withContextIsSynchronous()
+    /**
+    Prints:
+    🍎 First Job: i: 0, in thread: DefaultDispatcher-worker-1
+    🍎 First Job: i: 1, in thread: DefaultDispatcher-worker-1
+    🍎 First Job: i: 2, in thread: DefaultDispatcher-worker-1
+    🍏 Second Job: i: 0, in thread: DefaultDispatcher-worker-1
+    🍏 Second Job: i: 1, in thread: DefaultDispatcher-worker-1
+    🍏 Second Job: i: 2, in thread: DefaultDispatcher-worker-1
+     */
+
+    combineLaunchWitContext()
 
     // 🔥 INFO Cancellation is propagated
 
-    try {
-        failedConcurrentSum()
-    } catch(e: ArithmeticException) {
-        println("Computation failed with ArithmeticException")
-    }
+//    try {
+//        failedConcurrentSum()
+//    } catch(e: ArithmeticException) {
+//        println("Computation failed with ArithmeticException")
+//    }
 
 
     /*
@@ -137,27 +159,27 @@ fun main() = runBlocking<Unit> {
 suspend fun printNumsWithDelayOne() {
 
     repeat(100) {
-        println("First function: ${it + 1} in thread: ${Thread.currentThread().name}")
+        println("🔥 First function: ${it + 1} in thread: ${Thread.currentThread().name}")
         delay(1L)
     }
 }
 
 suspend fun printNumsWithDelayTwo() {
     repeat(100) {
-        println("Second function: ${it + 1} in thread: ${Thread.currentThread().name}")
+        println("⏰ Second function: ${it + 1} in thread: ${Thread.currentThread().name}")
         delay(1L)
     }
 
 }
 
 suspend fun doSomethingUsefulOne(): Int {
-    println("doSomethingUsefulOne in thread: ${Thread.currentThread().name}")
+    println("🍏 doSomethingUsefulOne in thread: ${Thread.currentThread().name}")
     delay(1000L) // pretend we are doing something useful here
     return 13
 }
 
 suspend fun doSomethingUsefulTwo(): Int {
-    println("doSomethingUsefulTwo in thread: ${Thread.currentThread().name}")
+    println("🍎 doSomethingUsefulTwo in thread: ${Thread.currentThread().name}")
     delay(1000L) // pretend we are doing something useful here, too
     return 29
 }
@@ -210,12 +232,82 @@ suspend fun concurrentSumDeferred(): Int = coroutineScope {
 }
 
 /**
- *
+ * This function works synchronous and waits for first [withContext] to finish before starting
+ * the second one.
  */
 suspend fun concurrentSumWithContext(): Int = coroutineScope {
     val one = withContext(Dispatchers.Default) { doSomethingUsefulOne() }
-    val two = withContext(Dispatchers.Default) { doSomethingUsefulTwo() }
+    val two = withContext(Dispatchers.IO) { doSomethingUsefulTwo() }
     one + two
+}
+
+suspend fun withContextIsSynchronous() {
+
+    withContext(Dispatchers.Default) {
+        for (i in 0 until 3) {
+            println("🍎 First Job: i: $i, in thread: ${Thread.currentThread().name}")
+            delay(100)
+        }
+    }
+
+    withContext(Dispatchers.IO) {
+        for (i in 0 until 3) {
+            println("🍏 Second Job: i: $i, in thread: ${Thread.currentThread().name}")
+            delay(100)
+        }
+    }
+
+    /*
+        Prints:
+        🍎 First Job: i: 0, in thread: DefaultDispatcher-worker-1
+        🍎 First Job: i: 1, in thread: DefaultDispatcher-worker-1
+        🍎 First Job: i: 2, in thread: DefaultDispatcher-worker-1
+        🍏 Second Job: i: 0, in thread: DefaultDispatcher-worker-1
+        🍏 Second Job: i: 1, in thread: DefaultDispatcher-worker-1
+        🍏 Second Job: i: 2, in thread: DefaultDispatcher-worker-1
+     */
+}
+
+private suspend fun combineLaunchWitContext() {
+
+    val coroutineScope = CoroutineScope(Job())
+
+  val job =  coroutineScope.launch {
+
+        launch {
+            for (i in 0 until 3) {
+                println("🎃 First launch: i: $i, in thread: ${Thread.currentThread().name}")
+                delay(100)
+            }
+        }
+
+        withContext(Dispatchers.Default) {
+            for (i in 0 until 5) {
+                println("🍎 First withContext: i: $i, in thread: ${Thread.currentThread().name}")
+                delay(100)
+            }
+        }
+
+        launch {
+            for (i in 0 until 3) {
+                println("🍋 Second launch: i: $i, in thread: ${Thread.currentThread().name}")
+                delay(100)
+            }
+        }
+
+        withContext(Dispatchers.IO) {
+            for (i in 0 until 3) {
+                println("🍏 Second withContext: i: $i, in thread: ${Thread.currentThread().name}")
+                delay(100)
+            }
+        }
+    }
+
+    sleep(3000)
+
+
+
+
 }
 
 // 🔥 INFO Cancellation is propagated
