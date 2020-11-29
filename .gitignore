@@ -1,6 +1,6 @@
 
 *.len
+.idea/*
 /build/
 /.gradle/vcs-1/
 /.gradle/
-/.idea
