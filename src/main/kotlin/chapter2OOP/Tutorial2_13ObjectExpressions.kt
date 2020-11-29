@@ -6,76 +6,76 @@ import javax.swing.JComponent
 
 fun main() {
 
-    val window = Window()
-
-    // This is Anonymous inner class that implements OnClickListener interface
-
-    // INFO 🔥 Object Expressions
-    window.onWindowClick(object : OnClickListener {
-        override fun onClick() {
-            println("It's clicked!")
-        }
-    })
-
-    val myClickListener = object : OnClickListener {
-        override fun onClick() {
-
-        }
-
-    }
-
-    // 🔥🔥🔥 NOT WORKING, SAM conversion does not work for Kotlin interfaces, at least as of 1.31
-//    window.onWindowClick(OnClickListener{
+//    val window = Window()
 //
+//    // This is Anonymous inner class that implements OnClickListener interface
+//
+//    // INFO 🔥 Object Expressions
+//    window.onWindowClick(object : OnClickListener {
+//        override fun onClick() {
+//            println("It's clicked!")
+//        }
 //    })
-
-    val handler = Handler()
-
-    // Both handler methods are same
-    handler.post(object : Runnable {
-        override fun run() {
-            println("Runnable run() thread: ${Thread.currentThread().name}")
-        }
-    })
-
-    // INFO SAM conversion of interface
-    handler.post(Runnable {
-        println("Hello world from thread ${Thread.currentThread().name}")
-    })
-
-
-    val myRunnable = object : Runnable {
-        override fun run() {
-            println("Runnable run() thread: ${Thread.currentThread().name}")
-        }
-    }
-
-    val thread0 = Thread(myRunnable)
-
-
-    val thread1 = Thread(object : Runnable {
-        override fun run() {
-            println("Hello thread1 ${Thread.currentThread().name}")
-
-        }
-    })
-
-    // INFO SAM conversion of interface
-    val thread2 = Thread(Runnable {
-        println("Hello thread2 ${Thread.currentThread().name}")
-    })
-
-    // INFO SAM conversion of Thread without Runnable
-    val thread3 = Thread {
-        println("Hello thread3 ${Thread.currentThread().name}")
-    }
-
-    thread0.start()
-    thread1.start()
-    thread2.start()
-    thread3.start()
-
-    foo()
+//
+//    val myClickListener = object : OnClickListener {
+//        override fun onClick() {
+//
+//        }
+//
+//    }
+//
+//    // 🔥🔥🔥 NOT WORKING, SAM conversion does not work for Kotlin interfaces, at least as of 1.31
+////    window.onWindowClick(OnClickListener{
+////
+////    })
+//
+//    val handler = Handler()
+//
+//    // Both handler methods are same
+//    handler.post(object : Runnable {
+//        override fun run() {
+//            println("Runnable run() thread: ${Thread.currentThread().name}")
+//        }
+//    })
+//
+//    // INFO SAM conversion of interface
+//    handler.post(Runnable {
+//        println("Hello world from thread ${Thread.currentThread().name}")
+//    })
+//
+//
+//    val myRunnable = object : Runnable {
+//        override fun run() {
+//            println("Runnable run() thread: ${Thread.currentThread().name}")
+//        }
+//    }
+//
+//    val thread0 = Thread(myRunnable)
+//
+//
+//    val thread1 = Thread(object : Runnable {
+//        override fun run() {
+//            println("Hello thread1 ${Thread.currentThread().name}")
+//
+//        }
+//    })
+//
+//    // INFO SAM conversion of interface
+//    val thread2 = Thread(Runnable {
+//        println("Hello thread2 ${Thread.currentThread().name}")
+//    })
+//
+//    // INFO SAM conversion of Thread without Runnable
+//    val thread3 = Thread {
+//        println("Hello thread3 ${Thread.currentThread().name}")
+//    }
+//
+//    thread0.start()
+//    thread1.start()
+//    thread2.start()
+//    thread3.start()
+//
+//    foo()
 
     println("************** Object Declarations **************")
 
@@ -116,6 +116,11 @@ fun main() {
     val myClass2 = f.create()
 
     println("Companion create() myClass1 $myClass1, myClass2: $myClass2")
+
+    val s1 = "Hello"
+    val s2 = "Hello"
+
+    println("S1 === S2  ${s1 === s2}")
 }
 
 // INFO 🔥 Object Expressions
@@ -211,6 +216,7 @@ object MySingletonObject {
 class CompanionClass {
     companion object {
         // INFO 🔥 ⚠️⚠️ this refers to same object whenever this method is called
+        @JvmStatic
         fun test() {
             println("CompanionClass test() $this")
         }
@@ -230,8 +236,25 @@ class MyClass2 {
 // INFO 🔥 Companion Objects create instance of non-singleton
 class MyCustomClass {
     companion object Factory {
+
+        //
+        /*
+            Calling create() twice prints:
+
+            🍏 MyCustomClass.Factory chapter2OOP.MyCustomClass$Factory@6ff3c5b5
+            🎃 MyCustomClass.Factory create() chapter2OOP.MyCustomClass$Factory@6ff3c5b5
+            🎃 MyCustomClass.Factory create() chapter2OOP.MyCustomClass$Factory@6ff3c5b5
+         */
+
+        init {
+            println("🍏 MyCustomClass.Factory $this")
+        }
+
         @JvmStatic
-        fun create(): MyCustomClass = MyCustomClass()
+        fun create(): MyCustomClass {
+            println("🎃 MyCustomClass.Factory create() $this")
+            return MyCustomClass()
+        }
     }
 }
 

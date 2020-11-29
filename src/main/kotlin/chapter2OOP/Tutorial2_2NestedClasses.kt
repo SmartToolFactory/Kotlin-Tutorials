@@ -58,6 +58,40 @@ class OuterOfNestedClass {
 
 }
 
+/*
+    Java Equivalent
+ */
+
+/*
+public final class OuterOfNestedClass {
+   private String name = "Ashu";
+
+   public static final class NestedClass {
+      @NotNull
+      private String description = "code inside nested class";
+      private int id = 101;
+
+      @NotNull
+      public final String getDescription() {
+         return this.description;
+      }
+
+      public final void setDescription(@NotNull String var1) {
+         Intrinsics.checkNotNullParameter(var1, "<set-?>");
+         this.description = var1;
+      }
+
+      public final void foo() {
+         String var1 = "Id is " + this.id;
+         boolean var2 = false;
+         System.out.println(var1);
+      }
+   }
+}
+
+ */
+
+
 // 🔥 INFO: Equivalent of Java's INNER class
 /**
  * Inner class which has inner tag in front of class name, of an access field of outer class unlike nested class
@@ -101,6 +135,37 @@ class OuterOfInnerClass {
         }
     }
 }
+
+/*
+public final class OuterOfInnerClass {
+   private String name = "Ashu";
+
+   public final class InnerClass {
+      @NotNull
+      private String description = "code inside inner class";
+      private int id = 101;
+
+      @NotNull
+      public final String getDescription() {
+         return this.description;
+      }
+
+      public final void setDescription(@NotNull String var1) {
+         Intrinsics.checkNotNullParameter(var1, "<set-?>");
+         this.description = var1;
+      }
+
+      public final void foo() {
+         String var1 = "type is " + OuterOfInnerClass.this.name;
+         boolean var2 = false;
+         System.out.println(var1);
+         var1 = "Id is " + this.id;
+         var2 = false;
+         System.out.println(var1);
+      }
+   }
+}
+ */
 
 
 class A {

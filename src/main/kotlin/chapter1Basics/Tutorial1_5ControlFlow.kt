@@ -10,7 +10,8 @@ fun main() {
     }
 
     // This list does not have remove and methods
-    val daysOfWeek: List<String> = listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
+    val daysOfWeek: List<String> =
+        listOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
 
     println("List item get 3rd: ${daysOfWeek.get(2)}")
 

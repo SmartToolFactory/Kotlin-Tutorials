@@ -38,7 +38,7 @@ fun main() {
                 }
 
     } catch (e: FileNotFoundException) {
-        println("Exception occured: ${e.message}")
+        println("Exception occurred: ${e.message}")
     }
 
     // INFO Nothing Type

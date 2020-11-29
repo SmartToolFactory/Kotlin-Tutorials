@@ -5,6 +5,10 @@ import chapter2OOP.model.Person
 
 fun main() {
 
+    val a:String? = null
+    val b:String = ""
+    println(a==b)
+
     // create obj object of myClass class
 //    val obj = MyClass()
 //    obj.printMe()
