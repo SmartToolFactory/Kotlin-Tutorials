@@ -44,6 +44,8 @@ open class BaseClassA {
 
 interface InterfaceB {
 
+    var name: String
+
     // interface members are 'open' by default
     fun f() {
         print("InterfaceB")
@@ -58,11 +60,47 @@ interface InterfaceB {
     fun foo()
 }
 
+/*
+public interface InterfaceB {
+   @NotNull
+   String getName();
+
+   void f();
+
+   void b();
+
+   void foo();
+
+    // 🔥 This class gets generated because of methods with body in Interface in Java
+   public static final class DefaultImpls {
+      public static void f(@NotNull InterfaceB $this) {
+         String var1 = "InterfaceB";
+         boolean var2 = false;
+         System.out.print(var1);
+      }
+
+      public static void b(@NotNull InterfaceB $this) {
+         String var1 = "b";
+         boolean var2 = false;
+         System.out.print(var1);
+      }
+   }
+}
+ */
+
 class C() : BaseClassA(), InterfaceB {
 
     override fun foo() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    private var className = ""
+
+    override var name: String
+        get() = className
+        set(value) {
+            className = value
+        }
 
     // INFO only invokes methods called with super
     // 🔥 The compiler requires f() to be overridden because it's open fun in BaseClassA
@@ -73,12 +111,51 @@ class C() : BaseClassA(), InterfaceB {
 
 }
 
-class InterfaceTestClass() : InterfaceB {
+class InterfaceTestClass(override var name: String) : InterfaceB {
 
+    // 🔥 This should be implemented because it has no body in Interface
     override fun foo() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
+
+/*
+public final class InterfaceTestClass implements InterfaceB {
+   @NotNull
+   private String name;
+
+      public InterfaceTestClass(@NotNull String name) {
+      Intrinsics.checkNotNullParameter(name, "name");
+      super();
+      this.name = name;
+   }
+
+
+   public void foo() {
+      String var1 = "not implemented";
+      boolean var2 = false;
+      throw (Throwable)(new NotImplementedError("An operation is not implemented: " + var1));
+   }
+
+   @NotNull
+   public String getName() {
+      return this.name;
+   }
+
+   public void setName(@NotNull String var1) {
+      Intrinsics.checkNotNullParameter(var1, "<set-?>");
+      this.name = var1;
+   }
+
+   public void f() {
+      InterfaceB.DefaultImpls.f(this);
+   }
+
+   public void b() {
+      InterfaceB.DefaultImpls.b(this);
+   }
+}
+ */
 
 
 // INFO Super with Constructor

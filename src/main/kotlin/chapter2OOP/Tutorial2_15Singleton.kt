@@ -104,4 +104,29 @@ class SingletonWithCompanion {
     }
 }
 
+
+/*
+public final class SingletonWithCompanion {
+   @NotNull
+   public static final SingletonWithCompanion.Factory Factory = new SingletonWithCompanion.Factory((DefaultConstructorMarker)null);
+
+
+   public static final class Factory {
+      @NotNull
+      public final RandomClass createRandomClazz() {
+         return new RandomClass();
+      }
+
+      private Factory() {
+      }
+
+      // $FF: synthetic method
+      public Factory(DefaultConstructorMarker $constructor_marker) {
+         this();
+      }
+   }
+}
+
+ */
+
 class RandomClass

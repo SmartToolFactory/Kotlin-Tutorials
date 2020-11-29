@@ -18,8 +18,27 @@ class MyObject(name: String) {
     init {
         println("Name: $name")
     }
-
 }
+/*
+public final class MyObject {
+   @NotNull
+   private final String objName;
+
+   @NotNull
+   public final String getObjName() {
+      return this.objName;
+   }
+
+   public MyObject(@NotNull String name) {
+      Intrinsics.checkNotNullParameter(name, "name");
+      super();
+      this.objName = name;
+      String var2 = "Name: " + name;
+      boolean var3 = false;
+      System.out.println(var2);
+   }
+}
+ */
 
 
 // INFO CONSTRUCTOR
@@ -56,9 +75,20 @@ class InitOrderDemo(name: String) {
 }
 
 
-class MYNewClass(private val name: String) {
+class MYNewClass(private val name: String)
 
+/*
+public final class MYNewClass {
+   private final String name;
+
+   public MYNewClass(@NotNull String name) {
+      Intrinsics.checkNotNullParameter(name, "name");
+      super();
+      this.name = name;
+   }
 }
+ */
+
 
 // INFO 🔥 Assign Constructor parameters to class fields
 // INFO 🔥 ⚠️ ️Prefixing your constructor arguments with val or var is not a must
