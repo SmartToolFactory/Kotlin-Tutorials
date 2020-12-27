@@ -15,15 +15,19 @@ public abstract class BasePresenter<V extends BaseContract.IView, I extends Base
     @Override
     public void attachView(V view) {
         this.view = view;
+        System.out.println("😅 BasePresenter attachView() view: " + view);
     }
 
     @Override
     public void detachView() {
+        System.out.println("😅 BasePresenter detachView()");
         view = null;
     }
 
     @Override
     public void onDestroy() {
+        System.out.println("😅 BasePresenter onDestroy()");
+
         interactor.onDestroy();
         interactor = null;
     }

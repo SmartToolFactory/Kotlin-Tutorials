@@ -13,18 +13,20 @@ public class UserInteractor extends BaseInteractor<UserContract.UserOutput> impl
     public void fetchUsersFromNetwork() {
         List<User> userList = GetUsers.getUsers();
         output.onUsersFetched(userList);
+        System.out.println("🤩 UserInteractor fetchUsersFromNetwork() userList: " + userList);
     }
 
     @Override
-    public void setOutput(UserContract.UserOutput ouput) {
-        this.output = ouput;
+    public void setOutput(UserContract.UserOutput output) {
+        this.output = output;
+        System.out.println("🤩 UserInteractor setOutput() output: " + output);
     }
 
     static class GetUsers {
 
         static List<User> getUsers() {
 
-            List<User> userList = new ArrayList();
+            List<User> userList = new ArrayList<>();
 
             User user = new User("John", "Smith");
             userList.add(user);

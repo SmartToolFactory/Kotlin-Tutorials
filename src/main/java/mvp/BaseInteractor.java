@@ -10,6 +10,7 @@ public abstract class BaseInteractor<O extends BaseContract.IOutput> implements 
 
     @Override
     public void onDestroy() {
+        System.out.println("🍒 BaseInteractor onDestroy()");
         output = null;
     }
 }

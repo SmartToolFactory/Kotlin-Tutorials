@@ -12,6 +12,7 @@ public class UserFragment extends BaseFragment<UserContract.UserView, UserContra
     @Override
     public void onCreate() {
         super.onCreate();
+        System.out.println("😍 UserFragment onCreate()");
         presenter = InitUserFragment.initUserModule();
     }
 
