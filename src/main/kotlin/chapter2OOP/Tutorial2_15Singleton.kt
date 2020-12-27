@@ -1,9 +1,12 @@
 package chapter2OOP
 
+import java.lang.Thread.sleep
+
 
 fun main() {
 
     val firstSingleton = Singleton
+    sleep(1200)
     firstSingleton.printName()
     val secondSingleton = Singleton
     secondSingleton.name = "Hello World"
@@ -36,6 +39,13 @@ fun main() {
         firstSingleton: chapter2OOP.RandomClass@7852e922, secondSingleton: chapter2OOP.RandomClass@4e25154f, firstSingleton == secondSingleton  false
      */
 
+}
+
+fun otherMethod() {
+   Singleton.name = "Test"
+}
+fun someMethod() {
+    val s = Singleton
 }
 
 object Singleton {
@@ -95,7 +105,6 @@ public final class Singleton {
 class SingletonWithCompanion {
 
     companion object Factory {
-
 
         /**
          * This method does not create Singleton objects

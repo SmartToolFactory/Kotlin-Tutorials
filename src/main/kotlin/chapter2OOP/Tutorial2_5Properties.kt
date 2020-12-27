@@ -69,13 +69,15 @@ class Person {
 
 
 // INFO 🔥⚠️ Throws StackOverflow exception when get() called
-class User(name: String, surName: String) {
+class User(private var name: String, private var surName: String) {
 
     var myName: String = name
         get() {
             return myName.substring(0, 4)
         }
 
+    val fullName: String
+        get() = "name: $name, surname: $surName"
 }
 
 

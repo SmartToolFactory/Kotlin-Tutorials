@@ -14,9 +14,7 @@ fun main() {
         29
         2
      */
-
 }
-
 
 interface MyInterface {
     fun bar()
@@ -25,6 +23,22 @@ interface MyInterface {
         println("MyInterface foo()")
     }
 }
+
+/*
+public interface MyInterface {
+   void bar();
+
+   void foo();
+
+   public static final class DefaultImpls {
+      public static void foo(@NotNull MyInterface $this) {
+         String var1 = "MyInterface foo()";
+         boolean var2 = false;
+         System.out.println(var1);
+      }
+   }
+}
+ */
 
 interface MyInterface2 {
 

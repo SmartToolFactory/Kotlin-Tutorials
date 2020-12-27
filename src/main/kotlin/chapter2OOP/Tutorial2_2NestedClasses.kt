@@ -42,7 +42,7 @@ class BasicGraph(val name: String) {
 
 class OuterOfNestedClass {
 
-    private var name: String = "Ashu"
+    private var name: String = "Ashley"
 
     class NestedClass {
 

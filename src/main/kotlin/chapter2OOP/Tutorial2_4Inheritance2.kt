@@ -37,6 +37,7 @@ fun main() {
         BusinessAccount Parent super.baseAmount: 50.0, derived: 390.0
 
         UnionAccount Parent super.baseAmount: 61.8, derived: 12.54
+        Union property: Test 12.54
      */
 
 

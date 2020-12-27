@@ -1,4 +1,4 @@
-package chapter7fileIO;
+package chapter8fileIO;
 
 import java.io.*;
 

@@ -1,8 +1,5 @@
 package chapter2OOP
 
-import java.lang.Exception
-import java.lang.IllegalArgumentException
-
 fun main() {
 
 //    val derived = Derived("Foo", "Bar")
@@ -26,6 +23,18 @@ fun main() {
         is Result.Error -> println("Error: ${resultBoxed.exception.message}")
     }
 
+    val bus = Bus("Ford")
+
+    bus.printMaker()
+    /*
+        Prints Ford
+     */
+
+    println("Manufacturer: ${(bus as Vehicle).manufacturer}")
+    /*
+        Prints Ford
+     */
+
 }
 
 fun <T> getResult(data: T, index: Int): Result<T> {
@@ -47,14 +56,42 @@ sealed class Result<T> {
     data class Error<T>(val exception: Exception) : Result<T>()
 }
 
-open class Vehicle(var type: VehicleType, var manufacturer: String) {
-
-}
+open class Vehicle(var type: VehicleType, open var manufacturer: String)
 
 class SportsCar : Vehicle(VehicleType.CarType(1), "Tesla")
 
+/**
+ *
+ */
+class Bus(override var manufacturer: String) :
+    Vehicle(VehicleType.BusType(2), "$manufacturer + Bus") {
 
-// TODO 🔥 ??? 'manufacturer' hides member of supertype  and needs 'override' modifier
-//class Bus(var manufacturer: String) : Vehicle(VehicleType.BusType(2), manufacturer) {
-//
-//}
+    fun printMaker() {
+        println("Maker: $manufacturer, super manufacturer: ${super.manufacturer}")
+    }
+}
+
+/*
+   @NotNull
+   private String manufacturer;
+
+   public final void printMaker() {
+      String var1 = "Maker: " + this.getManufacturer();
+      boolean var2 = false;
+      System.out.println(var1);
+   }
+
+   @NotNull
+   public String getManufacturer() {
+      return this.manufacturer;
+   }
+
+   public void setManufacturer(@NotNull String var1) {
+      this.manufacturer = var1;
+   }
+
+   public Bus(@NotNull String manufacturer) {
+      super((VehicleType)(new VehicleType.BusType(2)), manufacturer + " + Bus");
+      this.manufacturer = manufacturer;
+   }
+ */

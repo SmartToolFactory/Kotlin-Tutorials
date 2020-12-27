@@ -4,7 +4,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 /**
  * 1) If Thread1 accesses lock before Thread2, since [ReentrantLock.lock] locks it multiple times,
- * Thread2 gets stuck.
+ * Thread2 is dead locked.
  *
  * 2) If Thread2 accesses lock before Thread1, Thread2 access program main thread that is waiting
  * threads because of join ends successfully.
@@ -13,15 +13,12 @@ fun main() {
 
     val lock = ReentrantLock()
 
-
     val thread1 = Thread {
 
         println(
             "1st START Lock in thread: ${Thread.currentThread().name}, " +
                     "lock held by current thread: ${lock.isHeldByCurrentThread}"
         )
-        lock.lock()
-        lock.lock()
         lock.lock()
         lock.lock()
         println(
@@ -63,7 +60,6 @@ fun main() {
     }
 
 //    logStates(thread1, thread2, lock)
-
 
     thread1.start()
     thread2.start()

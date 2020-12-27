@@ -15,7 +15,6 @@ private fun testScopedFunctions() {
 
      val testString = "Hello"
 
-
     val resLet = testString.letMe<String, Int> {
         it.toIntOrNull() ?: -1
     }

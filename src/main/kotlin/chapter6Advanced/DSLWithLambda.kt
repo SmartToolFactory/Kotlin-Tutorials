@@ -2,10 +2,7 @@ package chapter6Advanced
 
 
 fun main() {
-
     testRouteHandler()
-
-
 }
 
 private fun testRouteHandler() {
@@ -36,10 +33,10 @@ fun routeHandler(path: String, f: RouteHandler.() -> Unit) {
 
 
 class Status(var code: Int, var description: String)
+
 class Request(val method: String, val query: String, val contentType: String)
 
 class Response(var contents: String, var status: Status) {
-
     operator fun invoke(status: Status.() -> Unit) {
 
     }
