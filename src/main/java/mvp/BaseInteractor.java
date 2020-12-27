@@ -1,11 +1,11 @@
 package mvp;
 
-public abstract class BaseInteractor<O extends BaseContract.IOutput> implements BaseContract.IInteractor<O> {
+public abstract class BaseInteractor<O extends BaseContract.IOutput> implements BaseContract.IInteractor {
 
     protected O output;
 
-    public BaseInteractor() {
-
+    public void setOutput(O output) {
+        this.output = output;
     }
 
     @Override

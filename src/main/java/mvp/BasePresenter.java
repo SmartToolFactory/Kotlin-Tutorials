@@ -1,7 +1,11 @@
 package mvp;
 
-public abstract class BasePresenter<V extends BaseContract.IView, I extends BaseContract.IInteractor>
-        implements BaseContract.IPresenter<V> {
+import static mvp.BaseContract.IInteractor;
+import static mvp.BaseContract.IOutput;
+import static mvp.BaseContract.IView;
+
+public abstract class BasePresenter<V extends IView, I extends IInteractor>
+        implements BaseContract.IPresenter<V>, IOutput {
 
     protected V view = null;
 
@@ -9,6 +13,10 @@ public abstract class BasePresenter<V extends BaseContract.IView, I extends Base
 
     public BasePresenter(I interactor) {
         this.interactor = interactor;
+
+        if (interactor instanceof BaseInteractor) {
+            ((BaseInteractor<IOutput>) interactor).output = this;
+        }
 
     }
 

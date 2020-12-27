@@ -7,19 +7,14 @@ import chapter2OOP.User;
 import mvp.BaseInteractor;
 import mvp.UserContract;
 
-public class UserInteractor extends BaseInteractor<UserContract.UserOutput> implements UserContract.UserInteractor {
+public class UserInteractor extends BaseInteractor<UserContract.UserOutput>
+        implements UserContract.UserInteractor {
 
     @Override
     public void fetchUsersFromNetwork() {
         List<User> userList = GetUsers.getUsers();
         output.onUsersFetched(userList);
         System.out.println("🤩 UserInteractor fetchUsersFromNetwork() userList: " + userList);
-    }
-
-    @Override
-    public void setOutput(UserContract.UserOutput output) {
-        this.output = output;
-        System.out.println("🤩 UserInteractor setOutput() output: " + output);
     }
 
     static class GetUsers {

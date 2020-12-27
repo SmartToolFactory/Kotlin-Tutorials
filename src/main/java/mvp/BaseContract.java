@@ -16,14 +16,12 @@ public interface BaseContract {
     }
 
 
-    interface IInteractor<O extends IOutput> {
-
-        void setOutput(O ouput);
-
+    interface IInteractor {
         void onDestroy();
     }
 
     interface IOutput {
+
     }
 
 
