@@ -28,9 +28,5 @@ public class UserPresenter extends BasePresenter<UserContract.UserView, UserCont
         view.displayError(message);
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        interactor.onDestroy();
-    }
+
 }
