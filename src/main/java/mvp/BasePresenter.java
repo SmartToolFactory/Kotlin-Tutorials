@@ -39,4 +39,5 @@ public abstract class BasePresenter<V extends IView, I extends IInteractor>
         interactor.onDestroy();
         interactor = null;
     }
+
 }
