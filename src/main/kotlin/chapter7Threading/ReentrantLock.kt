@@ -1,4 +1,4 @@
-package chapter6Advanced
+package chapter7Threading
 
 import java.util.concurrent.locks.ReentrantLock
 
