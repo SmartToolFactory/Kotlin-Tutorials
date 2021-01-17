@@ -1,49 +1,67 @@
 package chapter6Advanced
 
+/**
+ * This is a sample to display how functions with literals used with Jetpack Compose.
+ *
+ * This is a series of mock functions to display simplified version of drawing with Compose.
+ *
+ * * Column uses [Layout] do draw on a [Canvas] function using [DrawScope]
+ */
 fun main() {
 
-    val box =  Box {
-        getModifier().width = 100
-        getModifier().height = 200
+    Column(modifier = Modifier) {
+        println("🔥 Draw this COLUMN")
     }
+}
 
-    box.getWidth()
-    box.getHeight()
+fun Column(modifier: Modifier, content: ColumnScope.() -> Unit) {
 
+    Layout(modifier) {
+        ColumnScope.content()
+    }
+}
+
+interface ColumnScope {
+    companion object : ColumnScope
 }
 
 
-class Box(content: MyScope.() -> Unit) {
-
-    private val modifier: MyScope.Modifier = MyScope.getModifier()
-
-    init {
-        MyScope.content()
-    }
-
-    fun getWidth() = modifier.width
-
-    fun getHeight() = modifier.height
+interface Modifier {
+    companion object : Modifier
 }
 
-interface MyScope {
-
-    fun Modifier.updateWidth(width: Int) {
-        this.width = width
+inline fun Layout(modifier: Modifier = Modifier, crossinline content: () -> Unit) {
+    println("Layout()")
+    Canvas(modifier = modifier) {
+        println("Layout() -> Canvas()")
+        content()
     }
+}
 
-    fun Modifier.updateHeight(height: Int) {
-        this.height = height
+
+inline fun Canvas(modifier: Modifier = Modifier, crossinline content: DrawScope.() -> Unit) {
+    println("Canvas()")
+    modifier.drawBehind {
+        content()
     }
+}
 
-    fun getModifier(): Modifier
+interface DrawScope {
+    fun drawContent()
+}
 
-    class Modifier(var width: Int = 0, var height: Int = 0)
+class DrawModifier(val onDraw: DrawScope.() -> Unit) : DrawScope {
 
-    companion object : MyScope {
-
-        private val modifier = Modifier(0, 9)
-
-        override fun getModifier() = modifier
+    override fun drawContent() {
+        println("⚠️ DrawModifier drawContent()")
+        onDraw()
     }
+}
+
+fun Modifier.drawBehind(
+    onDraw: DrawScope.() -> Unit
+) {
+    DrawModifier(
+        onDraw = onDraw
+    ).drawContent()
 }

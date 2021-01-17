@@ -51,26 +51,26 @@ fun main() {
 
     // INFO 🔥 Lambda Functions
     // 🔥 myFun is a function that is (String) -> String = { str -> str.reversed() }
-    val myFun = bar()
+    val myFun: (String) -> String = bar() // or bar()("Hello world")
     println(myFun("Hello world"))
 
 
-    val isEven = modulo(2)
+    val isEven: (Int) -> Boolean = modulo(2)
     // 🔥 k = 2, 'it' = 3, and isItEven = (Int) -> Boolean = { it % k == 0 }
     val isItEven = isEven(3)
     val myList = arrayListOf(1, 2, 3)
     val result = myList.filter(isEven)
 
 
-    val myFunction = lambdaFunctionWithParam(13)
+    val myFunction: () -> Int = lambdaFunctionWithParam(13)
     val test = myFunction()
     println("Test String Concatenation $test")
 
 
-    val totalSum = highOrderSum(3, { 4 })
+    val totalSum: Int = highOrderSum(3, { 4 })
     println("totalSum: $totalSum")
 
-    val totalSum2 = highOrderSum2(3) {
+    val totalSum2: Int = highOrderSum2(3) {
         it * 2
     }
     println("totalSum2: $totalSum2")
@@ -119,8 +119,6 @@ fun main() {
     "Hello World".highTes {
         it.reversed()
     }
-
-
 }
 
 fun String.highTes(action: (String) -> String) {

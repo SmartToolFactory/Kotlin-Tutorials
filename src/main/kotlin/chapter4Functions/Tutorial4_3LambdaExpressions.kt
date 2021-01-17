@@ -177,4 +177,3 @@ fun StringBuilder.extra2(value: Int, block: (Int) -> Int): StringBuilder {
     this.append(block(value).toString())
     return this
 }
-

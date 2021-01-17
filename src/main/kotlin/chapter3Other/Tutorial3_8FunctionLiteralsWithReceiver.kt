@@ -2,7 +2,6 @@ package chapter3Other
 
 fun main() {
 
-
     // INFO 🔥 High Order Function
 
     val test = createString(5, {
@@ -147,5 +146,4 @@ fun StringBuilder.extra2(value: Int, block: (Int) -> Int): StringBuilder {
     block(value)
     return this
 }
-
 

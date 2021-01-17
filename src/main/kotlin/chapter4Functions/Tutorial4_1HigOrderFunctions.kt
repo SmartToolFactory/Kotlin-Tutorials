@@ -1,13 +1,15 @@
 package chapter4Functions
 
-import java.lang.Thread.sleep
-
 fun main() {
-
 
     // INFO 🔥 High-order functions
     val bigger = compare(2, 3) { x, y ->
         x > y
+    }
+
+    val list = listOf(1.1, 5.3, 3.4)
+    list.max {
+        println("MAX double: $it")
     }
 
     // INFO 🔥 High-order functions
@@ -111,6 +113,22 @@ fun <T, R> Collection<T>.fold(
     }
 
     return accumulator
+}
+
+fun <T : Number> List<T>.max(action: (T) -> Unit) {
+
+    var max: Double = 0.0
+    for (element: T in this) {
+        element.toInt() > max
+    }
+        forEach {
+        val number: Double = (it as? Double) ?: 0.0
+        if (number > max) max = number
+    }
+
+    (max as? T)?.let {
+        action(it)
+    }
 }
 
 // INFO 🔥 High-order function

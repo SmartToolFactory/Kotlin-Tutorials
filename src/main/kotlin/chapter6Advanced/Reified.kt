@@ -23,8 +23,6 @@ fun main() {
 
 class Reified {
 
-
-
     internal inline fun <reified T> getClassOf(): Class<T> {
         return T::class.java
     }
@@ -39,9 +37,7 @@ class Reified {
 }
 
 interface Account {
-
     fun getBalance(): Int
-
 }
 
 class PrivateAccount() : Account {
@@ -49,12 +45,10 @@ class PrivateAccount() : Account {
     override fun getBalance(): Int {
         return 3
     }
-
 }
 
 class PublicAccount() : Account {
     override fun getBalance(): Int {
         return 5
     }
-
 }
