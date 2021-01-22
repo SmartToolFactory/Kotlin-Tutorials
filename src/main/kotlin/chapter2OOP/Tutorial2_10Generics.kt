@@ -17,6 +17,3 @@ fun <T: Number> test(num: T) {
 
 }
 
-fun testGen() {
-
-}

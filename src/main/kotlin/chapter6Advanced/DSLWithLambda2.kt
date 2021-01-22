@@ -9,7 +9,8 @@ package chapter6Advanced
  */
 fun main() {
 
-    Column(modifier = Modifier) {
+    val modifier = Modifier
+    Column(modifier = modifier) {
         println("🔥 Draw this COLUMN")
     }
 }
@@ -22,37 +23,35 @@ fun Column(modifier: Modifier, content: ColumnScope.() -> Unit) {
 }
 
 interface ColumnScope {
-    companion object : ColumnScope
+    fun Modifier.alignColumn()
+
+    companion object : ColumnScope {
+
+        override fun Modifier.alignColumn() {
+            println("🤔 Modifier for Column alignColumn() ")
+        }
+
+    }
 }
 
 
 interface Modifier {
     companion object : Modifier
 }
-
-inline fun Layout(modifier: Modifier = Modifier, crossinline content: () -> Unit) {
+ fun Layout(modifier: Modifier = Modifier,  content: () -> Unit) {
     println("Layout()")
-    Canvas(modifier = modifier) {
-        println("Layout() -> Canvas()")
-        content()
-    }
-}
-
-
-inline fun Canvas(modifier: Modifier = Modifier, crossinline content: DrawScope.() -> Unit) {
-    println("Canvas()")
     modifier.drawBehind {
         content()
     }
 }
 
 interface DrawScope {
-    fun drawContent()
+    fun draw()
 }
 
 class DrawModifier(val onDraw: DrawScope.() -> Unit) : DrawScope {
 
-    override fun drawContent() {
+    override fun draw() {
         println("⚠️ DrawModifier drawContent()")
         onDraw()
     }
@@ -63,5 +62,5 @@ fun Modifier.drawBehind(
 ) {
     DrawModifier(
         onDraw = onDraw
-    ).drawContent()
+    ).draw()
 }

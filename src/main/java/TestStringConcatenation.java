@@ -21,13 +21,24 @@ public class TestStringConcatenation {
         BankAccount bankAccount = new BankAccount();
         InterestAccount interestAccount = new InterestAccount();
 
+        // We can add to List<? super T> but CANNOT read from this list
+        List<? super Account> contravariantList = new ArrayList<>();
+        contravariantList.add(account);
+        // 🔥 Compile ERROR: Required type: capture of ? super Account
+//        for (Account acc1 : accountList) {
+//
+//        }
 
-        List<? extends Account> accountList = new ArrayList<>();
+        // We can CANNOT add to List<? extends T> but CAN read from this list
+        List<? extends Account> covariantList = new ArrayList<>();
+        // 🔥 Compile ERROR: Required type: capture of ? extends Account
+//        accountList.add(account);
+        for (Account acc2 : covariantList) {
+
+        }
 
         List<? super InterestAccount> interestList = new ArrayList<>();
-
         interestList.add(interestAccount);
-
 
 
     }
