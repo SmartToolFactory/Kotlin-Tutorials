@@ -46,7 +46,7 @@ class SetterAndGetters {
 const val PREFIX = "[ABC]"
 
 
-// INFO BACKING FIELDS
+// 🔥 INFO BACKING FIELDS
 class Person {
 
     // set: if value set to first type have length < 1 => throw error else add prefix "ABC" to the type
@@ -66,6 +66,40 @@ class Person {
             }
         }
 }
+
+/*
+public final class Person {
+   @NotNull
+   private String lastName = "";
+
+   @NotNull
+   public final String getLastName() {
+      CharSequence var1 = (CharSequence)this.lastName;
+      boolean var2 = false;
+      if (var1.length() > 0) {
+         StringBuilder var10000 = new StringBuilder();
+         String var3 = this.lastName;
+         var2 = false;
+         if (var3 == null) {
+            throw new NullPointerException("null cannot be cast to non-null type kotlin.CharSequence");
+         } else {
+            return var10000.append(StringsKt.trim((CharSequence)var3).toString()).append(".").toString();
+         }
+      } else {
+         return this.lastName;
+      }
+   }
+
+   public final void setLastName(@NotNull String value) {
+      Intrinsics.checkNotNullParameter(value, "value");
+      if (value.length() > 1) {
+         this.lastName = "[ABC]" + value;
+      } else {
+         throw (Throwable)(new IllegalArgumentException("Last type too short"));
+      }
+   }
+}
+ */
 
 
 // INFO 🔥⚠️ Throws StackOverflow exception when get() called
@@ -135,7 +169,7 @@ class HumanWithBackingProperty {
             _age = value
         }
 
-    val printAge = {
+    val printAge: () -> Unit = {
         println("Age is: $_age")
     }
 }

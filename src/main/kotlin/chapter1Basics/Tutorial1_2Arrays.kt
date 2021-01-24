@@ -7,7 +7,8 @@ fun main() {
     val numbers: IntArray = intArrayOf(1, 2, 3, 4, 5)
     println("Hey!! I am array Example numbers[2]: " + numbers[2])
 
-    val myArray = IntArray(3)
+    // Creates a new array of the specified size, with all elements initialized to zero.
+    val myArray: IntArray = IntArray(3)
     myArray[0] = 1
     myArray[1] = 2
     myArray[2] = 3
@@ -44,11 +45,11 @@ fun main() {
 
     // INFO Initializing Arrays Method 3
     // Creates an array where both items "Empty" with length of 4
-    val anotherStringArray = Array(4) { "Empty" }
+    val anotherStringArray: Array<String> = Array(4) { "Empty" }
     anotherStringArray.forEach { s -> println("Another array: $s") }
 
     // INFO Initializing Arrays Method 4
-    val sqrArray = IntArray(5) { x -> x * x }
+    val sqrArray: IntArray = IntArray(5) { x -> x * x }
     sqrArray.forEach { it -> println("Sqr : $it") }
 
 
@@ -58,7 +59,7 @@ fun main() {
     // Primitive arrays
     val arrayOfZeros = IntArray(6) //equivalent in Java: new int[size]
     val numbersFromOne = IntArray(6) { it + 1 }
-    val myInts = intArrayOf(1, 1, 2, 3, 5, 8, 13, 21)
+    val myInts: IntArray = intArrayOf(1, 1, 2, 3, 5, 8, 13, 21)
 
     // Alternative 1 for loop
     for (i in 0 until myInts.size) {
@@ -70,12 +71,13 @@ fun main() {
     }
 
     // Non primitive-arrays
-    val boxedInts = arrayOfNulls<Int>(size) // 🔥 equivalent in Java: new Integer[size]
-    val boxedZeros = Array(size) { 0 }
+    val boxedInts: Array<Int?> = arrayOfNulls<Int>(size) // 🔥 equivalent in Java: new Integer[size]
+    val boxedZeros: Array<Int> = Array(size) { 0 }
 
-    val nulls = arrayOfNulls<String>(size) // 🔥 equivalent in Java: new String[size]
-    val strings = Array(size) { "n = $it" }
-    val myStrings = arrayOf("foo", "bar", "baz")
+    val nulls: Array<String?> = arrayOfNulls<String>(size) // 🔥 equivalent in Java: new String[size]
+    val strings: Array<String> = Array(size) { "n = $it" }
+    val myStrings: Array<String> = arrayOf("foo", "bar", "baz")
+
 
 
     // 👍 This is valid
@@ -88,7 +90,7 @@ fun main() {
 
     // WARNING 🔥 This is an EMPTY ARRAY with 0 length, no value can be assigned to this array.
     // Returns ArrayIndexOutOfBoundsException
-    val emptyStringArray = arrayOf<String>()
+    val emptyStringArray: Array<String> = arrayOf<String>()
 //    emptyStringArray[0] = "TestStringConcatenation"
 
 
