@@ -100,7 +100,8 @@ fun Any?.toString(): String {
 }
 
 // INFO 🔥 Extension Properties
-val <T> List<T>.lastIndex: Int get() = size - 1
+val <T> List<T>.lastIndex: Int
+    get() = size - 1
 
 // INFO 🔥 Companion Object Extensions
 class MyClass {

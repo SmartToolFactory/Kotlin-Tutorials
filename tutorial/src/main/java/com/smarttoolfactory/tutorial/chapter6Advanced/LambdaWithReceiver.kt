@@ -32,7 +32,7 @@ private fun testScopedFunctions() {
     }
 
     withMe(testString) {
-        toUpperCase()
+        uppercase()
         capitalize()
     }
 

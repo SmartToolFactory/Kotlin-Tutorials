@@ -91,4 +91,42 @@ fun main() {
         println("forEachIndexed: index: $index, value: $value")
     }
 
+    /*
+        Returns and jumps
+     */
+
+    // 🔥 Break and continue labels
+
+    breakFunction()
+
+
+    returnUnreachableFun()
+
+    returnReachableFun()
+}
+
+private fun breakFunction() {
+    loop@ for (i in 1..100) {
+        for (j in 1..100) {
+            if (j == 10) break@loop
+            println("Loop break i: $i, j: $j")
+        }
+    }
+
+    println("END OF breakFunction()")
+}
+private fun returnUnreachableFun() {
+    listOf(1, 2, 3, 4, 5).forEach {
+        if (it == 3) return // non-local return directly to the caller of foo()
+        print(it)
+    }
+    println("this point is unreachable")
+}
+
+private fun returnReachableFun() {
+    listOf(1, 2, 3, 4, 5).forEach {
+        if (it == 3) return@forEach // local return to the caller of the lambda - the forEach loop
+        print(it)
+    }
+    println(" done with implicit label")
 }

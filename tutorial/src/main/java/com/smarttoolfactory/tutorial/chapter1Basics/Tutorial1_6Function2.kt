@@ -22,7 +22,8 @@ package com.smarttoolfactory.tutorial.chapter1Basics
 
     a top-level, member, or extension property: List<Int>::size,
     a constructor: ::Regex
-    These include bound callable references that point to a member of a particular instance: foo::toString.
+    These include bound callable references that point to a member of a particular
+    instance: foo::toString.
  */
 fun main() {
 
@@ -77,7 +78,7 @@ fun main() {
 
 
     // Lambda with String parameter that returns a String
-    val anotherLambda: (String) -> String = { s -> s.toUpperCase() }
+    val anotherLambda: (String) -> String = { s -> s.uppercase() }
     val lambdaResult = anotherLambda("Hello World")
     println(lambdaResult)
 

@@ -41,8 +41,7 @@ fun main() {
 
     // INFO Initializing Arrays Method 2
     // 🔥 WARNING This is array with 3 null elements
-    val stringArray = arrayOfNulls<String>(3)
-
+    val stringArray: Array<String?> = arrayOfNulls<String>(3)
 
     stringArray[0] = "Hello World"
     stringArray.forEach { s -> println("arrayOfNulls: $s") }
@@ -82,8 +81,6 @@ fun main() {
     val strings: Array<String> = Array(size) { "n = $it" }
     val myStrings: Array<String> = arrayOf("foo", "bar", "baz")
 
-
-
     // 👍 This is valid
     boxedInts[0] = 12
     println("BoxedInt[0]: ${boxedInts[0]}")
@@ -99,7 +96,7 @@ fun main() {
 
 
     // 🔥 2D Arrays
-    val coordinates = arrayOf(
+    val coordinates: Array<Array<Int>> = arrayOf(
         arrayOf(1, 2),
         arrayOf(2, 3),
         arrayOf(3, 4),

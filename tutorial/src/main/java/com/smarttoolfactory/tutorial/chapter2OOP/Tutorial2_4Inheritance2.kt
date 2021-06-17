@@ -7,17 +7,17 @@ import com.smarttoolfactory.tutorial.chapter2OOP.model.UnionAccount
 
 fun main() {
 
-    val privateAccount = PrivateAccount(22.5)
-    println("Private  baseAmount: ${privateAccount.baseAmount} ")
-    privateAccount.baseAmount = 130.0
-    println("Private AFTER baseAmount: ${privateAccount.baseAmount} ")
-    privateAccount.displayValue()
-
-    val businessAccount = BusinessAccount(50.0)
-    println("Business baseAmount: ${businessAccount.baseAmount} ")
-    businessAccount.baseAmount = 130.0
-    println("Business AFTER baseAmount: ${businessAccount.baseAmount} ")
-    businessAccount.displayValue()
+//    val privateAccount = PrivateAccount(22.5)
+//    println("Private  baseAmount: ${privateAccount.baseAmount} ")
+//    privateAccount.baseAmount = 130.0
+//    println("Private AFTER baseAmount: ${privateAccount.baseAmount} ")
+//    privateAccount.displayValue()
+//
+//    val businessAccount = BusinessAccount(50.0)
+//    println("Business baseAmount: ${businessAccount.baseAmount} ")
+//    businessAccount.baseAmount = 130.0
+//    println("Business AFTER baseAmount: ${businessAccount.baseAmount} ")
+//    businessAccount.displayValue()
 
     val unionAccount = UnionAccount(61.8)
     unionAccount.setBase(12.54)
@@ -41,8 +41,8 @@ fun main() {
      */
 
 
-    val snake = Snake()
-    println("Snake Sound: ${snake.makeSound()}")
-    println("Snake Move: ${snake.doMove()}")
-    println("Snake Max Age: ${snake.MAX_AGE}")
+//    val snake = Snake()
+//    println("Snake Sound: ${snake.makeSound()}")
+//    println("Snake Move: ${snake.doMove()}")
+//    println("Snake Max Age: ${snake.MAX_AGE}")
 }

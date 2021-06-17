@@ -62,22 +62,22 @@ fun main() {
 
     // INFO High Order Function
     val resultHighOrder: String = exampleHighOrder(testString) {
-        it.toUpperCase()
+        it.uppercase()
     }
 
     // INFO Function Literal With Receiver
     val resultLiteralReceiver: String = exampleLiteralWithReceiver(testString) {
-        toUpperCase()
+        uppercase()
     }
 
     // INFO Extension Function
     val resultExtension: String = testString.exampleExtension {
-        it.toUpperCase()
+        it.uppercase()
     }
 
     // INFO Extension Function that Literal With Receiver
     val resultExtensionLiteral: String = testString.exampleLiteralExtension {
-        toUpperCase()
+        uppercase()
     }
 
     println("TEST-> resultHighOrder: $resultHighOrder, resultLiteralReceiver: $resultLiteralReceiver, resultExtension: $resultExtension, resultExtensionLiteral: $resultExtensionLiteral")

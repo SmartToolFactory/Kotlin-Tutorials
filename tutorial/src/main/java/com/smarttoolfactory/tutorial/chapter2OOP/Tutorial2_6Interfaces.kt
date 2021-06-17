@@ -90,3 +90,17 @@ public interface MyInterface2 {
 class Child : MyInterface2 {
     override var prop: Int = 29
 }
+
+interface  Named {
+    val name:String
+}
+
+interface PersonNamed:Named {
+
+    val firstName:String
+    val secondName: String
+
+    override val name: String
+        get() = "$firstName, lastName: $secondName"
+
+}

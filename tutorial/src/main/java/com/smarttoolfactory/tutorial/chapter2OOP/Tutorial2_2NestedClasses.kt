@@ -121,7 +121,7 @@ class BasicGraphWithInner(graphName: String) {
 
 
 class OuterOfInnerClass {
-    private var name: String = "Ashu"
+    private var name: String = "Ash"
 
     inner class InnerClass {
 
@@ -130,8 +130,8 @@ class OuterOfInnerClass {
 
         fun foo() {
             // 🔥 INFO  ACCESS the outer class member even when it's private
-            println("type is ${name}")
-            println("Id is ${id}")
+            println("type is $name")
+            println("Id is $id")
         }
     }
 }

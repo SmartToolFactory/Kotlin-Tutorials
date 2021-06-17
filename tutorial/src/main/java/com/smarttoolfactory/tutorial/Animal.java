@@ -15,12 +15,13 @@ public class Animal {
     }
 
     public void printName() {
-        System.out.println("Animal name: " + name);
+        System.out.println("Animal.printName() -> Animal name: " + name);
     }
 
     public String getCatName() {
         return name;
     }
+
     public static void main(String[] args) {
 
         Animal cat = new Cat("Cat");
@@ -57,6 +58,6 @@ class Cat extends Animal {
     }
 
     public void printName() {
-        System.out.println("Cat name: " + name + ", Animal name: " + super.name);
+        System.out.println("Cat.printName() -> Cat name: " + name + ", Animal(super.name) name: " + super.name);
     }
 }

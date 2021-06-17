@@ -75,11 +75,13 @@ public final class Person {
    @NotNull
    public final String getLastName() {
       CharSequence var1 = (CharSequence)this.lastName;
-      boolean var2 = false;
+
       if (var1.length() > 0) {
+
          StringBuilder var10000 = new StringBuilder();
+
          String var3 = this.lastName;
-         var2 = false;
+
          if (var3 == null) {
             throw new NullPointerException("null cannot be cast to non-null type kotlin.CharSequence");
          } else {
@@ -91,7 +93,6 @@ public final class Person {
    }
 
    public final void setLastName(@NotNull String value) {
-      Intrinsics.checkNotNullParameter(value, "value");
       if (value.length() > 1) {
          this.lastName = "[ABC]" + value;
       } else {

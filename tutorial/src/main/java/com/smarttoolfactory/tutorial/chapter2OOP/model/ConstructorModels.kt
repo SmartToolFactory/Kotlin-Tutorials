@@ -43,8 +43,10 @@ public final class MyObject {
 
 // INFO CONSTRUCTOR
 // age parameter can be NULL
-// 🔥 INFO If the primary constructor does not have any annotations or visibility modifiers, the constructor keyword can be omitted:
-//🔥 INFO If the constructor has annotations or visibility modifiers, the constructor keyword is required, and the modifiers go before it:
+// 🔥 INFO If the primary constructor does not have any annotations or visibility modifiers,
+// the constructor keyword can be omitted:
+//🔥 INFO If the constructor has annotations or visibility modifiers,
+// the constructor keyword is required, and the modifiers go before it:
 class Person constructor(var firstName: String, val lastName: String, val age: Int?) {
     //...
 }
@@ -147,6 +149,50 @@ class Person4 constructor(val firstName: String, val lastName: String, val age: 
     }
 }
 
+/*
+
+public final class Person4 {
+
+    @NotNull
+    private final String firstName;
+    @NotNull
+    private final String lastName;
+    @Nullable
+    private final Integer age;
+
+    @NotNull
+    public final String getFirstName() {
+        return this.firstName;
+    }
+
+    @NotNull
+    public final String getLastName() {
+        return this.lastName;
+    }
+
+    @Nullable
+    public final Integer getAge() {
+        return this.age;
+    }
+
+    // 🔥 Primary Constructor
+    public Person4(@NotNull String firstName, @NotNull String lastName, @Nullable Integer age) {
+        super();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.age = age;
+    }
+
+    // 🔥 Secondary Constructor
+    public Person4(@NotNull String firstName, @NotNull String lastName) {
+        this(firstName, lastName, (Integer)null);
+        String var3 = "\ud83d\ude33 Secondary constructor of Person4";
+        System.out.println(var3);
+    }
+}
+
+ */
+
 class Constructors {
 
     constructor(i: Int) {
@@ -175,3 +221,34 @@ class Auto(age: Int) {
         println("🚙 Secondary Constructor of Auto class with type $name and i $i")
     }
 }
+
+class SomeObject {
+
+    constructor(age: Int)
+
+    constructor(age: Int, name: String):this(age)
+
+}
+/*
+
+public final class Auto {
+
+   public Auto(int age) {
+      String var2 = "\ud83e\udd73 Init block of Auto class with " + age;
+      System.out.println(var2);
+   }
+
+   public Auto(@NotNull String name) {
+      this(0);
+      String var2 = "\ud83d\ude97\ud83d\ude97 Secondary Constructor of Auto with type " + name;
+      System.out.println(var2);
+   }
+
+   public Auto(int i, @NotNull String name) {
+      this(i);
+      String var3 = "\ud83d\ude99 Secondary Constructor of Auto class with type " + name + " and i " + i;
+      System.out.println(var3);
+   }
+}
+
+ */

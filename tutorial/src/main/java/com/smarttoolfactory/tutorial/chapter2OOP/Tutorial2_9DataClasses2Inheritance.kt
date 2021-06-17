@@ -4,7 +4,7 @@ fun main() {
 
     /*
         Overloading method getName in Corn and Vegetable let's these object to call
-        one for the static type(type on left side o the equation val milkCorn:Vegetable = Corn())
+        one for the static type(type on left side of the equation val milkCorn:Vegetable = Corn())
 
      */
     val apple = Apple(0, "🍏")
@@ -73,7 +73,6 @@ public final class Apple extends Fruit {
    private String name;
 
    public Apple(int id, @NotNull String name) {
-      Intrinsics.checkNotNullParameter(name, "name");
       super();
       this.id = id;
       this.name = name;
@@ -137,7 +136,6 @@ class Bean(id: Int, name:String) : Vegetable(name) {
 public final class Bean extends Vegetable {
 
    public Bean(int id, @NotNull String name) {
-      Intrinsics.checkNotNullParameter(name, "name");
       super(name);
    }
 
