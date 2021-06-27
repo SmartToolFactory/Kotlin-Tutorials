@@ -1,56 +1,67 @@
 package com.smarttoolfactory.tutorial.chapter2OOP
 
-import kotlin.properties.Delegates
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 fun main() {
 
-    // INFO 🔥 Delegated Properties
-    val example = Example()
-    // getValue() function of Delegate class is called
-    println(example.p)
-    // setValue() function of Delegate class is called
-    example.p = "NEW"
-    println(example.p)
-
-    val derivedUser = DerivedUser()
-    derivedUser.todayTasks = "BUY SOMETHING"
-    println(derivedUser.todayTasks)
-
-
-    // INFO 🔥 Standard Delegates
-    // INFO 🔥 Lazy
-//    println(lazyValue)
-//    println(lazyValue)
-
-    // INFO 🔥 Observable
-//    val user = UserObservable()
-//    user.name = "first"
-//    user.name = "second"
-
-    // INFO 🔥 Vetoable
-//    println(max) // 0
-//    max = 10
-//    println(max) // 10
-
-// max = 5 // will fail with IllegalArgumentException
-
-//    // INFO 🔥 Storing Properties in a Map
-//    val userMapDelegate = ImmutableUser(
-//        mapOf(
-//            "type" to "John Doe",
-//            "age" to 25
-//        )
-//    )
+//    // INFO 🔥 Delegated Properties
+//    val example = Example()
+//    // getValue() function of Delegate class is called
+//    println(example.p)
+//    // setValue() function of Delegate class is called
+//    example.p = "NEW"
+//    println(example.p)
 //
-//    println(userMapDelegate.name) // Prints "John Doe"
-//    println(userMapDelegate.age) // Prints 25
+//    val derivedUser = DerivedUser()
+//    derivedUser.todayTasks = "BUY SOMETHING"
+//    println("PRINT: ${derivedUser.todayTasks}")
+//
+//    // INFO 🔥 ReadWriteProperty
+//    val upperCaseString = UpperCaseString()
+//    upperCaseString.str = "Hello "
+//    println("Uppercase String: ${upperCaseString.str}")
+
+
+    // INFO 🔥 Delegating to another property
+    val myDelegateClass = MyDelegateClass(10, ClassWithDelegate(5))
+
+    myDelegateClass.delegatedToTopLevel = 100
+    myDelegateClass.delegatedToMember = 34
+    myDelegateClass.delegatedAnotherClass = 13
+
+    println("Top level: $topLevelInt, " +
+            "memberInt: ${myDelegateClass.memberInt}, " +
+            "anotherClassInstance.anotherClassInt: ${myDelegateClass.anotherClassInstance.anotherClassInt}")
+    /*
+        Prints:
+        Top level: 100, memberInt: 34, anotherClassInstance.anotherClassInt: 13
+
+        🔥 By delegating top level int to MyDelegate.delegatedToTopLevel any change on this
+        property also changes topLevelInt
+     */
+
+
+    // INFO 🔥 Delegating to another property for Deprecating property
+    val myClass = ClassDeprecateWithDelegate()
+    // Notification: 'oldName: Int' is deprecated.
+    // Use 'newName' instead
+    myClass.oldName = 42
+    println(myClass.newName) // 42
+
+    myClass.newName = 100
+    println("Old: ${myClass.oldName}, new: ${myClass.newName}")
+    // Old: 100, new: 100
+
 }
 
 
 // INFO 🔥 Delegated Properties
 
 class Delegate {
+
+    // 🔥 first parameter is the object you read p from
+    // second parameter holds a description of p itself (for example, you can take its name).
     operator fun getValue(thisRef: Any?, property: KProperty<*>): String {
         return "$thisRef, thank you for delegating '${property.name}' to me!"
     }
@@ -85,43 +96,46 @@ class DerivedUser {
     var todayTasks: String by DelegatedUser()
 }
 
-
-// INFO 🔥 Standard Delegates
-
-// INFO 🔥 Lazy
-// WARNING The lazy {...} delegate can only be used for val properties
-val lazyValue: String by lazy {
-    println("Invoked only the first time lazy initialized!")
-    "Hello"
+// INFO 🔥 ReadWriteProperty
+class UpperCaseString {
+    var str by UpperCaseStringDelegate()
 }
 
+class UpperCaseStringDelegate : ReadWriteProperty<Any, String> {
 
-// INFO 🔥 Observable
+    private var value: String = ""
 
-class UserObservable {
-    var name: String by Delegates.observable("<no type>") { prop, old, new ->
-        println("$old -> $new")
+    override fun getValue(thisRef: Any, property: KProperty<*>): String {
+        return value
     }
+
+    override fun setValue(thisRef: Any, property: KProperty<*>, value: String) {
+        this.value = value.uppercase()
+    }
+
 }
 
-// INFO 🔥 Vetoable
-var max: Int by Delegates.vetoable(0) { property, oldValue, newValue ->
+// INFO 🔥 Delegating to another property
 
-    println("vetoable property: $property, oldValue: $oldValue, newValue: $newValue")
-    if (newValue > oldValue) true
-    else throw IllegalArgumentException("New value must be larger than old value.")
+var topLevelInt: Int = 2
+
+class ClassWithDelegate(var anotherClassInt: Int)
+
+class MyDelegateClass(var memberInt: Int, val anotherClassInstance: ClassWithDelegate) {
+
+    var delegatedToMember: Int by this::memberInt
+    var delegatedToTopLevel: Int by ::topLevelInt
+
+    var delegatedAnotherClass: Int by anotherClassInstance::anotherClassInt
 }
 
+var MyDelegateClass.extDelegated: Int by ::topLevelInt
 
-// INFO 🔥 Storing Properties in a Map
 
-class ImmutableUser(val map: Map<String, Any?>) {
-    val name: String by map
-    val age: Int by map
+// INFO 🔥 Delegating to another property for Deprecating property
+class ClassDeprecateWithDelegate {
+    var newName: Int = 0
+    @Deprecated("Use 'newName' instead", ReplaceWith("newName"))
+    var oldName: Int by this::newName
 }
 
-
-class MutableUser(val map: MutableMap<String, Any?>) {
-    var name: String by map
-    var age: Int by map
-}
