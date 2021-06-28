@@ -29,9 +29,9 @@ public class GenericJava {
         List<? super Shape> shapesSuper = new ArrayList<>();
 
         baseShapeExtends = shapesExtends; // Works fine
-//        shapesExtends = baseShapeExtends; // 🔥 COMPILE ERROR Required type: List <? extends Shape>
+//        shapesExtends = baseShapeExtends; // ❌ COMPILE ERROR Required type: List <? extends Shape>
 
-//        baseShapeSuper = shapesSuper; // 🔥 COMPILE ERROR Required type: List <? super UniShape>
+//        baseShapeSuper = shapesSuper; // ❌ COMPILE ERROR Required type: List <? super UniShape>
         shapesSuper = baseShapeSuper; // Works fine
 
 
@@ -44,14 +44,14 @@ public class GenericJava {
 
         Animals<Cow> cows = new Animals<>();
 
-        // 🔥 COMPILE ERRR Animals<Cow> is not sub-type of Animals<Mammal>
+        // ❌ COMPILE ERROR Animals<Cow> is not sub-type of Animals<Mammal>
 //        mammals = cows;
 //        cows = mammals;
 
         // 🔥 Since this is List<T> it only works with type T, need List<? extends T>
         // to work with sub types of T
         mammals.doSomethingList(new ArrayList<Mammal>());
-//        mammals.doSomethingList(new ArrayList<Cow>());  // 🔥 COMPILE ERROR
+//        mammals.doSomethingList(new ArrayList<Cow>());  // ❌ COMPILE ERROR
 
 
         /*
@@ -70,14 +70,16 @@ public class GenericJava {
         shapeMaker.setShape(rectangle);
         System.out.println("ShapeMaker shape: " + shapeMaker.getShape());
 
-        // shapeMaker.setShape(uniShape); // 🔥 COMPILE ERROR
+        // shapeMaker.setShape(uniShape); // ❌ COMPILE ERROR
 
         ShapeCreator<Shape> shapeCreator = new ShapeCreator<>();
         shapeCreator.setShape(circle);
         System.out.println("ShapeCreator shape: " + shapeCreator.getShape()); // This is Circle
 
         ShapeCreator<? extends Shape> shapeCreatorExtends = new ShapeCreator<>();
-//        shapeCreatorExtends.setShape(shape); / 🔥 COMPILE ERROR
+        // This works because ? extends accept setting type to contravariant
+//        shapeCreatorExtends = shapeCreator;
+//        shapeCreatorExtends.setShape(shape); // ❌ COMPILE ERROR
 
 
         ShapeCreator<? super Shape> shapeCreatorSuper = new ShapeCreator<>();
@@ -87,7 +89,7 @@ public class GenericJava {
 
         List<? super Shape> listOfShapes = shapeCreator.getListOfShapes(circle, rectangle, triangle);
 
-        // 🔥 COMPILE ERROR because it's super type, and can only return Object
+        // ❌ COMPILE ERROR because it's super type, and can only return Object
 //        Shape shape1 = shapeCreator.getShape();
 
         /*

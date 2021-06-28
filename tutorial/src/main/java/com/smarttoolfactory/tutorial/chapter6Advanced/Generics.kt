@@ -1,46 +1,59 @@
 package com.smarttoolfactory.tutorial.chapter6Advanced
 
-import java.util.*
-
 fun main() {
-
-    val ints: Array<Int> = arrayOf(1, 2, 3)
-    val any = Array<Any>(3) { "" }
-    copy(ints, any)
 
     var listBaseShape = listOf(BaseShapeK())
     var listOfShape= listOf(ShapeK())
 
-    // 🔥 Compile ERROR
-    // THIS DOES NOT WORK IN JAVA, it should have ? super BaseShapeK to Work
+    // ❌ COMPILE ERROR
 //    listOfShape = listBaseShape
 
-    listBaseShape = listOfShape
+    // THIS DOES NOT WORK IN JAVA, it should have ? super BaseShapeK to work
+    // WORKS in KOTLIN
+//    listBaseShape = listOfShape
 
+    // ❌ COMPILE ERROR
+//    listOfShape = listBaseShape
 
-    val shapeBuilder: ShapeBuilder<in ShapeK> = ShapeBuilder(CircleK())
-    println("ShapeBuilder shape: ${shapeBuilder.shape}")
-    shapeBuilder.shape = RectangleK()
-    println("ShapeBuilder After shape: ${shapeBuilder.shape}")
-
-
-    val shapeBuilder2: ShapeBuilder<out ShapeK> = ShapeBuilder(CircleK())
     /*
-        🔥 Compile Error
+        Producer Consumer Behaviour
+     */
+    val shapeBuilder = ShapeBuilder(ShapeK())
+    var shapeBuilderWithIN: ShapeBuilder<in ShapeK> = ShapeBuilder(CircleK())
+
+    println("ShapeBuilder shape: ${shapeBuilderWithIN.shape}")
+    shapeBuilderWithIN.shape = RectangleK()
+    println("ShapeBuilder After shape: ${shapeBuilderWithIN.shape}")
+
+
+    var shapeBuilderWithOUT: ShapeBuilder<out ShapeK> = ShapeBuilder(CircleK())
+
+    /*
+        ❌ COMPILE ERROR
         Type mismatch.
         Required:
         Nothing?
         Found:
         RectangleK
      */
-//    shapeBuilder2.shape = RectangleK()
-
+//    shapeBuilderWithOUT.shape = RectangleK()
 
     val shapeBuilderIn: ShapeBuilderIn<ShapeK>  = ShapeBuilderIn(CircleK())
     println("ShapeBuilderIn shape: ${shapeBuilderIn.fetchShape()}")
     shapeBuilderIn.updateShape(RectangleK())
     println("ShapeBuilderIn After shape: ${shapeBuilderIn.fetchShape()}")
 
+    /*
+        Assigning to Covariant or Contravariant
+     */
+
+//     🔥 Assigning concrete types to variants works
+//    shapeBuilderWithIN = shapeBuilder
+//    shapeBuilderWithOUT = shapeBuilder
+
+    // ❌ Compile Error
+//    shapeBuilder = shapeBuilderWithIN
+//    shapeBuilder = shapeBuilderWithOUT
 
 
 }
@@ -66,10 +79,9 @@ private class ShapeBuilder<T : ShapeK>(var shape: T? = null)
  * **shape** in constructor cannot have ***var*** parameters
  */
 private class ShapeBuilderOut<out T : ShapeK>(private val shape: T?) {
-
     private var newShape = shape
 
-    // 🔥🔥 COMPILE ERROR Type parameter T is declared as 'out' but occurs in 'in' position in type T?
+    // 🔥🔥 ❌ Compile ErrorType parameter T is declared as 'out' but occurs in 'in' position in type T?
 //    fun updateShape(shape: T?) {
 //        newShape = shape
 //
@@ -111,7 +123,7 @@ IN JAVA
       // ...
     }
 
-    🔥 COMPILE ERROR, this is not possible without bounds
+    ❌ COMPILE ERROR, this is not possible without bounds
     List<Object> objList = new ArrayList<>();
     List<String> strList = new ArrayList<>();
 
@@ -130,30 +142,3 @@ fun demoDest(strs: Dest<Any>) {
 }
 
 
-open class Person
-
-open class Banker : Person()
-
-
-fun copyList(src: List<Person>, dest: MutableList<in Person>) {
-    src.forEach { person: Person ->
-        dest.add(person)
-    }
-}
-
-fun copy(from: Array<out Any>, to: Array<Any>) {
-    from.forEachIndexed { index, any ->
-        to[index] = any
-    }
-}
-
-
-fun copyFrom(src: List<Person>): MutableList<in Banker> {
-
-    val list: MutableList<in Person> = ArrayList()
-
-    src.forEach { person: Person ->
-        list.add(person)
-    }
-    return list
-}
