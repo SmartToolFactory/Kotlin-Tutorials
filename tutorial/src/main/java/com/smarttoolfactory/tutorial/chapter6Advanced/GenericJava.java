@@ -123,6 +123,16 @@ class Animals<T> {
             System.out.println("Animals " + animal);
         }
     }
+
+    public void doSomethingListUpperBounded(List<? extends T> animals) {
+        for (T animal : animals) {
+            System.out.println("Animals " + animal);
+        }
+    }
+
+    public void doSomethingListLowerBounded(List<? super T> animals, T animal) {
+        animals.add(animal);
+    }
 }
 
 class Mammal {
@@ -217,6 +227,10 @@ class Apple extends Fruit {
     public String toString() {
         return "I am an Apple !!";
     }
+
+    public void appleMethod() {
+        System.out.println("This is APPLE METHOD");
+    }
 }
 
 class AsianApple extends Apple {
@@ -224,6 +238,8 @@ class AsianApple extends Apple {
     public String toString() {
         return "I am an AsianApple !!";
     }
+
+
 }
 
 class GenericsExamplesExtend {
@@ -238,7 +254,7 @@ class GenericsExamplesExtend {
 
         //Here we know that in basket there is nothing but fruit only
         for (Fruit fruit : basket) {
-            System.out.println(fruit);
+            System.out.println("GenericsExamplesExtend " + fruit);
         }
 
         //basket.add(new Apple()); //Compile time error
