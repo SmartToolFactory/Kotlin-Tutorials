@@ -147,18 +147,6 @@ class Cow extends Mammal {
     }
 }
 
-class Dolphin extends Mammal {
-    public void printName() {
-        System.out.println("I'm Dolphin");
-    }
-}
-
-class Bird {
-    public void printName() {
-        System.out.println("I'm Bird");
-    }
-}
-
 class ShapeCreator<T> {
 
     T shape;

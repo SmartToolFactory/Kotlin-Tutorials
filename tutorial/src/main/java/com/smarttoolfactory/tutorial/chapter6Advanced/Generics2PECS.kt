@@ -3,12 +3,23 @@ package com.smarttoolfactory.tutorial.chapter6Advanced
 fun main() {
 
     val tomatoBasket = VegetableBasket<Tomato>()
+    val vegetableBasket = VegetableBasket<Vegetable>()
 
+    val plants = ArrayList<Plant>()
     val vegtables = ArrayList<Vegetable>()
     val tomatoes = ArrayList<Tomato>()
 
     // Can use any class that super of T which is Tomato
+    tomatoBasket.doSomething(plants)
     tomatoBasket.doSomething(vegtables)
+    tomatoBasket.doSomething(tomatoes)
+
+    vegetableBasket.doSomething(plants)
+    vegetableBasket.doSomething(vegtables)
+
+    // ❌ COMPILE ERROR Tomato is sub-type of Vegetable, it can accept Vegetable or super types
+//    vegetableBasket.doSomething(tomatoes)
+
 
 }
 

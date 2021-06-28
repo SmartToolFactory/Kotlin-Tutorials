@@ -3,7 +3,7 @@ package com.smarttoolfactory.tutorial.chapter6Advanced
 fun main() {
 
     var listBaseShape = listOf(BaseShapeK())
-    var listOfShape= listOf(ShapeK())
+    var listOfShape = listOf(ShapeK())
 
     // ❌ COMPILE ERROR
 //    listOfShape = listBaseShape
@@ -38,7 +38,7 @@ fun main() {
      */
 //    shapeBuilderWithOUT.shape = RectangleK()
 
-    val shapeBuilderIn: ShapeBuilderIn<ShapeK>  = ShapeBuilderIn(CircleK())
+    val shapeBuilderIn: ShapeBuilderIn<ShapeK> = ShapeBuilderIn(CircleK())
     println("ShapeBuilderIn shape: ${shapeBuilderIn.fetchShape()}")
     shapeBuilderIn.updateShape(RectangleK())
     println("ShapeBuilderIn After shape: ${shapeBuilderIn.fetchShape()}")
@@ -55,7 +55,16 @@ fun main() {
 //    shapeBuilder = shapeBuilderWithIN
 //    shapeBuilder = shapeBuilderWithOUT
 
+    val rectangleBuilder = ShapeBuilder(RectangleK())
+    val baseShaBuilder = ShapeBuilder(BaseShapeK())
 
+    // ❌ Compile Error IN type can only be assigned with higher(super) types
+//    shapeBuilderWithIN = rectangleBuilder
+    shapeBuilderWithIN = baseShaBuilder
+
+    shapeBuilderWithOUT = rectangleBuilder
+    // ❌ Compile Error OUT type can only be assigned with lower(sub) types
+//    shapeBuilderWithOUT = baseShaBuilder
 }
 
 internal open class BaseShapeK
@@ -64,14 +73,14 @@ internal open class ShapeK : BaseShapeK()
 
 internal class CircleK : ShapeK()
 
-internal class RectangleK : ShapeK()
+internal open class RectangleK : ShapeK()
 
-internal class TriangleK : ShapeK()
+internal class SquareK : RectangleK()
 
 /**
  * Invariant class
  */
-private class ShapeBuilder<T : ShapeK>(var shape: T? = null)
+private class ShapeBuilder<T>(var shape: T? = null)
 
 /**
  * Covariant class
