@@ -4,31 +4,27 @@ fun main() {
 
     val tomatoBasket = VegetableBasket<Tomato>()
     val vegetableBasket = VegetableBasket<Vegetable>()
+    val plantBasket = VegetableBasket<Plant>()
 
     val plants = ArrayList<Plant>()
     val vegtables = ArrayList<Vegetable>()
     val tomatoes = ArrayList<Tomato>()
 
     // Can use any class that super of T which is Tomato
-    tomatoBasket.doSomething(plants)
-    tomatoBasket.doSomething(vegtables)
-    tomatoBasket.doSomething(tomatoes)
+    tomatoBasket.doSomethingWithList(plants)
+    tomatoBasket.doSomethingWithList(vegtables)
+    tomatoBasket.doSomethingWithList(tomatoes)
 
-    vegetableBasket.doSomething(plants)
-    vegetableBasket.doSomething(vegtables)
+    vegetableBasket.doSomethingWithList(plants)
+    vegetableBasket.doSomethingWithList(vegtables)
+
+    vegetableBasket.doSomethingOut(tomatoBasket)
+    vegetableBasket.doSomethingIn(plantBasket)
 
     // ❌ COMPILE ERROR Tomato is sub-type of Vegetable, it can accept Vegetable or super types
 //    vegetableBasket.doSomething(tomatoes)
 
 
-}
-
-interface Producer<out T> {
-    fun produce(): T
-}
-
-interface Consumer<in T> {
-    fun consume(t: T)
 }
 
 open class Plant
@@ -38,13 +34,28 @@ class Cucumber : Vegetable()
 
 class VegetableBasket<T> {
 
-    fun doSomething(list: ArrayList<in T>) {
+    fun doSomethingOut(basket: VegetableBasket<out T>) {
+
+    }
+
+    fun doSomethingIn(basket: VegetableBasket<in T>) {
+
+    }
+
+    fun doSomethingWithList(list: ArrayList<in T>) {
         list.forEach {
             println("VegetableBasket element: $it")
         }
     }
 }
 
+interface Producer<out T> {
+    fun produce(): T
+}
+
+interface Consumer<in T> {
+    fun consume(t: T)
+}
 
 class InOutTestClass<in I, out O> {
 
