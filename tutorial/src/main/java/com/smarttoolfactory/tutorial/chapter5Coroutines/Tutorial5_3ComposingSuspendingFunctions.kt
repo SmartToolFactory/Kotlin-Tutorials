@@ -2,6 +2,7 @@ package com.smarttoolfactory.tutorial.chapter5Coroutines
 
 import kotlinx.coroutines.*
 import java.lang.Thread.sleep
+import kotlin.system.measureTimeMillis
 
 /**
  * * launch is asynchronous
@@ -18,43 +19,10 @@ fun main() = runBlocking<Unit> {
 //    printNumsWithDelayOne()
 //    printNumsWithDelayTwo()
 
-//    val time = measureTimeMillis {
-//        val one = doSomethingUsefulOne()
-//        val two = doSomethingUsefulTwo()
-//        println("The answer is ${one + two}")
-//    }
-//
-//    println("Completed in $time ms")
-
-    /*
-        Runs sequential
-
-        Prints:
-        doSomethingUsefulOne main
-        doSomethingUsefulTwo main
-        The answer is 42
-       🔥🔥 Completed in 2015 ms
-
-     */
-
+//    sequentialByDefault()
 
     // INFO 🔥 Concurrent using async
-//    val timeAsync = measureTimeMillis {
-//
-//        // WARNING 🔥 async functions are executed on Main Thread
-//        val one = async { doSomethingUsefulOne() }
-//        val two = async { doSomethingUsefulTwo() }
-//        println("The answer is ${one.await() + two.await()}")
-//    }
-//    println("Completed in $timeAsync ms")
-
-    /*
-        Prints:
-        doSomethingUsefulOne main
-        doSomethingUsefulTwo main
-        The answer is 42
-        Completed in 1048 ms
-     */
+//    concurrentWithAsync()
 
 
 //    async { printNumsWithDelayOne() }
@@ -62,37 +30,18 @@ fun main() = runBlocking<Unit> {
 
     // 🔥 INFO Async-style functions
     // note that we don't have `runBlocking` to the right of `main` in this example
-//    val time = measureTimeMillis {
-//        // we can initiate async actions outside of a coroutine
-//        val one = somethingUsefulOneAsync()
-//        val two = somethingUsefulTwoAsync()
-//        // but waiting for a result must involve either suspending or blocking.
-//        // here we use `runBlocking { ... }` to block the main thread while waiting for the result
-//        runBlocking {
-//            println("The answer is ${one.await() + two.await()}")
-//        }
-//    }
-//    println("Completed in $time ms")
+//    asyncStyleFun()
 
     // 🔥 Structured concurrency with async
-//    //  ⚠️ Asynchronous with await
-//    val time = measureTimeMillis {
-//        println("The answer is ${concurrentSum()}")
-//    }
-//    println("Completed in $time ms")
+//    asyncWithWait()
 
-    /**
-    Prints:
 
-    doSomethingUsefulOne in thread: main
-    doSomethingUsefulTwo in thread: main
-    The answer is 42
-    Completed in 1036 ms
-     */
+    //  ⚠️ Lazily started async
+//    lazylyStartedAsync()
 
     //  ⚠️ Synchronous with await
 //    val timeDeferred = measureTimeMillis {
-//        println("The answer is ${concurrentSumDeferred()}")
+//        println("The answer is ${concurrentSumSynchronous()}")
 //    }
 //    println("Completed in $timeDeferred ms")
 
@@ -129,15 +78,15 @@ fun main() = runBlocking<Unit> {
     🍏 Second Job: i: 2, in thread: DefaultDispatcher-worker-1
      */
 
-    combineLaunchWitContext()
+//    combineLaunchWitContext()
 
     // 🔥 INFO Cancellation is propagated
 
-//    try {
-//        failedConcurrentSum()
-//    } catch(e: ArithmeticException) {
-//        println("Computation failed with ArithmeticException")
-//    }
+    try {
+        failedConcurrentSum()
+    } catch(e: ArithmeticException) {
+        println("Computation failed with ArithmeticException")
+    }
 
 
     /*
@@ -154,6 +103,88 @@ fun main() = runBlocking<Unit> {
 
 
 // INFO 🔥 Sequential by default
+private suspend fun sequentialByDefault() {
+    val time = measureTimeMillis {
+        val one = doSomethingUsefulOne()
+        val two = doSomethingUsefulTwo()
+        println("The answer is ${one + two}")
+    }
+
+    println("Completed in $time ms")
+
+    /*
+    Runs sequential
+
+    Prints:
+    doSomethingUsefulOne main
+    doSomethingUsefulTwo main
+    The answer is 42
+   🔥🔥 Completed in 2015 ms
+
+ */
+}
+
+private suspend fun CoroutineScope.concurrentWithAsync() {
+    val timeAsync = measureTimeMillis {
+
+        // WARNING 🔥 async functions are executed on Main Thread
+        val one = async { doSomethingUsefulOne() }
+        val two = async { doSomethingUsefulTwo() }
+        println("The answer is ${one.await() + two.await()}")
+    }
+    println("Completed in $timeAsync ms")
+
+    /*
+    Prints:
+    doSomethingUsefulOne main
+    doSomethingUsefulTwo main
+    The answer is 42
+    Completed in 1048 ms
+ */
+}
+
+private fun asyncStyleFun() {
+    val time = measureTimeMillis {
+        // we can initiate async actions outside of a coroutine
+        val one = somethingUsefulOneAsync()
+        val two = somethingUsefulTwoAsync()
+        // but waiting for a result must involve either suspending or blocking.
+        // here we use `runBlocking { ... }` to block the main thread while waiting for the result
+        runBlocking {
+            println("The answer is ${one.await() + two.await()}")
+        }
+    }
+    println("Completed in $time ms")
+}
+
+private suspend fun asyncWithWait() {
+    //  ⚠️ Asynchronous with await
+    val time = measureTimeMillis {
+        println("The answer is ${concurrentSumAsync()}")
+    }
+    println("Completed in $time ms")
+
+    /*
+    Prints:
+
+    doSomethingUsefulOne in thread: main
+    doSomethingUsefulTwo in thread: main
+    The answer is 42
+    Completed in 1036 ms
+     */
+}
+
+private suspend fun CoroutineScope.lazylyStartedAsync() {
+    val time = measureTimeMillis {
+        val one = async(start = CoroutineStart.LAZY) { doSomethingUsefulOne() }
+        val two = async(start = CoroutineStart.LAZY) { doSomethingUsefulTwo() }
+        // some computation
+        one.start() // start the first one
+        two.start() // start the second one
+        println("The answer is ${one.await() + two.await()}")
+    }
+    println("Completed in $time ms")
+}
 
 // Both methods run on main thread, and second method waits for first one execution to finish
 suspend fun printNumsWithDelayOne() {
@@ -215,9 +246,9 @@ fun somethingUsefulTwoAsync() = GlobalScope.async {
     it throws an exception, all the coroutines that were launched in its scope will be cancelled.
  */
 
-suspend fun concurrentSum(): Int = coroutineScope {
-    val one = async { doSomethingUsefulOne() }
-    val two = async { doSomethingUsefulTwo() }
+suspend fun concurrentSumAsync(): Int = coroutineScope {
+    val one: Deferred<Int> = async { doSomethingUsefulOne() }
+    val two: Deferred<Int> = async { doSomethingUsefulTwo() }
     one.await() + two.await()
 }
 
@@ -225,9 +256,9 @@ suspend fun concurrentSum(): Int = coroutineScope {
  * Takes TWICE the time function above takes since [doSomethingUsefulOne] and [doSomethingUsefulTwo]
  * functions are executed synchronously
  */
-suspend fun concurrentSumDeferred(): Int = coroutineScope {
-    val one = async { doSomethingUsefulOne() }.await()
-    val two = async { doSomethingUsefulTwo() }.await()
+suspend fun concurrentSumSynchronous(): Int = coroutineScope {
+    val one: Int = async { doSomethingUsefulOne() }.await()
+    val two: Int = async { doSomethingUsefulTwo() }.await()
     one + two
 }
 
@@ -272,7 +303,7 @@ private suspend fun combineLaunchWitContext() {
 
     val coroutineScope = CoroutineScope(Job())
 
-  val job =  coroutineScope.launch {
+    val job = coroutineScope.launch {
 
         launch {
             for (i in 0 until 3) {
@@ -303,10 +334,7 @@ private suspend fun combineLaunchWitContext() {
         }
     }
 
-    sleep(3000)
-
-
-
+    delay(3000)
 
 }
 

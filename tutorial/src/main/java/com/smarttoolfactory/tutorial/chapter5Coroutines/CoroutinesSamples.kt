@@ -1,4 +1,4 @@
-package com.smarttoolfactory.tutorial.chapte.chapter5Coroutines
+package com.smarttoolfactory.tutorial.chapter5Coroutines
 
 import kotlinx.coroutines.*
 

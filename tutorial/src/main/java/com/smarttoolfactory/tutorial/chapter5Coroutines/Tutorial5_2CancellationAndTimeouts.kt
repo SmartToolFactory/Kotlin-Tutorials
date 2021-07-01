@@ -9,7 +9,7 @@ fun main() = runBlocking {
 //    cancel()
 
     // INFO 🔥 Timeout
-    cancelTimeout()
+//    cancelTimeout()
 
     // INFO 🔥 Cancellation is cooperative
 //    cancelCooperative()
@@ -21,7 +21,7 @@ fun main() = runBlocking {
 //    cancelWithTryAndFinally()
 
     // INFO 🔥 Run non-cancellable block
-//    cancelNonCancelable()
+    cancelNonCancelable()
 
     // INFO 🔥 Timeout or Null
 
@@ -45,7 +45,7 @@ private suspend fun CoroutineScope.cancel() {
     delay(1300L) // delay a bit
     println("main: I'm tired of waiting!")
 
-//    job.cancel() // cancels the job
+    job.cancel() // cancels the job
     job.join() // waits for job's completion
 
     println("main: Now I can quit.")
@@ -175,7 +175,7 @@ private suspend fun CoroutineScope.cancelWithTryAndFinally() {
                 delay(500L)
             }
         } catch (e: Exception) {
-            println("Exception: $e")
+            println("EXCEPTION!: $e")
         } finally {
             println("I'm running finally")
         }
@@ -195,7 +195,7 @@ private suspend fun CoroutineScope.cancelWithTryAndFinally() {
         I'm sleeping 1 ...
         I'm sleeping 2 ...
         main: I'm tired of waiting!
-      Exception: kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@3b95a09c
+      EXCEPTION!: kotlinx.coroutines.JobCancellationException: StandaloneCoroutine was cancelled; job=StandaloneCoroutine{Cancelling}@3b95a09c
         I'm running finally
         main: Job canceled!
      */
@@ -252,6 +252,18 @@ private suspend fun CoroutineScope.cancelNonCancelable() {
     delay(1300L) // delay a bit
     println("main: I'm tired of waiting!")
     job.cancelAndJoin() // cancels the job and waits for its completion println("main: Now I can quit.")
+    println("Finish")
+    /*
+        Prints:
+        I'm sleeping 0 ...
+        I'm sleeping 1 ...
+        I'm sleeping 2 ...
+        main: I'm tired of waiting!
+        I'm running finally
+        I've just delayed for 1 sec because I'm non-cancellable
+
+        Finish
+     */
 }
 
 
@@ -263,4 +275,8 @@ private suspend fun CoroutineScope.cancelTimeout() {
             delay(500L)
         }
     }
+    /*
+        Throws Exception in thread "main" kotlinx.coroutines.TimeoutCancellationException:
+        Timed out waiting for 1300 ms
+     */
 }

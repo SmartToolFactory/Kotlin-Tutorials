@@ -6,8 +6,8 @@ import kotlinx.coroutines.*
     Coroutines always execute in some context represented by a value of the CoroutineContext type,
     defined in the Kotlin standard library.
 
-    The coroutine context is a set of various elements. The main elements are the Job of the coroutine,
-     and its dispatcher.
+    The coroutine context is a set of various elements. The main elements are the
+    Job of the coroutine, and its dispatcher.
  */
 fun main() {
 
