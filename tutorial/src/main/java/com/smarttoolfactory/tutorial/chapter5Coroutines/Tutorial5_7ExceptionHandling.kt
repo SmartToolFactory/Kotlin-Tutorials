@@ -13,7 +13,7 @@ import kotlin.coroutines.coroutineContext
 fun main() = runBlocking {
 
     // 🔥 INFO Exception propagation
-//    exceptionPropagation()
+    exceptionPropagation()
 
     // 🔥 INFO CoroutineExceptionHandler
 //    coroutineExceptionHandlerFun()
@@ -23,7 +23,7 @@ fun main() = runBlocking {
 //    cancellationAndExceptions2()
 //    cancellationWithChildren()
 //    exceptionsWithChildren()
-    exceptionWithChildrenHandlers()
+//    exceptionWithChildrenHandlers()
 
     // 🔥 Exceptions aggregation
 //    exceptionsAggregation()

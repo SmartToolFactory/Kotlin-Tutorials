@@ -3,6 +3,7 @@ package com.smarttoolfactory.tutorial.chapter5Coroutines
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.Thread.sleep
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
@@ -34,11 +35,11 @@ fun main() = runBlocking<Unit> {
         🔥 Flattening flows
      */
 
-    // 🔥 flatMapConcat
+    // 🔥 flatMapConcat -> RxJava ConcatMap
 //    exampleFlatMapConcat()
-    // 🔥 flatMapMerge
+    // 🔥 flatMapMerge -> RxJava FlatMap
 //    exampleFlatMapMerge()
-    // 🔥 flatMapLatest
+    // 🔥 flatMapLatest -> RxJava SwitchMap
 //    exampleFlatMapLatest()
 
     /*
@@ -65,8 +66,16 @@ fun main() = runBlocking<Unit> {
 
 //    exampleFlowCompletionDeclarativeExceptions()
 
+
+    /*
+       🔥 Flow Cancelable
+   */
+    exampleCancel()
+
+//    exampleCancellable()
+
     // 🔥 INFO Custom interval
-    exampleCustomInterval()
+//    exampleCustomInterval()
 }
 
 
@@ -247,8 +256,11 @@ suspend fun exampleZip() {
 
 suspend fun exampleZipWithDelay() {
 
-    val nums = (1..3).asFlow().onEach { delay(300) } // numbers 1..3 every 300 ms
-    val strs = flowOf("one", "two", "three").onEach { delay(400) } // strings every 400 ms
+    val nums = (1..3).asFlow()
+        .onEach { delay(300) } // numbers 1..3 every 300 ms
+
+    val strs = flowOf("one", "two", "three")
+        .onEach { delay(400) } // strings every 400 ms
 
     val startTime = System.currentTimeMillis() // remember the start time
 
@@ -282,8 +294,12 @@ suspend fun exampleZipWithDelay() {
  */
 suspend fun exampleCombine() {
 
-    val nums = (1..3).asFlow().onEach { delay(300) } // numbers 1..3 every 300 ms
-    val strs = flowOf("one", "two", "three").onEach { delay(400) } // strings every 400 ms
+    val nums = (1..3).asFlow()
+        .onEach { delay(300) } // numbers 1..3 every 300 ms
+
+    val strs = flowOf("one", "two", "three")
+        .onEach { delay(400) } // strings every 400 ms
+
     val startTime = System.currentTimeMillis() // remember the start time
 
     nums.combine(strs) { a, b -> "$a -> $b" } // compose a single string with "combine"
@@ -347,7 +363,8 @@ suspend fun exampleFlatMapConcat() {
 
     val startTime = System.currentTimeMillis() // remember the start time
 
-    (1..3).asFlow().onEach { delay(100) } // a number every 100 ms
+    (1..3).asFlow()
+        .onEach { delay(100) } // a number every 100 ms
         .flatMapConcat { requestFlow(it) }
         .collect { value -> // collect and print
             println("$value at ${System.currentTimeMillis() - startTime} ms from start")
@@ -609,7 +626,6 @@ suspend fun exampleFlowCompletionDeclarativeExceptions() {
 suspend fun exampleFlowCompletionDeclarativeExceptions2() {
 
 
-
     // 🔥 Completes With onCompletion catching exception
     (1..3).asFlow()
         .onCompletion { cause -> if (cause != null) println("😱 Flow completed exceptionally") }
@@ -634,6 +650,57 @@ suspend fun exampleFlowCompletionDeclarativeExceptions2() {
 
 }
 
+/*
+    🔥 Flow cancellation checks
+ */
+
+private suspend fun CoroutineScope.exampleCancel() {
+    flow {
+        for (i in 1..5) {
+            println("Emitting $i")
+            emit(i)
+        }
+    }
+        .cancellable()
+        .collect { value ->
+            if (value == 3) cancel()
+            println(value)
+        }
+
+    /*
+        Prints:
+
+        Emitting 1
+        1
+        Emitting 2
+        2
+        Emitting 3
+        3
+        Emitting 4
+        Exception in thread "main" kotlinx.coroutines.JobCancellationException: BlockingCoroutine was cancelled; job=BlockingCoroutine{Cancelled}@5d76b067
+
+     */
+}
+
+private suspend fun CoroutineScope.exampleCancellable() {
+    flow {
+        for (i in 1..5) {
+            println("Emitting $i")
+            emit(i)
+        }
+    }
+        .collect { value ->
+            if (value == 3)  cancel()
+            println(value)
+        }
+
+    /*
+        Prints:
+
+
+     */
+
+}
 
 /*
     🔥 Custom Interval Implementation
@@ -643,21 +710,21 @@ private fun exampleCustomInterval() {
 
     val coroutineScope = CoroutineScope(SupervisorJob())
 
-  val job =  coroutineScope.launch {
+    val job = coroutineScope.launch {
 
-      val jobInterval = interval(1, TimeUnit.SECONDS)
-              .onStart {
-                  emit(-1)
-              }
-              .onEach {
-                  println(it)
-              }
-              .map {
-                  "Current time $it"
-              }
-              .launchIn(coroutineScope)
+        val jobInterval = interval(1, TimeUnit.SECONDS)
+            .onStart {
+                emit(-1)
+            }
+            .onEach {
+                println(it)
+            }
+            .map {
+                "Current time $it"
+            }
+            .launchIn(coroutineScope)
 
-      println("JobInterval $jobInterval")
+        println("JobInterval $jobInterval")
 
     }
 
