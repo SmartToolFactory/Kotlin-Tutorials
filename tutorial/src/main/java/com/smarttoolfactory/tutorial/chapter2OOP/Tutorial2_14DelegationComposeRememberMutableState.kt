@@ -20,9 +20,9 @@ interface MutableState<T> : State<T> {
 }
 
 // Delegation Functions for setting and getting value
-inline operator fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T = value
+operator fun <T> State<T>.getValue(thisObj: Any?, property: KProperty<*>): T = value
 
-inline operator fun <T> MutableState<T>.setValue(thisObj: Any?, property: KProperty<*>, value: T) {
+operator fun <T> MutableState<T>.setValue(thisObj: Any?, property: KProperty<*>, value: T) {
     this.value = value
 }
 
