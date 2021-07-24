@@ -152,7 +152,7 @@ fun isOdd(value: Int, action: Int.() -> Boolean): Boolean {
 
 // INFO 🔥🔥 High Oder Function
 fun createStringBlock(num: Int, block: (Int) -> String): String {
-    return block(num).toUpperCase()
+    return block(num).uppercase()
 }
 
 

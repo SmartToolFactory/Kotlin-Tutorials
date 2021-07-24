@@ -3,6 +3,20 @@ package com.smarttoolfactory.tutorial.chapter4Functions
 fun main() {
 
     // INFO 🔥 High-order functions
+    val sum = arithmeticOperation(3, 4) { x, y ->
+        x + y
+    }
+
+    println("Sum: $sum") // 7
+
+    val multiply = arithmeticOperation(3, 4) { x, y ->
+        x * y
+    }
+
+    println("Multiply: $multiply") // 12
+
+
+    // INFO 🔥 High-order functions
     val bigger = compare(2, 3) { x, y ->
         x > y
     }
@@ -85,6 +99,10 @@ fun main() {
 
 }
 
+fun arithmeticOperation(num1: Int, num2: Int, predicate: (Int, Int) -> Int): Int {
+    return predicate(num1, num2)
+}
+
 // INFO 🔥 High-order function
 fun compare(num1: Int, num2: Int, action: (Int, Int) -> Boolean): Boolean {
     return action(num1, num2)
@@ -121,7 +139,7 @@ fun <T : Number> List<T>.max(action: (T) -> Unit) {
     for (element: T in this) {
         element.toInt() > max
     }
-        forEach {
+    forEach {
         val number: Double = (it as? Double) ?: 0.0
         if (number > max) max = number
     }

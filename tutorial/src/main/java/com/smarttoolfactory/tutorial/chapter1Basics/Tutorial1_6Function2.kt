@@ -40,7 +40,7 @@ fun main() {
         a == b
     }
     // Invocation of lambda
-    val resLambda = compLambda(2, 4)
+    val resLambda: Boolean = compLambda(2, 4)
     compLambda.invoke(2, 4)
 
     // Lambda
@@ -91,6 +91,8 @@ fun main() {
         list[index2] = temp
         list
     }
+
+    val myL = listOf(1,2,3)
 
     val listNumber = mutableListOf<Int>(1, 2, 3)
 
