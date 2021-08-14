@@ -1,6 +1,9 @@
 package com.smarttoolfactory.tutorial;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 public class EqualityAndHashCode {
@@ -13,9 +16,16 @@ public class EqualityAndHashCode {
             this.currencyCode = currencyCode;
         }
 
-
         @Override
         public boolean equals(Object obj) {
+
+            if (obj == null) return false;
+
+//            if (obj.getClass().equals(getClass())) {
+//                Currency currency = (Currency) obj;
+//                return currency.currencyCode.equals(this.currencyCode);
+//            }
+
             if (obj instanceof Currency) {
                 Currency currency = (Currency) obj;
                 return currency.currencyCode.equals(this.currencyCode);

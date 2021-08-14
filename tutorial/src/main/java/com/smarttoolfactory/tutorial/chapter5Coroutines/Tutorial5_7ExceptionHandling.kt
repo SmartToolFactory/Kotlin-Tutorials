@@ -12,8 +12,9 @@ import kotlin.coroutines.coroutineContext
  */
 fun main() = runBlocking {
 
+
     // 🔥 INFO Exception propagation
-    exceptionPropagation()
+//    exceptionPropagation()
 
     // 🔥 INFO CoroutineExceptionHandler
 //    coroutineExceptionHandlerFun()
@@ -32,7 +33,7 @@ fun main() = runBlocking {
     // 🔥 INFO Supervision
 //    exceptionWithSupervisorJob()
 //    supervisionExceptionWithOutCoroutineExceptionHandler()
-//    supervisionExceptionAndCancellations()
+    supervisionExceptionAndCancellations()
 
     // 🔥 INFO Supervision Scope
 //    supervisionScope()
@@ -182,7 +183,7 @@ private suspend fun cancellationAndExceptions2() {
 
     val job = GlobalScope.launch(handler) {
 
-        launch { // the first child
+        val childJob1 = launch { // the first child
 
             try {
                 delay(Long.MAX_VALUE)
@@ -196,7 +197,7 @@ private suspend fun cancellationAndExceptions2() {
 
         }
 
-        launch { // the second child
+        val childJob2 = launch { // the second child
             delay(10)
             println("Second child throws an exception")
             // ⚠️ Alternative 1
@@ -418,6 +419,11 @@ private suspend fun exceptionsWithChildren() {
 
 }
 
+/**
+ * Having [CoroutineExceptionHandler] in child jobs does not prevent them from crashing
+ * They need [SupervisorJob] in child job [CoroutineScope.launch] to let other
+ * child jobs to continue when it fails with an exception
+ */
 private suspend fun exceptionWithChildrenHandlers() {
 
     val childCoroutineExceptionHandler1 = CoroutineExceptionHandler { _, exception ->
@@ -435,9 +441,12 @@ private suspend fun exceptionWithChildrenHandlers() {
     myCoroutineScope.launch {
         println("Inside scope: $this, thread: ${Thread.currentThread().name}")
 
-        // 🔥🔥This job should have it's own SupervisorJob.
+        // 🔥🔥🔥 This job should have it's own SupervisorJob. Without SuperVisorJob()
+        // CoroutineExceptionHandler does not work for children jobs
+
         val firstChild =
             launch(SupervisorJob() + childCoroutineExceptionHandler1) {
+//            launch( childCoroutineExceptionHandler1) {
 
                 for (i in 0 until 5) {
                     delay(500)
@@ -447,13 +456,9 @@ private suspend fun exceptionWithChildrenHandlers() {
             }
 
         val secondChild = launch(childCoroutineExceptionHandler2) {
-            try {
-                for (i in 0 until 5) {
-                    delay(500)
-                    println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
-                }
-            } catch (e: Exception) {
-                println("Child2 EXCEPTION: $e")
+            for (i in 0 until 5) {
+                delay(500)
+                println("🥶 Child2 i: $i, scope: $this, Thread: ${Thread.currentThread().name}")
             }
         }
     }
@@ -462,6 +467,7 @@ private suspend fun exceptionWithChildrenHandlers() {
     println("END")
 
     /*
+        If job1 has SuperVisorJob()
         Prints:
 
         START with scope: CoroutineScope(coroutineContext=[BlockingCoroutine{Active}@14514713, DefaultDispatcher]), job: BlockingCoroutine{Active}@14514713
@@ -667,7 +673,15 @@ private suspend fun supervisionExceptionWithOutCoroutineExceptionHandler() {
     val supervisorJob = SupervisorJob()
     val myCoroutineScope = CoroutineScope(supervisorJob)
 
-    myCoroutineScope.launch {
+    // 🔥🔥🔥 Without a CoroutineExceptionHandler on parent Job exceptions in child jobs are not handled
+    val parentCoroutineExceptionHandler = CoroutineExceptionHandler { _, exception ->
+        println("PARENT CoroutineExceptionHandler Caught exception $exception")
+    }
+
+    myCoroutineScope.launch(
+        parentCoroutineExceptionHandler
+    )
+    {
         println("Inside scope: $this, thread: ${Thread.currentThread().name}")
 
         /*
@@ -691,7 +705,7 @@ private suspend fun supervisionExceptionWithOutCoroutineExceptionHandler() {
 
 
         /*
-            🔥🔥🔥 If this launch uses SupervisorJOb() it continues, and the parent coroutine waits for it to finish,
+            🔥🔥🔥 If this launch uses SupervisorJob() it continues, and the parent coroutine waits for it to finish,
             even after first child job crashes
          */
         launch(SupervisorJob()) {

@@ -36,7 +36,7 @@ fun main() {
 
 fun String.upperCaseAndTrim(): String {
     // INFO The this keyword inside an extension function corresponds to the receiver object
-    return this.upperCaseAndTrim()
+    return this.uppercase().trim()
 }
 
 fun MutableList<Int>.swap(index1: Int, index2: Int) {

@@ -712,7 +712,7 @@ private fun exampleCustomInterval() {
 
     val job = coroutineScope.launch {
 
-        val jobInterval = interval(1, TimeUnit.SECONDS)
+        val jobInterval: Job = interval(1, TimeUnit.SECONDS)
             .onStart {
                 emit(-1)
             }

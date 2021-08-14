@@ -171,7 +171,7 @@ fun childrenOfACoroutine() {
             }
 
             // and the other inherits the parent context
-            launch {
+            launch(Job() + Dispatchers.Default) {
                 try {
                     delay(100)
                     println("job2: I am a child of the request coroutine")
