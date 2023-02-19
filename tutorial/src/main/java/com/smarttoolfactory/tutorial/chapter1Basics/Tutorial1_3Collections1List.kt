@@ -184,7 +184,7 @@ fun main() {
     listInt.sortedBy{it}              //[10, 10, 20, 30, 40]
     listString.sortedBy{it.length}   //[ed, joel, chris, maurice]
     listInt.sum()                     //110
-    listInt.sumBy{it + 1}             //115
+    listInt.sumOf{it + 1}             //115
 
     listInt.take(1)                   //[10]
     listInt.take(2)                   //[10, 20]

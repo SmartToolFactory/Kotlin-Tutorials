@@ -5,13 +5,15 @@ import kotlin.reflect.KProperty
 
 fun main() {
 
-//    var delegatedNum1 by CalculateDelegate()
-//    var delegatedNum2 by delegateCalculationFunction()
-//
-//    println("Initial delegatedNum1: $delegatedNum1, delegatedNum2: $delegatedNum2")
-//    delegatedNum1 = 4
-//    delegatedNum2 = 3
-//    println("Final delegatedNum1: $delegatedNum1, delegatedNum2: $delegatedNum2")
+    var delegatedNum1 by CalculateDelegate()
+    var delegatedNum2 by delegateCalculationFunction()
+
+    println("Initial delegatedNum1: $delegatedNum1, delegatedNum2: $delegatedNum2")
+    delegatedNum1 = 4
+    delegatedNum2 = 3
+
+    println("Final delegatedNum1: $delegatedNum1, delegatedNum2: $delegatedNum2")
+
     /*
         Prints:
         🔥 CalculateDelegate getValue() thisRef: null, property: var delegatedNum1: kotlin.Int
@@ -24,13 +26,13 @@ fun main() {
         Final delegatedNum1: 8, delegatedNum2: 6
      */
 
-
-    val owner = Owner()
-    val newRes = Resource(5)
-
-    println("Owner res: ${owner.varResource}")
-    owner.varResource = newRes
-    println("Owner res: ${owner.varResource}")
+//
+//    val owner = Owner()
+//    val newRes = Resource(5)
+//
+//    println("Owner res: ${owner.varResource}")
+//    owner.varResource = newRes
+//    println("Owner res: ${owner.varResource}")
 
     /*
         Prints:
@@ -49,19 +51,28 @@ fun main() {
 fun delegateCalculationFunction() = CalculateDelegate()
 
 class CalculateDelegate {
-
-    private var calculatedProperty = 0
+    var value = 0
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): Int {
         println("🔥 CalculateDelegate getValue() thisRef: $thisRef, property: $property")
-        return calculatedProperty
+        return value
     }
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Int) {
         println("🤔 CalculateDelegate setValue() thisRef: $thisRef, property: $property, value: $value")
-        calculatedProperty = value * 2
+        this.value = value * 2
     }
 
+}
+
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun CalculateDelegate.getValue(thisRef: Any?, property: KProperty<*>): Int = value
+
+
+@Suppress("NOTHING_TO_INLINE")
+inline operator fun CalculateDelegate.setValue(thisObj: Any?, property: KProperty<*>, value: Int) {
+    this.value = value
 }
 
 /*

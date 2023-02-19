@@ -103,6 +103,8 @@ fun main() {
     returnUnreachableFun()
 
     returnReachableFun()
+
+    returnReachableFun2()
 }
 
 private fun breakFunction() {
@@ -118,15 +120,27 @@ private fun breakFunction() {
 private fun returnUnreachableFun() {
     listOf(1, 2, 3, 4, 5).forEach {
         if (it == 3) return // non-local return directly to the caller of foo()
-        print(it)
+        println("returnUnreachableFun() it: $it")
     }
     println("this point is unreachable")
 }
 
 private fun returnReachableFun() {
     listOf(1, 2, 3, 4, 5).forEach {
+        // This is equivalent of continue for
         if (it == 3) return@forEach // local return to the caller of the lambda - the forEach loop
-        print(it)
+        println("returnReachableFun() it: $it")
     }
     println(" done with implicit label")
+}
+
+private fun returnReachableFun2() {
+   run lit@{
+       listOf(1, 2, 3, 4, 5).forEach {
+           // This is equivalent of break for
+           if (it == 3) return@lit // local return to the caller of the lambda - the forEach loop
+           println("Inside run lit@{} it: $it")
+       }
+   }
+    println("🔥 done with implicit label")
 }

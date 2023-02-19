@@ -5,6 +5,9 @@ import java.util.*
 
 fun main() {
     testRouteHandler()
+
+    var delegatedNum2 by delegateCalculationFunction()
+
 }
 
 private fun testRouteHandler() {

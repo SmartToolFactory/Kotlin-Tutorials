@@ -95,7 +95,8 @@ fun main() {
 //    The anonymous function syntax allows you to specify the receiver type of a function literal directly.
 //    This can be useful if you need to declare a variable of a function type with receiver, and to use it later.
     val sumWithLiteralParam = fun Int.(other: Int): Int = this + other
-    sumWithLiteralParam(3, 4)
+   val res1: Int = sumWithLiteralParam(3, 4)
+  val res2: Int =  3.sumWithLiteralParam(4)
 
 
     // INFO 🔥🔥 Function Literal with Receiver

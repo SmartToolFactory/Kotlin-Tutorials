@@ -60,7 +60,7 @@ fun main() {
     println("****************************")
 
     // INFO Method5: Looping Keys and Values directly
-    mapMutable.forEach { (k, v) -> println("Map Method5 K: $k , V: $v") }
+    mapMutable.forEach { (key, value) -> println("Map Method5 K: $key , V: $value") }
     println("****************************")
 
     /*
