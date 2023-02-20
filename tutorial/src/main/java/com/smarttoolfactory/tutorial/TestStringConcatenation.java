@@ -1,8 +1,5 @@
 package com.smarttoolfactory.tutorial;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TestStringConcatenation {
 
     public static void main(String[] args) {
