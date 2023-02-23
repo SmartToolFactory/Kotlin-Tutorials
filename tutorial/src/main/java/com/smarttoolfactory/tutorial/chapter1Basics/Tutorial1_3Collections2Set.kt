@@ -23,12 +23,34 @@ fun main() {
     setLinkedHash.forEach { it -> println("setLinkedHash Item $it") }
     setTree.forEach { it -> println("setTree Item $it") }
 
+    // When we put same object with hash code and equals it's replaced with previous one
+    // If objects are not treated as same object from hashmap perspective new object is added
+    // Hashset adds items as keys of inner hashMap as
     /*
-     * INFO Immutable(Read-Only) Collections
+        Object PRESENT = Object()
+        mySet(person1) -> map.put(person1, PRESENT)
      */
+    val person1 = Person("jon", 0)
+    val person2 = Person("jon", 2)
+    val mySet: HashSet<Person> = hashSetOf()
+    val result1 = mySet.add(person1)
+    val result2 = mySet.add(person2)
+    println("Result1: $result1, result2: $result2")
 
 
-    // 🔥 WARNING
 
+}
 
+class Person(
+    val name: String, val id: Int
+) {
+//    override fun equals(other: Any?): Boolean {
+//        if (other !is Person) return false
+//        if (other.name == this.name) return true
+//        return false
+//    }
+//
+//    override fun hashCode(): Int {
+//        return name.hashCode()
+//    }
 }
