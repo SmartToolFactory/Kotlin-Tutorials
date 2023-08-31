@@ -1,10 +1,7 @@
 package com.smarttoolfactory.tutorial.chapter5Coroutines
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.launchIn
 import java.lang.Thread.sleep
-
 
 @ExperimentalStdlibApi
 suspend fun main() {

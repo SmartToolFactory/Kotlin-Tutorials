@@ -21,7 +21,10 @@ fun main() {
 //    jobInTheContext()
 
     // 🔥 INFO Children of a coroutine
-    childrenOfACoroutine()
+//    childrenOfACoroutine()
+
+    // 🔥 Child Scope and Context
+    childCoroutineScopeAndContext()
 
     // 🔥 INFO Parental responsibilities
 //    parentalResponsibilities()
@@ -202,6 +205,46 @@ fun childrenOfACoroutine() {
          */
 
     }
+
+}
+
+// 🔥 Child Scope and Context
+fun childCoroutineScopeAndContext() = runBlocking {
+
+    val scope0 = this
+    val coroutineContext0 = scope0.coroutineContext
+
+    val job0 = (coroutineContext0[Job] as Job)
+    // scope0 is the top-level coroutine scope.
+    val request = scope0.launch {
+        val scope1 = this
+        val coroutineContext1 = scope1.coroutineContext
+        println("job1: ${coroutineContext1[Job] as Job}")
+
+        // scope1 inherits its context from scope0. It replaces the Job field
+        // with its own job, which is a child of the job in scope0.
+        // It retains the Dispatcher field so the launched coroutine uses
+        // the dispatcher created by runBlocking.
+
+        val request2 = scope1.launch {
+            val scope2 = this
+            val coroutineContext2 = scope2.coroutineContext
+            // scope2 inherits from scope1
+            println("job2: ${coroutineContext2[Job] as Job}")
+        }
+
+        println("request2: $request2")
+    }
+
+    println("job0: $job0, request: $request")
+
+    /*
+        Prints:
+        job0: BlockingCoroutine{Active}@78c03f1f, request: StandaloneCoroutine{Active}@5ec0a365
+        job1: StandaloneCoroutine{Active}@5ec0a365
+        request2: StandaloneCoroutine{Active}@1f28c152
+        job2: StandaloneCoroutine{Active}@1f28c152
+     */
 
 }
 
