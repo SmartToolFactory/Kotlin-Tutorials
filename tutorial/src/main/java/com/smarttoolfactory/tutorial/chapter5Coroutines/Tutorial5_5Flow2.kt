@@ -30,6 +30,8 @@ fun main() = runBlocking<Unit> {
 //    exampleZipWithDelay()
     // 🔥 INFO Combine
 //    exampleCombine()
+    // 🔥 INFO Merge
+//    exampleMerge()
 
     /*
         🔥 Flattening flows
@@ -38,7 +40,7 @@ fun main() = runBlocking<Unit> {
     // 🔥 flatMapConcat -> RxJava ConcatMap
 //    exampleFlatMapConcat()
     // 🔥 flatMapMerge -> RxJava FlatMap
-//    exampleFlatMapMerge()
+    exampleFlatMapMerge()
     // 🔥 flatMapLatest -> RxJava SwitchMap
 //    exampleFlatMapLatest()
 
@@ -70,7 +72,7 @@ fun main() = runBlocking<Unit> {
     /*
        🔥 Flow Cancelable
    */
-    exampleCancel()
+//    exampleCancel()
 
 //    exampleCancellable()
 
@@ -318,7 +320,6 @@ suspend fun exampleCombine() {
      */
 
 }
-
 
 /*
     🔥 Flattening flows
@@ -690,7 +691,7 @@ private suspend fun CoroutineScope.exampleCancellable() {
         }
     }
         .collect { value ->
-            if (value == 3)  cancel()
+            if (value == 3) cancel()
             println(value)
         }
 
