@@ -216,7 +216,11 @@ fun childCoroutineScopeAndContext() = runBlocking {
 
     val job0 = (coroutineContext0[Job] as Job)
     // scope0 is the top-level coroutine scope.
-    val request = scope0.launch {
+
+    // 🔥🔥 This job becomes parent of request, or job inside scope1
+    val newJob = Job()
+    println("New job: $newJob")
+    val request = scope0.launch(newJob) {
         val scope1 = this
         val coroutineContext1 = scope1.coroutineContext
         println("job1: ${coroutineContext1[Job] as Job}")
