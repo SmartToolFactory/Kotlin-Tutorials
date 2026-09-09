@@ -3,11 +3,9 @@ package com.smarttoolfactory.tutorial.chapter5Coroutines
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 import java.lang.Thread.sleep
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureTimeMillis
 
-@InternalCoroutinesApi
 fun main() = runBlocking<Unit> {
 
     /*
